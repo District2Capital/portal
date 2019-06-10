@@ -42,7 +42,7 @@ const MdNotificationsActiveWithBadge = withBadge({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  children: <small>5</small>,
+  children: <small>{notificationsData.length}</small>,
 })(MdNotificationsActive);
 
 class Header extends React.Component {
@@ -75,13 +75,19 @@ class Header extends React.Component {
     document.querySelector('.cr-sidebar').classList.toggle('cr-sidebar--open');
   };
 
+  componentDidMount() {
+    if(notificationsData.length === 0){
+      this.setState({isNotificationConfirmed: true});
+    }
+  }
+
   render() {
     const { isNotificationConfirmed } = this.state;
 
     return (
       <Navbar light expand className={bem.b('bg-white')}>
         <Nav navbar className="mr-2">
-          <Button outline onClick={this.handleSidebarControlButton}>
+          <Button outline onClick={this.handleSidebarControlButton} className="shadow-none">
             <MdClearAll size={25} />
           </Button>
         </Nav>
