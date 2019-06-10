@@ -1,8 +1,9 @@
 {
-  "name": "react-reduction",
+  "name": "d2c-portal",
   "version": "1.0.0",
   "private": false,
-  "homepage": "https://reduction-admin.github.io/react-reduction",
+  "homepage": "https://portal.district2capital.com",
+  "author": "Andreas Bigger",
   "dependencies": {
     "bootstrap": "4.3.1",
     "chart.js": "2.7.2",
