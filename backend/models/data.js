@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const DataSchema = new Schema(
     {
-        id: Number,
         title: String,
         formType: String,
         filingDate: String,
@@ -12,4 +11,4 @@ const DataSchema = new Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Data", DataSchema);
+module.exports = mongoose.model("Data", DataSchema, "edgarData");

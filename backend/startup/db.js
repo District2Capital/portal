@@ -13,6 +13,6 @@ module.exports = function() {
 
     db.on('error', () => {
         console.error.bind(console, 'MongoDB connection error:');
-        winston.error('MongoDB connection error')
+        winston.error('MongoDB connection error');
     });
 }

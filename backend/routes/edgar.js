@@ -3,6 +3,7 @@ const router = express.Router();
 const Data = require('../models/data');
 const htmlToJson = require('html-to-json');
 const winston = require("winston");
+const db = require('../models/data');
 
 router.get('/getData', async (req, res) => {
     var data = null;
@@ -16,15 +17,25 @@ router.get('/getData', async (req, res) => {
                     'fileLink': $item.find('guid').text().slice(0, -8) + 'index.htm'
                 };
             }]
-            }, function (err, result) {
-                console.log(result);
+            }, async function (err, result) {
+                var items = result.items;
+                winston.debug("Number of items: " + items.length);
+                for(var index = 0; index < items.length; index++){
+                    let item = await db.find({title: items[index].title}, async function(err, results){
+                        if(results.length === 0){winston.debug(items[index]);}
+                        if(!results.length){
+                            let newItem = new db(items[index]);
+                            await newItem.save();
+                        }
+                    });
+                }
+                res.status(200).send(result);
+                winston.info(`${req.url} Request Successful`);
             });
     } catch (e) {
         winston.error(`${req.url} Request Failure`);
         res.status(500);
     }
-    res.status(200);
-    winston.info(`${req.url} Request Successful`);
 });
 
 router.get('/', (req, res) => {

@@ -7,7 +7,7 @@ import {
   MdShowChart,
   MdDashboard,
   MdInsertChart,
-  MdWeb,
+  MdHistory,
   MdWidgets,
 } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
@@ -21,9 +21,9 @@ import bn from 'utils/bemnames';
 
 const navItems = [
   { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
-  { to: '/edgar', name: 'edgar', exact: false, Icon: MdRssFeed },
+  { to: '/edgar', name: 'Edgar Filings', exact: false, Icon: MdRssFeed },
   { to: '/stock', name: 'stock', exact: false, Icon: MdShowChart },
-  { to: '/cards', name: 'cards', exact: false, Icon: MdWeb },
+  { to: '/cards', name: 'Historical Filings', exact: false, Icon: MdHistory },
   { to: '/charts', name: 'charts', exact: false, Icon: MdInsertChart },
   { to: '/widgets', name: 'widgets', exact: false, Icon: MdWidgets },
 ];
