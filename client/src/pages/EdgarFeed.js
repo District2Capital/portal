@@ -1,7 +1,9 @@
 import React from 'react';
-import { Row } from 'reactstrap';
+import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { EdgarFiling } from '../components/Card';
+import { filings } from '../config';
+//import { Button } from 'react-bootstrap';
 
 class EdgarFeed extends React.Component {
 
@@ -9,49 +11,89 @@ class EdgarFeed extends React.Component {
     time: Date.now(),
     data: null,
     intervalIsSet: false,
-    filter: null
+    filter: [],
+    numberItems: 200,
+    availableFormTypes: [],
+    formdropdownOpen: false,
+    numberdropdownOpen: false
   }
 
   componentDidMount() {
     this.getDataFromDb();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 10000);
+      let interval = setInterval(this.getDataFromDb, 3000);
       this.setState({ intervalIsSet: interval });
     }
   }
 
   getDataFromDb = () => {
     axios.get('/api/edgar/getData').then(res => {
-      this.setState({ data: res.data });
+      if(!this.state.filter.length){
+        this.setState({ 
+          data: res.data, 
+          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))], 
+          filter: [...new Set(res.data.items.map(a => a.formType))] 
+        });
+      }
     });
-    //console.log(this.state.data);
   };
 
-  componentWillUnmount() {
-    if (this.state.intervalIsSet) {
-      clearInterval(this.state.intervalIsSet);
-      this.setState({ intervalIsSet: null });
-    }
+  toggleFormType = () => {
+    this.setState({
+      formdropdownOpen: !this.state.formdropdownOpen
+    });
+  }
+
+  toggleNumber = () => {
+    this.setState({
+      numberdropdownOpen: !this.state.numberdropdownOpen
+    });
+  }
+
+  handleFilterClick(clickedFormType) {
+    this.setState({filter: clickedFormType});
+  }
+
+  handleNumberFilterClick(clickedFormType) {
+    this.setState({numberItems: clickedFormType});
   }
 
   render() {
-    const { data, filter } = this.state;
-    var availableFormTypes = [];
-    if (data != null) availableFormTypes = [...new Set(data.items.map(a => a.formType))];
-    console.log(availableFormTypes);
+    const { data, filter, availableFormTypes, numberItems } = this.state;
+    var numberFilter = [5, 10, 25, 50, 100, 200];
     return (
       <div className="px-3">
         <div className="py-3 d-flex flex-row">
-          <h1>Edgar XBRL Filings</h1>
-          <div className="dropdown ml-auto p-2">
-            <button className="btn float-right btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Form Type</button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {availableFormTypes.map(formType => (<a key={formType} className="dropdown-item" href="/">{formType}</a>))}
-            </div>
-          </div>
+          <h1 className="mr-auto">Edgar XBRL Filings</h1>
+           <Dropdown className="p-2 d-inline-block" isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
+            <DropdownToggle style={{boxShadow: "none"}} caret>Number</DropdownToggle>
+            <DropdownMenu>
+              {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index-1] || 0} - {number}</DropdownItem>))}
+            </DropdownMenu>
+          </Dropdown>
+          <Dropdown className="p-2 d-inline-block" isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
+            <DropdownToggle style={{boxShadow: "none"}} caret>Type</DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
+              {availableFormTypes.map(formType => {
+                var badgeColor = "primary";  
+                var values = Object.values(filings);
+                for(var key = 0; key < values.length; key++){
+                  for(var filing = 0; filing < values[key].filingArray.length; filing++){
+                    if(formType === values[key].filingArray[filing]){
+                      badgeColor = values[key].color;
+                    }
+                  }
+                }
+                return (<DropdownItem key={formType} onClick={() => this.handleFilterClick([formType])}>
+                  {formType} <Badge color={badgeColor}>{formType}</Badge>
+                </DropdownItem>);
+              })}
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <Row className="d-flex justify-content-center">
-          <EdgarFiling data={data} filter={filter} />
+          <EdgarFiling data={data} filter={filter} number={numberItems} />
         </Row>
       </div>
     );

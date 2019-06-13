@@ -3,8 +3,8 @@
   "name": "District 2 Capital Portal",
   "icons": [
     {
-      "src": "d2c.png",
-      "sizes": "192x192",
+      "src": "logoResized.png",
+      "sizes": "156x156",
       "type": "image/png"
     }
   ],
