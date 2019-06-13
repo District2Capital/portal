@@ -22,50 +22,40 @@ import {
   ListGroupItem,
   Row,
 } from 'reactstrap';
-import axios from 'axios';
-import api from 'sec-api';
+//import axios from 'axios';
 
 class EdgarFeed extends React.Component {
 
   state = {
     time: Date.now(),
     data: null,
+    intervalIsSet: false
   }
 
   componentDidMount() {
-    const socket = api('862835dc9d2efba35f2a9737b8021ed846c81007c524bb8f80a35e67508b4e04');
-    socket.on('filing', filing => console.log(filing));
-    this.interval = setInterval(() => this.setState({ time: Date.now() }), 10000);
-    console.log('calling feed');
-    this.fetchPosts().then();
-    //console.log(result);
-    //this.handleFeed(result);
-    //this.handleFeed(this.fetchPosts());
-    //this.fetchPosts().then(this.handleFeed());
-  }
-
-  fetchPosts = async () => {
-    try {
-      return await axios.get(`https://www.sec.gov/Archives/edgar/xbrlrss.all.xml`);
-    } catch (e) {
-      console.log(e);
+    this.getDataFromDb();
+    if (!this.state.intervalIsSet) {
+      let interval = setInterval(this.getDataFromDb, 1000);
+      this.setState({ intervalIsSet: interval });
     }
   }
 
-  handleFeed = response => {
-    console.log('handle feed called');
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(response, 'application/xml');
-    console.log(xml);
-    console.log(xml.querySelector('item'));
-  }
+  getDataFromDb = () => {
+    fetch('http://localhost:3001/api/getData')
+      .then((data) => data.json())
+      .then((res) => this.setState({ data: res.data }))
+      .then((res) => console.log(res.data));
+  };
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    if (this.state.intervalIsSet) {
+      clearInterval(this.state.intervalIsSet);
+      this.setState({ intervalIsSet: null });
+    }
   }
 
   render() {return (
-    <Page title="Cards" breadcrumbs={[{ name: 'cards', active: true }]}>
+    <Page title="Edgar XBRL Filings">
       <Row>
         <Col md={6} sm={6} xs={12} className="mb-3">
           <Card className="flex-row">

@@ -6,79 +6,103 @@ import AuthPage from 'pages/AuthPage';
 import CardPage from 'pages/CardPage';
 // pages
 import DashboardPage from 'pages/DashboardPage';
-import React from 'react';
+import React, {Suspense} from 'react';
+import LoadingOverlay from "react-loading-overlay";
 import componentQueries from 'react-component-queries';
 import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
 import './styles/reduction.scss';
 import EdgarFeed from 'pages/EdgarFeed';
 import Stock from 'pages/Stock';
+import axios from 'axios';
+import { AxiosProvider } from 'react-axios';
+import HashLoader from "react-spinners/HashLoader";
 
 const getBasename = () => {
   return `/${process.env.PUBLIC_URL.split('/').pop()}`;
 };
 
+const axiosInstance = axios.create({
+  baseURL: "/api",
+  timeout: 15000,
+  headers: {
+    Accept: "application/json"
+  }
+});
+
 class App extends React.Component {
   render() {
     return (
-      <BrowserRouter basename={getBasename()}>
-        <GAListener>
-          <Switch>
-            <LayoutRoute
-              exact
-              path="/login"
-              layout={EmptyLayout}
-              component={props => (
-                <AuthPage {...props} authState={STATE_LOGIN} />
-              )}
-            />
-            <LayoutRoute
-              exact
-              path="/signup"
-              layout={EmptyLayout}
-              component={props => (
-                <AuthPage {...props} authState={STATE_SIGNUP} />
-              )}
-            />
-            <LayoutRoute
-              exact
-              path="/login-modal"
-              layout={MainLayout}
-              component={AuthModalPage}
-            />
-            <LayoutRoute
-              exact
-              path="/"
-              layout={MainLayout}
-              component={DashboardPage}
-            />
-            <LayoutRoute
-              exact
-              path="/cards"
-              layout={MainLayout}
-              component={CardPage}
-            />
-            <LayoutRoute
-              exact
-              path="/edgar"
-              layout={MainLayout}
-              component={EdgarFeed}
-            />
-            <LayoutRoute
-              exact
-              path="/stock"
-              layout={MainLayout}
-              component={Stock}
-            />
-            <LayoutRoute
-              exact
-              path="/register"
-              layout={MainLayout}
-              component={AuthPage}
-            />
-            <Redirect to="/" />
-          </Switch>
-        </GAListener>
-      </BrowserRouter>
+      <Suspense
+        fallback={
+          <LoadingOverlay
+            active
+            classNamePrefix={"SuspenseLoader_"}
+            spinner={<HashLoader size={85} color={"#0212cb"} />}
+          />
+        }
+      >
+        <BrowserRouter basename={getBasename()}>
+          <GAListener>
+            <Switch>
+              <LayoutRoute
+                exact
+                path="/login"
+                layout={EmptyLayout}
+                component={props => (
+                  <AuthPage {...props} authState={STATE_LOGIN} />
+                )}
+              />
+              <LayoutRoute
+                exact
+                path="/signup"
+                layout={EmptyLayout}
+                component={props => (
+                  <AuthPage {...props} authState={STATE_SIGNUP} />
+                )}
+              />
+              <LayoutRoute
+                exact
+                path="/login-modal"
+                layout={MainLayout}
+                component={AuthModalPage}
+              />
+              <AxiosProvider instance={axiosInstance}>
+                <LayoutRoute
+                  exact
+                  path="/"
+                  layout={MainLayout}
+                  component={DashboardPage}
+                />
+                <LayoutRoute
+                  exact
+                  path="/cards"
+                  layout={MainLayout}
+                  component={CardPage}
+                />
+                <LayoutRoute
+                  exact
+                  path="/edgar"
+                  layout={MainLayout}
+                  component={EdgarFeed}
+                />
+                <LayoutRoute
+                  exact
+                  path="/stock"
+                  layout={MainLayout}
+                  component={Stock}
+                />
+                <LayoutRoute
+                  exact
+                  path="/register"
+                  layout={MainLayout}
+                  component={AuthPage}
+                />
+              </AxiosProvider>
+              <Redirect to="/" />
+            </Switch>
+          </GAListener>
+        </BrowserRouter>
+      </Suspense>
     );
   }
 }
