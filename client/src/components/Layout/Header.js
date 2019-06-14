@@ -1,9 +1,7 @@
 import Avatar from 'components/Avatar';
 import { UserCard } from 'components/Card';
-import Notifications from 'components/Notifications';
 import SearchInput from 'components/SearchInput';
-import { notificationsData } from 'demos/header';
-import withBadge from 'hocs/withBadge';
+import defaultUser from 'assets/defaultUser.png';
 import React from 'react';
 import {
   MdClearAll,
@@ -11,8 +9,6 @@ import {
   MdHelp,
   MdInsertChart,
   MdMessage,
-  MdNotificationsActive,
-  MdNotificationsNone,
   MdPersonPin,
   MdSettingsApplications,
 } from 'react-icons/md';
@@ -32,34 +28,9 @@ import bn from 'utils/bemnames';
 
 const bem = bn.create('header');
 
-const MdNotificationsActiveWithBadge = withBadge({
-  size: 'md',
-  color: 'primary',
-  style: {
-    top: -10,
-    right: -10,
-    display: 'inline-flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  children: <small>{notificationsData.length}</small>,
-})(MdNotificationsActive);
-
 class Header extends React.Component {
   state = {
-    isOpenNotificationPopover: false,
-    isNotificationConfirmed: false,
-    isOpenUserCardPopover: false,
-  };
-
-  toggleNotificationPopover = () => {
-    this.setState({
-      isOpenNotificationPopover: !this.state.isOpenNotificationPopover,
-    });
-
-    if (!this.state.isNotificationConfirmed) {
-      this.setState({ isNotificationConfirmed: true });
-    }
+    isOpenUserCardPopover: false
   };
 
   toggleUserCardPopover = () => {
@@ -75,14 +46,7 @@ class Header extends React.Component {
     document.querySelector('.cr-sidebar').classList.toggle('cr-sidebar--open');
   };
 
-  componentDidMount() {
-    if(notificationsData.length === 0){
-      this.setState({isNotificationConfirmed: true});
-    }
-  }
-
   render() {
-    const { isNotificationConfirmed } = this.state;
 
     return (
       <Navbar light expand className={bem.b('bg-white')}>
@@ -94,40 +58,12 @@ class Header extends React.Component {
         <Nav navbar>
           <SearchInput />
         </Nav>
-
-        <Nav navbar className={bem.e('nav-right')}>
-          <NavItem className="d-inline-flex">
-            <NavLink id="Popover1" className="position-relative">
-              {isNotificationConfirmed ? (
-                <MdNotificationsNone
-                  size={25}
-                  className="text-secondary can-click"
-                  onClick={this.toggleNotificationPopover}
-                />
-              ) : (
-                <MdNotificationsActiveWithBadge
-                  size={25}
-                  className="text-secondary can-click animated swing infinite"
-                  onClick={this.toggleNotificationPopover}
-                />
-              )}
-            </NavLink>
-            <Popover
-              placement="bottom"
-              isOpen={this.state.isOpenNotificationPopover}
-              toggle={this.toggleNotificationPopover}
-              target="Popover1"
-            >
-              <PopoverBody>
-                <Notifications notificationsData={notificationsData} />
-              </PopoverBody>
-            </Popover>
-          </NavItem>
-
+        <Nav className="ml-auto">
           <NavItem>
             <NavLink id="Popover2">
               <Avatar
                 onClick={this.toggleUserCardPopover}
+                src={defaultUser}
                 className="can-click"
               />
             </NavLink>
@@ -144,6 +80,7 @@ class Header extends React.Component {
                   title=""
                   subtitle=""
                   text=""
+                  avatar={defaultUser}
                   className="border-light"
                 >
                   <ListGroup flush>

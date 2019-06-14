@@ -43,9 +43,13 @@ const EdgarFiling = ({ data, filter, number }) => {
         return <div key={counter++} ></div>;
       });
   }
-  return (<div className="spinner-grow d-flex align-items-center" role="status">
-    <span className="sr-only">Loading...</span>
-  </div>);
+  return (
+    <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+      <div className="spinner-grow d-flex align-items-center" style={{width: "75px", height: "75px"}} role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    </div>
+  );
 }
 
 export default EdgarFiling;

@@ -1,21 +1,26 @@
-import { STATE_LOGIN, STATE_SIGNUP } from 'components/AuthForm';
-import GAListener from 'components/GAListener';
-import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
-import AuthModalPage from 'pages/AuthModalPage';
-import AuthPage from 'pages/AuthPage';
-import CardPage from 'pages/CardPage';
-// pages
-import DashboardPage from 'pages/DashboardPage';
 import React, {Suspense} from 'react';
+import axios from 'axios';
+import { AxiosProvider } from 'react-axios';
 import LoadingOverlay from "react-loading-overlay";
 import componentQueries from 'react-component-queries';
 import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
-import './styles/reduction.scss';
-import EdgarFeed from 'pages/EdgarFeed';
-import Stock from 'pages/Stock';
-import axios from 'axios';
-import { AxiosProvider } from 'react-axios';
+
+// Components
+import { STATE_LOGIN, STATE_SIGNUP } from 'components/AuthForm';
+import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
 import HashLoader from "react-spinners/HashLoader";
+import './styles/reduction.scss';
+
+// Pages
+import DashboardPage from 'pages/DashboardPage';
+import AuthModalPage from 'pages/AuthModalPage';
+import AuthPage from 'pages/AuthPage';
+import HistoricalPage from 'pages/HistoricalPage';
+import EdgarDocsPage from 'pages/EdgarDocsPage';
+import SettingsPage from 'pages/SettingsPage';
+import EdgarFeedPage from 'pages/EdgarFeedPage';
+import StockPage from 'pages/StockPage';
+
 
 const getBasename = () => {
   return `/${process.env.PUBLIC_URL.split('/').pop()}`;
@@ -42,7 +47,6 @@ class App extends React.Component {
         }
       >
         <BrowserRouter basename={getBasename()}>
-          <GAListener>
             <Switch>
               <LayoutRoute
                 exact
@@ -75,21 +79,33 @@ class App extends React.Component {
                 />
                 <LayoutRoute
                   exact
-                  path="/cards"
+                  path="/historical"
                   layout={MainLayout}
-                  component={CardPage}
+                  component={HistoricalPage}
+                />
+                <LayoutRoute
+                  exact
+                  path="/edgarDocs"
+                  layout={MainLayout}
+                  component={EdgarDocsPage}
+                />
+                <LayoutRoute
+                  exact
+                  path="/settings"
+                  layout={MainLayout}
+                  component={SettingsPage}
                 />
                 <LayoutRoute
                   exact
                   path="/edgar"
                   layout={MainLayout}
-                  component={EdgarFeed}
+                  component={EdgarFeedPage}
                 />
                 <LayoutRoute
                   exact
                   path="/stock"
                   layout={MainLayout}
-                  component={Stock}
+                  component={StockPage}
                 />
                 <LayoutRoute
                   exact
@@ -100,7 +116,6 @@ class App extends React.Component {
               </AxiosProvider>
               <Redirect to="/" />
             </Switch>
-          </GAListener>
         </BrowserRouter>
       </Suspense>
     );

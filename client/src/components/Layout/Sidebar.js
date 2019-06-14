@@ -1,17 +1,19 @@
-import d2clogo from 'assets/img/logo/logo.png';
-import sidebarBgImage from 'assets/img/sidebar/cartoons.png';
+import d2clogo from 'assets/logo.png';
 import SourceLink from 'components/SourceLink';
 import React from 'react';
 import {
   MdRssFeed,
   MdShowChart,
   MdDashboard,
-  MdInsertChart,
+  MdDescription,
   MdHistory,
-  MdWidgets,
+  MdSettings,
+  MdKeyboardArrowDown,
+  MdBook
 } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import {
+  Collapse,
   Nav,
   Navbar,
   NavItem,
@@ -20,20 +22,37 @@ import {
 import bn from 'utils/bemnames';
 
 const navItems = [
-  { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
+  { to: '/', name: 'Dashboard', exact: true, Icon: MdDashboard },
   { to: '/edgar', name: 'Edgar Filings', exact: false, Icon: MdRssFeed },
-  { to: '/stock', name: 'stock', exact: false, Icon: MdShowChart },
-  { to: '/cards', name: 'Historical Filings', exact: false, Icon: MdHistory },
-  { to: '/charts', name: 'charts', exact: false, Icon: MdInsertChart },
-  { to: '/widgets', name: 'widgets', exact: false, Icon: MdWidgets },
+  { to: '/stock', name: 'Stock', exact: false, Icon: MdShowChart },
+  { to: '/historical', name: 'Historical Filings', exact: false, Icon: MdHistory },
+  { to: '/settings', name: 'Settings', exact: false, Icon: MdSettings },
+];
+
+const referenceDocs = [
+  { to: '/edgarDocs', name: 'Edgar Docs', exact: false, Icon: MdDescription }
 ];
 
 const bem = bn.create('sidebar');
 
 class Sidebar extends React.Component {
+  state = {
+    isOpenReferenceDocs: false
+  }
+
+  handleClick = name => () => {
+    this.setState(prevState => {
+      const isOpen = prevState[`isOpen${name}`];
+
+      return {
+        [`isOpen${name}`]: !isOpen,
+      };
+    });
+  };
+
   render() {
     return (
-      <aside className={bem.b()} data-image={sidebarBgImage}>
+      <aside className={bem.b()}>
         <div className={bem.e('background')} />
         <div className={bem.e('content')}>
           <Navbar className="d-flex justify-content-center">
@@ -62,6 +81,46 @@ class Sidebar extends React.Component {
                 </BSNavLink>
               </NavItem>
             ))}
+
+            <NavItem
+              className={bem.e('nav-item')}
+              onClick={this.handleClick('ReferenceDocs')}
+            >
+              <BSNavLink className={bem.e('nav-item-collapse')}>
+                <div className="d-flex">
+                  <MdBook className={bem.e('nav-item-icon')} />
+                  <span className=" align-self-start">REFERENCE DOCS</span>
+                </div>
+                <MdKeyboardArrowDown
+                  className={bem.e('nav-item-icon')}
+                  style={{
+                    padding: 0,
+                    transform: this.state.isOpenReferenceDocs
+                      ? 'rotate(0deg)'
+                      : 'rotate(-90deg)',
+                    transitionDuration: '0.3s',
+                    transitionProperty: 'transform',
+                  }}
+                />
+              </BSNavLink>
+            </NavItem>
+            <Collapse isOpen={this.state.isOpenReferenceDocs}>
+              {referenceDocs.map(({ to, name, exact, Icon }, index) => (
+                <NavItem key={index} className={bem.e('nav-item')}>
+                  <BSNavLink
+                    id={`navItem-${name}-${index}`}
+                    className="text-uppercase"
+                    tag={NavLink}
+                    to={to}
+                    activeClassName="active"
+                    exact={exact}
+                  >
+                    <Icon className={bem.e('nav-item-icon')} />
+                    <span className="">{name}</span>
+                  </BSNavLink>
+                </NavItem>
+              ))}
+            </Collapse>
           </Nav>
         </div>
       </aside>

@@ -5,7 +5,7 @@ import { EdgarFiling } from '../components/Card';
 import { filings } from '../config';
 //import { Button } from 'react-bootstrap';
 
-class EdgarFeed extends React.Component {
+class EdgarFeedPage extends React.Component {
 
   state = {
     time: Date.now(),
@@ -21,7 +21,7 @@ class EdgarFeed extends React.Component {
   componentDidMount() {
     this.getDataFromDb();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 3000);
+      let interval = setInterval(this.getDataFromDb, 30000);
       this.setState({ intervalIsSet: interval });
     }
   }
@@ -62,7 +62,7 @@ class EdgarFeed extends React.Component {
     const { data, filter, availableFormTypes, numberItems } = this.state;
     var numberFilter = [5, 10, 25, 50, 100, 200];
     return (
-      <div className="px-3">
+      <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
           <h1 className="mr-auto">Edgar XBRL Filings</h1>
            <Dropdown className="p-2 d-inline-block" isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
@@ -92,7 +92,7 @@ class EdgarFeed extends React.Component {
             </DropdownMenu>
           </Dropdown>
         </div>
-        <Row className="d-flex justify-content-center">
+        <Row className="d-flex justify-content-center flex-grow-1">
           <EdgarFiling data={data} filter={filter} number={numberItems} />
         </Row>
       </div>
@@ -100,4 +100,4 @@ class EdgarFeed extends React.Component {
   }
 };
 
-export default EdgarFeed;
+export default EdgarFeedPage;
