@@ -13,7 +13,7 @@ const EdgarDocs = () => {
                         <h4>{keys[valueindex]}</h4>
                         {value.filingArray.map((filing, filingindex) => {
                             return (<p key={filing + filingindex}>
-                                <Badge color={value.color || "primary"}>{filing}</Badge> - {filing} {value.descriptionArray[filingindex]}
+                                <Badge color={value.color || "primary"}>{filing}</Badge> - {filing} - {value.descriptionArray[filingindex]}
                             </p>);
                         })}
                     </div>);

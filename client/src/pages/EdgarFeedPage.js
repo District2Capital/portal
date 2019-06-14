@@ -3,7 +3,6 @@ import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 import axios from 'axios';
 import { EdgarFiling } from '../components/Card';
 import { filings } from '../config';
-//import { Button } from 'react-bootstrap';
 
 class EdgarFeedPage extends React.Component {
 
@@ -59,7 +58,8 @@ class EdgarFeedPage extends React.Component {
   }
 
   render() {
-    const { data, filter, availableFormTypes, numberItems } = this.state;
+    let { data, filter, availableFormTypes, numberItems } = this.state;
+    if(!data) data = {};
     var numberFilter = [5, 10, 25, 50, 100, 200];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
@@ -93,7 +93,7 @@ class EdgarFeedPage extends React.Component {
           </Dropdown>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <EdgarFiling data={data} filter={filter} number={numberItems} />
+          <EdgarFiling data={data.items} filter={filter} number={numberItems} />
         </Row>
       </div>
     );

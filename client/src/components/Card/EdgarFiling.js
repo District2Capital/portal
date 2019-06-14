@@ -14,7 +14,7 @@ import {
 const EdgarFiling = ({ data, filter, number }) => {
   var counter = 0;
   if (data) {
-    return data.items.map(({ title, formType, filingDate, fileLink }) => {
+    return data.map(({ title, formType, filingDate, fileLink }) => {
       var badgeColor = "primary";  
       var values = Object.values(filings);
       for(var key = 0; key < values.length; key++){
