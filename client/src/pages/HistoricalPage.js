@@ -63,18 +63,19 @@ class HistoricalPage extends React.Component {
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
-          <h1 className="mr-auto">Historical Filings</h1>
-           <Dropdown className="p-2 d-inline-block" isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
-            <DropdownToggle style={{boxShadow: "none"}} caret>Number</DropdownToggle>
+          <h1 className="mr-auto flex-column">Historical Filings</h1>
+          <div className="d-flex flex-wrap justify-content-end">
+          <Dropdown className="p-2" style={{width: "120px"}} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
+            <DropdownToggle className="w-100" style={{boxShadow: "none"}} caret>Number</DropdownToggle>
             <DropdownMenu>
               {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index-1] || 0} - {number}</DropdownItem>))}
             </DropdownMenu>
           </Dropdown>
-          <Dropdown className="p-2 d-inline-block" isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
-            <DropdownToggle style={{boxShadow: "none"}} caret>Type</DropdownToggle>
+          <Dropdown className="p-2" style={{width: "120px"}} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
+            <DropdownToggle className="w-100" style={{boxShadow: "none"}} caret>Type</DropdownToggle>
             <DropdownMenu>
               <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
-              {availableFormTypes.map(formType => {
+              {availableFormTypes.map((formType, index) => {
                 var badgeColor = "primary";  
                 var values = Object.values(filings);
                 for(var key = 0; key < values.length; key++){
@@ -84,12 +85,13 @@ class HistoricalPage extends React.Component {
                     }
                   }
                 }
-                return (<DropdownItem key={formType} onClick={() => this.handleFilterClick([formType])}>
+                return (<DropdownItem key={formType + index} onClick={() => this.handleFilterClick([formType])}>
                   {formType} <Badge color={badgeColor}>{formType}</Badge>
                 </DropdownItem>);
               })}
             </DropdownMenu>
           </Dropdown>
+          </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
           <EdgarFiling data={data} filter={filter} number={numberItems} />

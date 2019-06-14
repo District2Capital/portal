@@ -84,6 +84,7 @@
     padding-right: .5rem;
   }
 
+  //@media(min-width: 700px){
   &--open {
     left: 0;
     transition: left .2s ease-in;

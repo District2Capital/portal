@@ -18,7 +18,9 @@ class MainLayout extends React.Component {
 
   componentDidMount() {
     this.checkBreakpoint(this.props.breakpoint);
-
+    if(window.innerWidth < 700){
+      this.openSidebar('close');
+    }
     setTimeout(() => {
       if (!this.notificationSystem) {
         return;
