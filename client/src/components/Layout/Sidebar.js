@@ -7,7 +7,8 @@ import {
   MdDashboard,
   MdDescription,
   MdHistory,
-  MdSettings,
+  MdSearch,
+  MdAccessTime,
   MdKeyboardArrowDown,
   MdBook
 } from 'react-icons/md';
@@ -23,10 +24,11 @@ import bn from 'utils/bemnames';
 
 const navItems = [
   { to: '/', name: 'Dashboard', exact: true, Icon: MdDashboard },
-  { to: '/edgar', name: 'Edgar Filings', exact: false, Icon: MdRssFeed },
-  { to: '/stock', name: 'Stock', exact: false, Icon: MdShowChart },
+  { to: '/sec', name: 'SEC Live Filings', exact: false, Icon: MdAccessTime },
+  { to: '/edgar', name: 'Edgar XBRL Filings', exact: false, Icon: MdRssFeed },
   { to: '/historical', name: 'Historical Filings', exact: false, Icon: MdHistory },
-  { to: '/settings', name: 'Settings', exact: false, Icon: MdSettings },
+  { to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart },
+  { to: '/search', name: 'Company Search', exact: false, Icon: MdSearch },
 ];
 
 const referenceDocs = [

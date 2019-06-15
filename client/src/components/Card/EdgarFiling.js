@@ -11,7 +11,7 @@ import {
   ListGroupItem
 } from 'reactstrap';
 
-const EdgarFiling = ({ data, filter, number }) => {
+const EdgarFiling = ({ data, filter, number, showLoader }) => {
   var counter = 0;
   if (data) {
     return data.map(({ title, formType, filingDate, fileLink }) => {
@@ -43,13 +43,16 @@ const EdgarFiling = ({ data, filter, number }) => {
         return <div key={counter++} ></div>;
       });
   }
-  return (
-    <div className="d-flex align-items-center flex-grow-1 justify-content-center">
-      <div className="spinner-grow d-flex align-items-center" style={{width: "75px", height: "75px"}} role="status">
-        <span className="sr-only">Loading...</span>
+  if(showLoader !== false){
+    return (
+      <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+        <div className="spinner-grow d-flex align-items-center" style={{width: "75px", height: "75px"}} role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return (<div></div>)
 }
 
 export default EdgarFiling;

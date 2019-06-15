@@ -3,7 +3,7 @@ import React from 'react';
 
 const StockPage = () => {
   return (
-    <Page title="Stock Page">
+    <Page title="Stock Analysis">
     </Page>
   );
 };

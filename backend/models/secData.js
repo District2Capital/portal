@@ -11,4 +11,4 @@ const DataSchema = new Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Data", DataSchema, "edgarData");
+module.exports = mongoose.model("SECData", DataSchema, "secData");

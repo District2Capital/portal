@@ -1,20 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const Data = require('../models/edgarData');
+const Data = require('../models/secData');
 const htmlToJson = require('html-to-json');
 const winston = require("winston");
-const db = require('../models/edgarData');
+const db = require('../models/secData');
 
 router.get('/getData', async (req, res) => {
     var data = null;
     try {
-        var promise = htmlToJson.request(`https://www.sec.gov/Archives/edgar/xbrlrss.all.xml`, {
-            'items': ['item', function ($item) {
+        var promise = htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik || ""}&type=${req.query.type || ""}&company=${req.query.company || ""}&dateb=&owner=include&start=0&count=100&output=atom`, {
+            'items': ['entry', function ($item) {
                 return {
                     'title': $item.find('title').text(),
-                    'formType': $item.find('description').text(),
-                    'filingDate': $item.find('pubDate').text(),
-                    'fileLink': $item.find('guid').text().slice(0, -8) + 'index.htm'
+                    'formType': $item.find('category').attr('term'),
+                    'filingDate': $item.find('updated').text(),
+                    'fileLink': $item.find('link').attr('href')
                 };
             }]
             }, async function (err, result) {

@@ -1,7 +1,7 @@
 {
   "name": "d2c-portal-app",
   "version": "1.0.0",
-  "description": "complete portal applicaton",
+  "description": "complete d2c portal applicaton",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

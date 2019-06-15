@@ -17,8 +17,9 @@ import AuthModalPage from 'pages/AuthModalPage';
 import AuthPage from 'pages/AuthPage';
 import HistoricalPage from 'pages/HistoricalPage';
 import EdgarDocsPage from 'pages/EdgarDocsPage';
-import SettingsPage from 'pages/SettingsPage';
+import CompanySearchPage from 'pages/CompanySearchPage';
 import EdgarFeedPage from 'pages/EdgarFeedPage';
+import SECFeedPage from 'pages/SECFeedPage';
 import StockPage from 'pages/StockPage';
 
 
@@ -80,6 +81,12 @@ class App extends React.Component {
                 />
                 <LayoutRoute
                   exact
+                  path="/sec"
+                  layout={MainLayout}
+                  component={SECFeedPage}
+                />
+                <LayoutRoute
+                  exact
                   path="/historical"
                   layout={MainLayout}
                   component={HistoricalPage}
@@ -92,9 +99,9 @@ class App extends React.Component {
                 />
                 <LayoutRoute
                   exact
-                  path="/settings"
+                  path="/search"
                   layout={MainLayout}
-                  component={SettingsPage}
+                  component={CompanySearchPage}
                 />
                 <LayoutRoute
                   exact
