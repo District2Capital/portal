@@ -8,7 +8,7 @@ import {
   MdDescription,
   MdHistory,
   MdSearch,
-  MdAccessTime,
+  //MdAccessTime,
   MdKeyboardArrowDown,
   MdBook
 } from 'react-icons/md';
@@ -24,15 +24,15 @@ import bn from 'utils/bemnames';
 
 const navItems = [
   { to: '/', name: 'Dashboard', exact: true, Icon: MdDashboard },
-  { to: '/sec', name: 'SEC Live Filings', exact: false, Icon: MdAccessTime },
+  { to: '/search', name: 'Filing Search', exact: false, Icon: MdSearch },
+  { to: '/sec', name: 'SEC Recent Filings', exact: false, Icon: MdRssFeed },
   { to: '/edgar', name: 'Edgar XBRL Filings', exact: false, Icon: MdRssFeed },
   { to: '/historical', name: 'Historical Filings', exact: false, Icon: MdHistory },
   { to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart },
-  { to: '/search', name: 'Company Search', exact: false, Icon: MdSearch },
 ];
 
 const referenceDocs = [
-  { to: '/edgarDocs', name: 'Edgar Docs', exact: false, Icon: MdDescription }
+  { to: '/filingDocs', name: 'Filing Docs', exact: false, Icon: MdDescription }
 ];
 
 const bem = bn.create('sidebar');

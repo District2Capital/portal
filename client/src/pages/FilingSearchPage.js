@@ -5,14 +5,14 @@ import { EdgarFiling } from '../components/Card';
 import { filings } from '../config';
 import SearchForm from '../components/SearchForm';
 
-class CompanySearchPage extends React.Component {
+class FilingSearchPage extends React.Component {
   
   state = {
     time: Date.now(),
     data: null,
     intervalIsSet: false,
     filter: [],
-    numberItems: 200,
+    numberItems: 100,
     availableFormTypes: [],
     formdropdownOpen: false,
     numberdropdownOpen: false,
@@ -22,19 +22,13 @@ class CompanySearchPage extends React.Component {
     showLoader: false
   }
 
-  componentDidUpdate(){
-    this.getDataFromDb();
-  }
-
-  getDataFromDb = () => {
-    axios.get(`/api/sec/getData/?cik=${this.state.cikQuery}&type=${this.state.typeQuery}&company=${this.state.companyQuery}`).then(res => {
-      if(!this.state.filter.length){
+  getDataFromDb = async () => {
+    await axios.get(`/api/sec/getData/?cik=${this.state.cikQuery}&type=${this.state.typeQuery}&company=${this.state.companyQuery}`).then(res => {
         this.setState({ 
           data: res.data, 
           availableFormTypes: [...new Set(res.data.items.map(a => a.formType))], 
           filter: [...new Set(res.data.items.map(a => a.formType))] 
         });
-      }
     });
   };
 
@@ -42,12 +36,14 @@ class CompanySearchPage extends React.Component {
     this.setState({
       formdropdownOpen: !this.state.formdropdownOpen
     });
+    this.getDataFromDb();
   }
 
   toggleNumber = () => {
     this.setState({
       numberdropdownOpen: !this.state.numberdropdownOpen
     });
+    this.getDataFromDb();
   }
 
   handleFilterClick(clickedFormType) {
@@ -58,18 +54,20 @@ class CompanySearchPage extends React.Component {
     this.setState({numberItems: clickedFormType});
   }
 
-  searchHandler(company, type, cik){
-    this.setState({companyQuery: company, typeQuery: type, cikQuery: cik, showLoader: true});
+  searchHandler = async (company, type, cik) => {
+    await this.setState({ companyQuery: company, typeQuery: type, cikQuery: cik, showLoader: true });
+    this.getDataFromDb();
   }
 
   render() {
     let { data, filter, availableFormTypes, numberItems, showLoader } = this.state;
     if(!data) data = {};
+    console.log(data);
     var numberFilter = [5, 10, 25, 50, 100, 200];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
-          <h1 className="mr-auto">Company Search</h1>
+          <h1 className="mr-auto">Filing Search</h1>
           <div className="d-flex flex-wrap justify-content-end">
            <Dropdown className="p-2" style={{width: "120px"}} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
             <DropdownToggle className="w-100" style={{boxShadow: "none"}} caret>Number</DropdownToggle>
@@ -99,7 +97,7 @@ class CompanySearchPage extends React.Component {
           </Dropdown>
           </div>
         </div>
-        <SearchForm searchHandler={() => this.searchHandler}/>
+        <SearchForm searchHandler={(company, type, cik) => this.searchHandler(company, type, cik)}/>
         <Row className="d-flex justify-content-center flex-grow-1">
           <EdgarFiling showLoader={showLoader} data={data.items} filter={filter} number={numberItems} />
         </Row>
@@ -108,4 +106,4 @@ class CompanySearchPage extends React.Component {
   }
 };
 
-export default CompanySearchPage;
+export default FilingSearchPage;

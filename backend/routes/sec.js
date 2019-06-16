@@ -8,7 +8,7 @@ const db = require('../models/secData');
 router.get('/getData', async (req, res) => {
     var data = null;
     try {
-        var promise = htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik || ""}&type=${req.query.type || ""}&company=${req.query.company || ""}&dateb=&owner=include&start=0&count=100&output=atom`, {
+        var promise = htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik}&type=${req.query.type}&company=${req.query.company}&dateb=&owner=include&start=0&count=100&output=atom`, {
             'items': ['entry', function ($item) {
                 return {
                     'title': $item.find('title').text(),

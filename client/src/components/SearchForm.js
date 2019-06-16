@@ -21,6 +21,7 @@ class SearchForm extends React.Component {
 
     handleCompanyChange(e) {
         this.setState({company: e.target.value});
+        console.log(e.target.value);
     }
 
     handleTypeChange(e) {
@@ -32,7 +33,7 @@ class SearchForm extends React.Component {
     }
 
     render() {
-        let { company, type, cik } = this.state;
+        //let { company, type, cik } = this.state;
         return ( 
             <Card className="my-3">
                 <CardHeader>Search Parameters</CardHeader>
@@ -47,7 +48,7 @@ class SearchForm extends React.Component {
                         type="company"
                         name="company"
                         placeholder="Company Name"
-                        onChange={(e) => this.handleCompanyChange}
+                        onChange={(e) => this.handleCompanyChange(e)}
                         />
                     </Col>
                     </FormGroup>
@@ -60,7 +61,7 @@ class SearchForm extends React.Component {
                         type="cik"
                         name="cik"
                         placeholder="Company CIK"
-                        onChange={(e) => this.handleCIKChange}
+                        onChange={(e) => this.handleCIKChange(e)}
                         />
                     </Col>
                     </FormGroup>
@@ -73,13 +74,13 @@ class SearchForm extends React.Component {
                         type="type"
                         name="type"
                         placeholder="Form Type"
-                        onChange={(e) => this.handleTypeChange}
+                        onChange={(e) => this.handleTypeChange(e)}
                         />
                     </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Col sm={{ size: 9, offset: 3 }}>
-                            <Button className="float-right" onClick={(company, type, cik) => this.props.searchHandler(company, type, cik)}>Search</Button>
+                            <Button className="float-right" onClick={() => this.props.searchHandler(this.state.company, this.state.type, this.state.cik)}>Search</Button>
                         </Col>
                     </FormGroup>
                 </Form>

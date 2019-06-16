@@ -2,7 +2,7 @@ import React from 'react';
 import { filings } from '../config';
 import { Badge } from 'reactstrap';
 
-const EdgarDocs = () => {
+const FilingDocs = () => {
     var values = Object.values(filings);
     var keys = Object.keys(filings);
     return (
@@ -22,4 +22,4 @@ const EdgarDocs = () => {
     );      
 }
  
-export default EdgarDocs;
+export default FilingDocs;

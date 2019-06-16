@@ -18,11 +18,15 @@ class EdgarFeedPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getDataFromDb();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 30000);
-      this.setState({ intervalIsSet: interval });
+      this.getDataFromDb();
+      setInterval(this.getDataFromDb, 3000);
+      this.setState({ intervalIsSet: true });
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getDataFromDb = () => {

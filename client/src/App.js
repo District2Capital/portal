@@ -16,8 +16,8 @@ import DashboardPage from 'pages/DashboardPage';
 import AuthModalPage from 'pages/AuthModalPage';
 import AuthPage from 'pages/AuthPage';
 import HistoricalPage from 'pages/HistoricalPage';
-import EdgarDocsPage from 'pages/EdgarDocsPage';
-import CompanySearchPage from 'pages/CompanySearchPage';
+import FilingDocsPage from 'pages/FilingDocsPage';
+import FilingSearchPage from 'pages/FilingSearchPage';
 import EdgarFeedPage from 'pages/EdgarFeedPage';
 import SECFeedPage from 'pages/SECFeedPage';
 import StockPage from 'pages/StockPage';
@@ -93,15 +93,15 @@ class App extends React.Component {
                 />
                 <LayoutRoute
                   exact
-                  path="/edgarDocs"
+                  path="/filingDocs"
                   layout={MainLayout}
-                  component={EdgarDocsPage}
+                  component={FilingDocsPage}
                 />
                 <LayoutRoute
                   exact
                   path="/search"
                   layout={MainLayout}
-                  component={CompanySearchPage}
+                  component={FilingSearchPage}
                 />
                 <LayoutRoute
                   exact

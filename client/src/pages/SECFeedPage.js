@@ -6,10 +6,11 @@ import { filings } from '../config';
 
 class SECFeedPage extends React.Component {
 
+  controller = new AbortController();
+
   state = {
     time: Date.now(),
     data: null,
-    intervalIsSet: false,
     filter: [],
     numberItems: 200,
     availableFormTypes: [],
@@ -17,19 +18,21 @@ class SECFeedPage extends React.Component {
     numberdropdownOpen: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getDataFromDb();
-    if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 30000);
-      this.setState({ intervalIsSet: interval });
-    }
+    setInterval(await this.getDataFromDb, 3000);
   }
 
-  getDataFromDb = () => {
-    axios.get('/api/sec/getData').then(res => {
+  componentWillUnmount() {
+    this.controller.abort();
+    clearInterval(this.interval);
+  }
+
+  getDataFromDb = async () => {
+    await axios.get('/api/sec/getData/?cik=&type=&company=', { signal: this.controller.signal }).then(res => {
       if(!this.state.filter.length){
         this.setState({ 
-          data: res.data, 
+          data: res.data,
           availableFormTypes: [...new Set(res.data.items.map(a => a.formType))], 
           filter: [...new Set(res.data.items.map(a => a.formType))] 
         });
