@@ -18,11 +18,15 @@ class HistoricalPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getDataFromDb();
+    //this.getDataFromDb();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 30000);
+      let interval = setInterval(this.getDataFromDb, 3000);
       this.setState({ intervalIsSet: interval });
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getDataFromDb = () => {

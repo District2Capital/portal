@@ -5,10 +5,10 @@ import {
     CardBody,
     CardTitle,
     CardSubtitle
-  } from 'reactstrap';
+} from 'reactstrap';
 
 class StockCard extends Component {
-    state = { 
+    state = {
         symbol: "",
         open: "",
         high: "",
@@ -21,14 +21,14 @@ class StockCard extends Component {
         changePercent: ""
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.getDataFromAV();
     }
 
     getDataFromAV = async () => {
         await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${this.props.ticker}&apikey=${process.env.ALPHAVANTAGEAPIKEY}`).then(res => {
             let stockInfo = res.data["Global Quote"];
-            if(stockInfo){
+            if (stockInfo) {
                 this.setState({
                     symbol: stockInfo["01. symbol"],
                     open: stockInfo["02. open"],
@@ -47,18 +47,19 @@ class StockCard extends Component {
 
     handleCardColor = () => {
         let { change } = this.state;
-        if(change === "" || change === 0){
+        if (change === "" || change === 0) {
             return 'secondary';
         }
-        else if(change > 0){
+        else if (change > 0) {
             return 'green';
         }
         return 'red';
     }
-    render() { 
+
+    render() {
         let { symbol, price, change, changePercent } = this.state;
-        return ( 
-            <Card className="m-2" style={{width: "140px"}} color={this.handleCardColor()}>
+        return (
+            <Card className="m-2" style={{ width: "140px" }} color={this.handleCardColor()}>
                 <CardBody>
                     <CardTitle>{symbol}</CardTitle>
                     <CardSubtitle>{price}</CardSubtitle>
@@ -66,7 +67,7 @@ class StockCard extends Component {
                     <CardSubtitle>{changePercent}</CardSubtitle>
                 </CardBody>
             </Card>
-         );
+        );
     }
 }
 

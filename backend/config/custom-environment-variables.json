@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "portal_jwtPrivateKey",
+  "db": "portal"
+}
