@@ -10,6 +10,7 @@ module.exports = function () {
     let db = mongoose.connection;
     db.once('open', () => {
         winston.info('Connected to MongoDB');
+        console.log('LOG::Connected to MongoDB');
     });
 
     db.on('error', () => {
