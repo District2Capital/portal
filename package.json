@@ -2,7 +2,7 @@
   "name": "d2c-portal-app",
   "version": "1.0.0",
   "description": "complete d2c portal applicaton",
-  "main": "./backend/index.js",
+  "main": "./backend/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently --kill-others \"cd client && npm start\" \"cd backend && npm start\"",
