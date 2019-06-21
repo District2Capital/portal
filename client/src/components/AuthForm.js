@@ -53,6 +53,7 @@ class AuthForm extends React.Component {
         await login(username, password);
         if (_.isEmpty(getCurrentUser())) toast.warn('Credentials not found.', { className: 'rounded' });
         else {
+          console.log('Logged in. Redirecting...');
           window.location = "/";
           //window.location = this.props.location ? this.props.location.state.from.pathname : "/";
         }
