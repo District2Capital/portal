@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": false,
   "author": "Andreas Bigger",
-  "homepage": "https://portal.district2capital.com",
   "proxy": "http://127.0.0.1:3001/",
   "dependencies": {
     "axios": "^0.19.0",
