@@ -25088,3 +25088,6 @@
 {"message":"MongoDB connection error","level":"error"}
 {"message":"MongoDB connection error","level":"error"}
 {"message":"MongoDB connection error","level":"error"}
+{"message":"Connected to MongoDB","level":"info"}
+{"message":"Connected to MongoDB","level":"info"}
+{"message":"Connected to MongoDB","level":"info"}

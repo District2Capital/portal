@@ -1,0 +1,10 @@
+{
+    "environments": {
+        "test": {
+            "scripts": {
+                "test-setup": "echo \" test-setup script success\"",
+                "test": "echo \" test script success\""
+            }
+        }
+    }
+}
