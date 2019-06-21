@@ -20,7 +20,7 @@ class HistoricalPage extends React.Component {
   componentDidMount() {
     //this.getDataFromDb();
     if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 3000);
+      let interval = setInterval(this.getDataFromDb, 10000);
       this.setState({ intervalIsSet: interval });
     }
   }
@@ -30,12 +30,12 @@ class HistoricalPage extends React.Component {
   }
 
   getDataFromDb = () => {
-    axios.get('/api/edgar/getHistoricalData', {params: { number: this.state.numberItems }}).then(res => {
-      if(!this.state.filter.length){
-        this.setState({ 
-          data: res.data, 
-          availableFormTypes: [...new Set(res.data.map(a => a.formType))], 
-          filter: [...new Set(res.data.map(a => a.formType))] 
+    axios.get('/api/edgar/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
+      if (!this.state.filter.length) {
+        this.setState({
+          data: res.data,
+          availableFormTypes: [...new Set(res.data.map(a => a.formType))],
+          filter: [...new Set(res.data.map(a => a.formType))]
         });
       }
     });
@@ -54,11 +54,11 @@ class HistoricalPage extends React.Component {
   }
 
   handleFilterClick(clickedFormType) {
-    this.setState({filter: clickedFormType});
+    this.setState({ filter: clickedFormType });
   }
 
   handleNumberFilterClick(clickedFormType) {
-    this.setState({numberItems: clickedFormType});
+    this.setState({ numberItems: clickedFormType });
   }
 
   render() {
@@ -69,32 +69,32 @@ class HistoricalPage extends React.Component {
         <div className="py-3 d-flex flex-row">
           <h1 className="mr-auto flex-column">Historical Filings</h1>
           <div className="d-flex flex-wrap justify-content-end">
-          <Dropdown className="p-2" style={{width: "120px"}} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
-            <DropdownToggle className="w-100" style={{boxShadow: "none"}} caret>Number</DropdownToggle>
-            <DropdownMenu>
-              {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index-1] || 0} - {number}</DropdownItem>))}
-            </DropdownMenu>
-          </Dropdown>
-          <Dropdown className="p-2" style={{width: "120px"}} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
-            <DropdownToggle className="w-100" style={{boxShadow: "none"}} caret>Type</DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
-              {availableFormTypes.map((formType, index) => {
-                var badgeColor = "primary";  
-                var values = Object.values(filings);
-                for(var key = 0; key < values.length; key++){
-                  for(var filing = 0; filing < values[key].filingArray.length; filing++){
-                    if(formType === values[key].filingArray[filing]){
-                      badgeColor = values[key].color;
+            <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
+              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
+              <DropdownMenu>
+                {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
+              </DropdownMenu>
+            </Dropdown>
+            <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
+              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
+                {availableFormTypes.map((formType, index) => {
+                  var badgeColor = "primary";
+                  var values = Object.values(filings);
+                  for (var key = 0; key < values.length; key++) {
+                    for (var filing = 0; filing < values[key].filingArray.length; filing++) {
+                      if (formType === values[key].filingArray[filing]) {
+                        badgeColor = values[key].color;
+                      }
                     }
                   }
-                }
-                return (<DropdownItem key={formType + index} onClick={() => this.handleFilterClick([formType])}>
-                  {formType} <Badge color={badgeColor}>{formType}</Badge>
-                </DropdownItem>);
-              })}
-            </DropdownMenu>
-          </Dropdown>
+                  return (<DropdownItem key={formType + index} onClick={() => this.handleFilterClick([formType])}>
+                    {formType} <Badge color={badgeColor}>{formType}</Badge>
+                  </DropdownItem>);
+                })}
+              </DropdownMenu>
+            </Dropdown>
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
