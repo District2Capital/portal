@@ -65,7 +65,8 @@
     "deploy": "gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "prod": "npm i && npm run build"
+    "prod": "npm i && npm run build",
+    "postinstall": "npm run build"
   },
   "browserslist": [
     ">0.2%",
