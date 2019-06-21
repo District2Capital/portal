@@ -2,7 +2,6 @@
   "name": "d2c-portal-frontend",
   "version": "1.0.0",
   "private": false,
-  "homepage": "https://portal.district2capital.com",
   "author": "Andreas Bigger",
   "proxy": "http://127.0.0.1:3001/",
   "dependencies": {
