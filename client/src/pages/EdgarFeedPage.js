@@ -29,8 +29,8 @@ class EdgarFeedPage extends React.Component {
     clearInterval(this.interval);
   }
 
-  getDataFromDb = () => {
-    axios.get('/api/edgar/getData').then(res => {
+  getDataFromDb = async () => {
+    await axios.get('/api/edgar/getData').then(res => {
       if (!this.state.filter.length) {
         this.setState({
           data: res.data,

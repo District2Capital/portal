@@ -19,7 +19,7 @@ class SECFeedPage extends React.Component {
   }
 
   async componentDidMount() {
-    this.getDataFromDb();
+    await this.getDataFromDb();
     setInterval(await this.getDataFromDb, 10000);
   }
 

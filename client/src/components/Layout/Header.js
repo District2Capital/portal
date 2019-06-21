@@ -82,7 +82,7 @@ class Header extends React.Component {
                     <ListGroupItem tag="button" action className="border-light">
                       <MdPersonPin /> Profile
                     </ListGroupItem>
-                    <ListGroupItem tag="button" action onClick={() => { localStorage.removeItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME); }} className="border-light">
+                    <ListGroupItem tag="button" action onClick={() => { localStorage.removeItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME); window.location = "/"; }} className="border-light">
                       <MdExitToApp /> Signout
                     </ListGroupItem>
                   </ListGroup>
