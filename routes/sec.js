@@ -8,7 +8,8 @@ const db = require('../models/secData');
 router.get('/getData', async (req, res) => {
     var data = null;
     try {
-        var promise = htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik}&type=${req.query.type}&company=${req.query.company}&dateb=&owner=include&start=0&count=100&output=atom`, {
+        winston.info('Sending Request to SEC...');
+        var promise = await htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik}&type=${req.query.type}&company=${req.query.company}&dateb=&owner=include&start=0&count=100&output=atom`, {
             'items': ['entry', function ($item) {
                 let date_time = (new Date($item.find('updated').text())).toLocaleString();
                 return {
