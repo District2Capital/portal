@@ -5,6 +5,7 @@ const apiEndpoint = "/auth";
 const tokenKey = "token";
 
 export async function login(email, password) {
+    console.log('Logging in at:', process.env.REACT_APP_API_URL, apiEndpoint);
     const { data: jwt } = await http.post(apiEndpoint, { email, password });
     localStorage.setItem(tokenKey, jwt);
     http.setJwt(getJwt());
