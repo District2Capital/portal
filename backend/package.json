@@ -9,6 +9,9 @@
     "start": "nodemon server.js",
     "prod": "npm i && nodemon server.js"
   },
+  "engines": {
+    "node": "11.9.0"
+  },
   "keywords": [],
   "license": "ISC",
   "dependencies": {
