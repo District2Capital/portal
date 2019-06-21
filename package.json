@@ -33,6 +33,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.14",
     "morgan": "^1.9.1",
+    "path": "^0.12.7",
     "winston": "^3.2.1"
   }
 }
