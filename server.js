@@ -25,7 +25,7 @@ app.set('port', process.env.PORT || process.env.API_PORT || 3001);
 if (process.env.NODE_ENV === "production") {
   // Right before your app.listen(), add this:
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    res.sendFile(path.join(__dirname + "client/build/index.html"));
   });
   app.listen(app.get('port'));
 }
