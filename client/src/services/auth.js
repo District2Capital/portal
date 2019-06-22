@@ -1,7 +1,7 @@
 import http from "./httpService";
 import jwtDecode from "jwt-decode";
 
-const apiEndpoint = "/auth";
+const apiEndpoint = "/api/auth";
 const tokenKey = process.env.REACT_APP_API_LOGIN_TOKEN_NAME;
 
 export async function login(email, password) {
