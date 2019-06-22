@@ -25139,3 +25139,7 @@
 {"message":"Connected to MongoDB","level":"info"}
 {"message":"/getData Request Successful","level":"info"}
 {"message":"Connected to MongoDB","level":"info"}
+{"message":"Connected to MongoDB","level":"info"}
+{"message":"Connected to MongoDB","level":"info"}
+{"message":"Sending Request to SEC...","level":"info"}
+{"message":"/getData/?cik=&type=&company= Request Successful","level":"info"}

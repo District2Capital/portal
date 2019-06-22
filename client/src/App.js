@@ -69,6 +69,7 @@ class App extends React.Component {
                 <AuthPage {...props} authState={STATE_LOGIN} />
               )}
             />
+            {!user && <Redirect to="/login" />}
             <LayoutRoute
               exact
               path="/signup"
@@ -83,7 +84,6 @@ class App extends React.Component {
               layout={MainLayout}
               component={AuthModalPage}
             />
-            {!user && <Redirect from="/" to="/login" />}
             <AxiosProvider instance={axiosInstance}>
               <LayoutRoute
                 exact
