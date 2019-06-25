@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "district2capital",
+  "private_key_id": "c07f62c8997157f278cde98198740421cdb9a95d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC3FbpTk5XeuOxp\nVf3bv/8QNTuUyRTyxj0zG+TqXyQTHeNSd8/50nYbnQUmdZmGNoNn5QYShi48T8X1\noluY0/x65IyFJCaYQilGeh6Vzdb42Nmm5c5Is9E1wbXeiGYSlvriez2+NWVxYGOg\nIazz8W2c+wTTAQvGav683qCa70JzoBSRF/oX5Q6MGLdbaVN2TeysZzw1i56wThfj\nfTDN6UcW+EDbSFPWvg5RraEKq9pxiBnxVyDDli+vSJlkkNAzfmVkuu1g2juDgCJk\nj+qpftr2sXt/8JC0lkqCdWqpAZmmMqaWgsjaW+WfRZtCkJgBXVg925d7qdJCsJ9w\nJAGZ5gYXAgMBAAECggEARwr82sp1iM+8GOG/2IIngMwPOxxN7yjCfa8QxGs3rd1W\npN0ODFRA9VUYNwTCFoTXt7x0f0Km9UtFNxwRq/tySOOfrVhKS6G8r3baoGmXxccr\nqeoZgjeYcmIg5uGJriP85V5KJqFEpFpxPiVjHeOsk5IKHLCWt580CujebFB0OjYX\nOhNBSZA8tIkwiHeXS1NYhfJCUSGib1Bq9GOl7hbztohCeDuUr4gzVzuh+PL7Oe/b\nFhMV6ic2QaKLzukq9G7K3cOkSN5TRWgsSp7LLS18EzP3GTRIyIQsfpmc1lfWzy6P\n03Qzuq1zmv3P50NJ3r6OCVvHogqOm8J0hB811mSwJQKBgQDfpmvXYH6gV+5smn45\n4ty1Rbv1Ofmep8boSLmh5jozC4vlrG/C21PQCg41MDYvpyAPqaGdxao9YFiAA04a\noEBQNP3O7+sFOl3PaWX7X5/flyGK7s+POJOFtY+t+C6ABFyDeHjgOg/HdETOC3Mk\nMcGIhDF+CH4H7br65Ow2hBqjCwKBgQDRkTXS2XNIa76HHd9hM3XZPVuSaH88N6Gk\nuM/ThZ7sXfhX0NaIoCl16zig7xoNxuCRZTpOWI407lXSv2jApHbM4Iyh5DJMwx4H\nWjjrxULqg8llqmCU9TVt14WNA/flsW0NIvssn2Ejon7AaOXSnk2M6eu5WGl3nGrC\nrCs5ugbQpQKBgGCabfJ2B7wSvzXB9cvjJhpWqL1f8WaKaexjnWtFGtZ5ok/uj8fH\nHQi7jy+CR6WFtt+NEfYoL0SbnR6OTupJVf5PJWKBVy7G60Zv7FEMGO5nRWHRjW37\nrh0PM6SdkthRCfTv0KZp7e7lVeL6Jx33L/VbxFUALhAWq7E7uJxDq43JAoGAQM7C\nMVlTwGKpggln6hxK5oqGBgnQxyOBFnqcspIQ6pHI2gdYQNoe2DuMwKAQk5AcJHqE\nhHP4TkAiRFEzKNfzcTpD41C5iWmRoL5y+d5/6hwlLQ56XbZS9ov+3fQLNnoe+kAG\nIu+Kz8VRo1kNMYwI+XnhjujbfMTfcyJhH7H6p40CgYEA1Wnd5p1ak1/CEaQBL/sb\nfRDlOLdjyUht4XlIBWJRcIizULXQtlzLvtjwRKio80HAzQTaF7afIzERmcj+/8oN\nnqZzi6Wp6m8KlYEuNuP6p3J8J0422mv6opAKT/8S81q6y17tNJv4RLqtkKvHUe/W\nV/tVTVFtJTj3M9/lRLuT2bo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "aggregate-filings@district2capital.iam.gserviceaccount.com",
+  "client_id": "109525646058441182634",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/aggregate-filings%40district2capital.iam.gserviceaccount.com"
+}

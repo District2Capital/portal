@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
-import { EdgarFiling } from '../components/Card';
+import { Filings } from '../components/Card';
 import { filings } from '../config';
 import SearchForm from '../components/SearchForm';
 
@@ -98,7 +98,7 @@ class FilingSearchPage extends React.Component {
         </div>
         <SearchForm searchHandler={(company, type, cik) => this.searchHandler(company, type, cik)} />
         <Row className="d-flex justify-content-center flex-grow-1">
-          <EdgarFiling showLoader={showLoader} data={data.items} filter={filter} number={numberItems} />
+          <Filings showLoader={showLoader} data={data.items} filter={filter} number={numberItems} />
         </Row>
       </div>
     );

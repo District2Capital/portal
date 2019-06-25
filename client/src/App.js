@@ -17,11 +17,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import DashboardPage from 'pages/DashboardPage';
 import AuthModalPage from 'pages/AuthModalPage';
 import AuthPage from 'pages/AuthPage';
-import HistoricalPage from 'pages/HistoricalPage';
+import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
+import FilingSpreadsheet from 'pages/FilingSpreadsheet';
 import FilingDocsPage from 'pages/FilingDocsPage';
 import FilingSearchPage from 'pages/FilingSearchPage';
-import EdgarFeedPage from 'pages/EdgarFeedPage';
+import XBRLFeedPage from 'pages/XBRLFeedPage';
 import SECFeedPage from 'pages/SECFeedPage';
+import SECHistoricalPage from 'pages/SECHistoricalPage';
 import StockPage from 'pages/StockPage';
 import auth from "services/auth";
 
@@ -93,15 +95,33 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
-                path="/sec"
+                path="/spreadsheet"
+                layout={MainLayout}
+                component={FilingSpreadsheet}
+              />
+              <LayoutRoute
+                exact
+                path="/secfilings"
                 layout={MainLayout}
                 component={SECFeedPage}
               />
               <LayoutRoute
                 exact
-                path="/historical"
+                path="/sechistorical"
                 layout={MainLayout}
-                component={HistoricalPage}
+                component={SECHistoricalPage}
+              />
+              <LayoutRoute
+                exact
+                path="/xbrlhistorical"
+                layout={MainLayout}
+                component={XBRLHistoricalPage}
+              />
+              <LayoutRoute
+                exact
+                path="/xbrlfilings"
+                layout={MainLayout}
+                component={XBRLFeedPage}
               />
               <LayoutRoute
                 exact
@@ -114,12 +134,6 @@ class App extends React.Component {
                 path="/search"
                 layout={MainLayout}
                 component={FilingSearchPage}
-              />
-              <LayoutRoute
-                exact
-                path="/edgar"
-                layout={MainLayout}
-                component={EdgarFeedPage}
               />
               <LayoutRoute
                 exact

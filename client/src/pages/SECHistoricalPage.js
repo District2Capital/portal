@@ -1,10 +1,10 @@
 import React from 'react';
 import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
-import { EdgarFiling } from '../components/Card';
+import { Filings } from '../components/Card';
 import { filings } from '../config';
 
-class EdgarFeedPage extends React.Component {
+class SECHistoricalPage extends React.Component {
 
   state = {
     time: Date.now(),
@@ -18,10 +18,10 @@ class EdgarFeedPage extends React.Component {
   }
 
   componentDidMount() {
+    //this.getDataFromDb();
     if (!this.state.intervalIsSet) {
-      this.getDataFromDb();
-      setInterval(this.getDataFromDb, 10000);
-      this.setState({ intervalIsSet: true });
+      let interval = setInterval(this.getDataFromDb, 10000);
+      this.setState({ intervalIsSet: interval });
     }
   }
 
@@ -29,13 +29,13 @@ class EdgarFeedPage extends React.Component {
     clearInterval(this.interval);
   }
 
-  getDataFromDb = async () => {
-    await axios.get('/api/edgar/getData').then(res => {
+  getDataFromDb = () => {
+    axios.get('/api/sec/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
       if (!this.state.filter.length) {
         this.setState({
           data: res.data,
-          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-          filter: [...new Set(res.data.items.map(a => a.formType))]
+          availableFormTypes: [...new Set(res.data.map(a => a.formType))],
+          filter: [...new Set(res.data.map(a => a.formType))]
         });
       }
     });
@@ -62,13 +62,12 @@ class EdgarFeedPage extends React.Component {
   }
 
   render() {
-    let { data, filter, availableFormTypes, numberItems } = this.state;
-    if (!data) data = {};
-    var numberFilter = [5, 10, 25, 50, 100, 200];
+    const { data, filter, availableFormTypes, numberItems } = this.state;
+    var numberFilter = [5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
-          <h1 className="mr-auto">Edgar Filings</h1>
+          <h1 className="mr-auto flex-column">SEC Historical Filings</h1>
           <div className="d-flex flex-wrap justify-content-end">
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
               <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
@@ -80,7 +79,7 @@ class EdgarFeedPage extends React.Component {
               <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
-                {availableFormTypes.map(formType => {
+                {availableFormTypes.map((formType, index) => {
                   var badgeColor = "primary";
                   var values = Object.values(filings);
                   for (var key = 0; key < values.length; key++) {
@@ -90,7 +89,7 @@ class EdgarFeedPage extends React.Component {
                       }
                     }
                   }
-                  return (<DropdownItem key={formType} onClick={() => this.handleFilterClick([formType])}>
+                  return (<DropdownItem key={formType + index} onClick={() => this.handleFilterClick([formType])}>
                     {formType} <Badge color={badgeColor}>{formType}</Badge>
                   </DropdownItem>);
                 })}
@@ -99,11 +98,11 @@ class EdgarFeedPage extends React.Component {
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <EdgarFiling data={data.items} filter={filter} number={numberItems} />
+          <Filings data={data} filter={filter} number={numberItems} />
         </Row>
       </div>
     );
   }
 };
 
-export default EdgarFeedPage;
+export default SECHistoricalPage;
