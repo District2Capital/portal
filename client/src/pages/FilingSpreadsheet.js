@@ -9,7 +9,7 @@ class FilingSpreadsheet extends React.Component {
 
     async componentDidMount() {
         await this.getDataFromGoogleSheets();
-        setInterval(await this.getDataFromGoogleSheets(), 10000);
+        setInterval(await this.getDataFromGoogleSheets, 10000);
     }
 
     getDataFromGoogleSheets = async () => {
