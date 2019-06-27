@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { Card, CardBody, Button, CardHeader, Col, Row, Table } from 'reactstrap';
 
 class FilingSpreadsheet extends React.Component {
     state = {
@@ -32,7 +32,7 @@ class FilingSpreadsheet extends React.Component {
             );
         }
         return (
-            <Row>
+            <Row className="mx-2">
                 <Col>
                     <Card className="mb-3">
                         <CardHeader>Aggregate SEC Filings</CardHeader>
@@ -52,6 +52,13 @@ class FilingSpreadsheet extends React.Component {
                                         return (
                                             <tr key={rowkey}>
                                                 {eachrow.map((value, valuekey) => {
+                                                    if (valuekey === 3) {
+                                                        return (
+                                                            <td key={valuekey}>
+                                                                <Button href={value}>View Filing</Button>
+                                                            </td>
+                                                        )
+                                                    }
                                                     return (
                                                         <td key={valuekey}>{value}</td>
                                                     );

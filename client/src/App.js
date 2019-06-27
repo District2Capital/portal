@@ -17,14 +17,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import DashboardPage from 'pages/DashboardPage';
 import AuthModalPage from 'pages/AuthModalPage';
 import AuthPage from 'pages/AuthPage';
-import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
 import FilingSpreadsheet from 'pages/FilingSpreadsheet';
-import FilingDocsPage from 'pages/FilingDocsPage';
 import FilingSearchPage from 'pages/FilingSearchPage';
-import XBRLFeedPage from 'pages/XBRLFeedPage';
+import FilingReaderPage from 'pages/FilingReaderPage';
 import SECFeedPage from 'pages/SECFeedPage';
 import SECHistoricalPage from 'pages/SECHistoricalPage';
 import StockPage from 'pages/StockPage';
+import XBRLFeedPage from 'pages/XBRLFeedPage';
+import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
+import FilingDocsPage from 'pages/FilingDocsPage';
 import auth from "services/auth";
 
 const getBasename = () => {
@@ -101,6 +102,18 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
+                path="/search"
+                layout={MainLayout}
+                component={FilingSearchPage}
+              />
+              <LayoutRoute
+                exact
+                path="/filingreader"
+                layout={MainLayout}
+                component={FilingReaderPage}
+              />
+              <LayoutRoute
+                exact
                 path="/secfilings"
                 layout={MainLayout}
                 component={SECFeedPage}
@@ -128,12 +141,6 @@ class App extends React.Component {
                 path="/filingDocs"
                 layout={MainLayout}
                 component={FilingDocsPage}
-              />
-              <LayoutRoute
-                exact
-                path="/search"
-                layout={MainLayout}
-                component={FilingSearchPage}
               />
               <LayoutRoute
                 exact

@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === "production") {
 require('./startup/logging')(app);
 require('dotenv').config();
 require('./startup/db')();
-require('./startup/config')();
+require('./startup/config')(app);
 require('./startup/routes')(app);
 
 app.set('port', process.env.PORT || process.env.API_PORT || 3001);

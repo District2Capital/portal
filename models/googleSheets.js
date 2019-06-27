@@ -1,5 +1,5 @@
 var GoogleSpreadsheet = require('google-spreadsheet');
-var creds = require('../District2CapitalGoogleSheets.json');
+var creds = require('../config/District2CapitalGoogleSheets.json');
 
 // Create a document object using the ID of the spreadsheet - obtained from its URL.
 var doc = new GoogleSpreadsheet('1RV46luph_aEURrcXLLFC5C3NksRTM6uF_P2m6uoDR78');
