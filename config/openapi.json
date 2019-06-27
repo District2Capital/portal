@@ -1,0 +1,278 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "District 2 Capital Portal",
+    "description": "Documentation for District 2 Capital Portal API endpoints.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://127.0.0.1:3001/api",
+      "description": "Development"
+    },
+    {
+      "url": "https://portal.district2capital.com/api",
+      "description": "Production"
+    },
+    {
+      "url": "https://virtserver.swaggerhub.com/BiggerExpeditions/Portal/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "security": [
+    {
+      "accessCode": [
+        "read",
+        "write"
+      ]
+    }
+  ],
+  "paths": {
+    "/sec/getData": {
+      "get": {
+        "tags": [
+          "sec"
+        ],
+        "summary": "SEC Most Recent Filings",
+        "description": "This route fetches the most recent SEC Filings. ",
+        "parameters": [
+          {
+            "name": "cik",
+            "in": "query",
+            "description": "Company specific identifier",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filing type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "company",
+            "in": "query",
+            "description": "Company name",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "format": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/sec/getHistoricalData": {
+      "get": {
+        "tags": [
+          "sec"
+        ],
+        "summary": "SEC Most Recent Filings",
+        "description": "This route fetches a specified number of SEC filings from the database. ",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "query",
+            "description": "Number of Filings",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "number",
+              "default": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/edgar/getData": {
+      "get": {
+        "tags": [
+          "edgar (Outdated)"
+        ],
+        "summary": "OUTDATED Edgar Most Recent Filings",
+        "description": "This route fetches the most recent Edgar Filings. ",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/edgar/getHistoricalData": {
+      "get": {
+        "tags": [
+          "edgar (Outdated)"
+        ],
+        "summary": "Edgar Historical Filings",
+        "description": "This route fetches a specified number of Edgar Filings from the database",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "query",
+            "description": "Number of Filings",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number",
+              "format": "number",
+              "default": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Returns Authenticated User",
+        "description": "This route fetches the authenticated user if it exists.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Creates new user",
+        "description": "This route creates new user",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Authenticate User",
+        "description": "This route authenticates a user",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Login": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "Users": {
+        "required": [
+          "email",
+          "name",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

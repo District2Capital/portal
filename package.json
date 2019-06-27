@@ -1,27 +1,52 @@
 {
-  "name": "d2c-portal-app",
+  "name": "d2c-portal",
   "version": "1.0.0",
-  "description": "complete d2c portal applicaton",
-  "main": "index.js",
+  "description": "D2C Portal",
+  "author": "Andreas Bigger",
+  "main": "server.js",
   "scripts": {
+<<<<<<< HEAD
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently --kill-others \"cd client && npm start\" \"cd backend && npm start\"",
     "start": "concurrently \"cd client && npm run prod\" \"cd backend && npm run prod\""
+=======
+    "test": "echo \"Error: no test specified\"",
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "prod": "npm i && nodemon server.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+>>>>>>> restructured
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/District2Capital/react-reduction.git"
+  "engines": {
+    "node": "11.9.0"
   },
   "keywords": [],
-  "author": "Andreas Bigger",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/District2Capital/portal"
-  },
-  "homepage": "https://portal.district2capital.com",
   "dependencies": {
-    "bootstrap": "^4.3.1",
-    "concurrently": "^4.1.0",
-    "react-bootstrap": "^1.0.0-beta.9"
+    "axios": "^0.19.0",
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "bunyan": "^1.8.12",
+    "bunyan-express-serializer": "^1.0.0",
+    "config": "^3.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "express-request-id": "^1.4.1",
+    "fast-xml-parser": "^3.12.16",
+    "google-spreadsheet": "^2.0.7",
+    "googleapis": "^39.2.0",
+    "gs": "0.0.2",
+    "html-to-json": "^0.6.0",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.14",
+    "morgan": "^1.9.1",
+    "path": "^0.12.7",
+    "readline": "^1.3.0",
+    "request": "^2.88.0",
+    "swagger-ui-express": "^4.0.6",
+    "winston": "^3.2.1"
   }
 }

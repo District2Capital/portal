@@ -8,7 +8,8 @@ import {
   MdDescription,
   MdHistory,
   MdSearch,
-  //MdAccessTime,
+  MdList,
+  MdFindInPage,
   MdKeyboardArrowDown,
   MdBook
 } from 'react-icons/md';
@@ -24,11 +25,17 @@ import bn from 'utils/bemnames';
 
 const navItems = [
   { to: '/', name: 'Dashboard', exact: true, Icon: MdDashboard },
+  { to: '/spreadsheet', name: 'Filings Spreadsheet', exact: false, Icon: MdList },
   { to: '/search', name: 'Filing Search', exact: false, Icon: MdSearch },
-  { to: '/sec', name: 'SEC Recent Filings', exact: false, Icon: MdRssFeed },
-  { to: '/edgar', name: 'Edgar XBRL Filings', exact: false, Icon: MdRssFeed },
-  { to: '/historical', name: 'Historical Filings', exact: false, Icon: MdHistory },
-  { to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart },
+  { to: '/filingreader', name: 'Filing Reader', exact: false, Icon: MdFindInPage },
+  { to: '/secfilings', name: 'SEC Recent', exact: false, Icon: MdRssFeed },
+  { to: '/sechistorical', name: 'SEC Historical', exact: false, Icon: MdRssFeed },
+  { to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart }
+];
+
+const XBRL = [
+  { to: '/xbrlfilings', name: 'XBRL Filings', exact: false, Icon: MdRssFeed },
+  { to: '/xbrlhistorical', name: 'XBRL Historical', exact: false, Icon: MdHistory }
 ];
 
 const referenceDocs = [
@@ -39,7 +46,8 @@ const bem = bn.create('sidebar');
 
 class Sidebar extends React.Component {
   state = {
-    isOpenReferenceDocs: false
+    isOpenReferenceDocs: false,
+    isOpenXBRL: false
   }
 
   handleClick = name => () => {
@@ -109,6 +117,46 @@ class Sidebar extends React.Component {
             </NavItem>
             <Collapse isOpen={this.state.isOpenReferenceDocs}>
               {referenceDocs.map(({ to, name, exact, Icon }, index) => (
+                <NavItem key={index} className={bem.e('nav-item')}>
+                  <BSNavLink
+                    id={`navItem-${name}-${index}`}
+                    className="text-uppercase"
+                    tag={NavLink}
+                    to={to}
+                    activeClassName="active"
+                    exact={exact}
+                  >
+                    <Icon className={bem.e('nav-item-icon')} />
+                    <span className="">{name}</span>
+                  </BSNavLink>
+                </NavItem>
+              ))}
+            </Collapse>
+
+            <NavItem
+              className={bem.e('nav-item')}
+              onClick={this.handleClick('XBRL')}
+            >
+              <BSNavLink className={bem.e('nav-item-collapse')}>
+                <div className="d-flex">
+                  <MdBook className={bem.e('nav-item-icon')} />
+                  <span className=" align-self-start">XBRL (OUTDATED)</span>
+                </div>
+                <MdKeyboardArrowDown
+                  className={bem.e('nav-item-icon')}
+                  style={{
+                    padding: 0,
+                    transform: this.state.isOpenXBRL
+                      ? 'rotate(0deg)'
+                      : 'rotate(-90deg)',
+                    transitionDuration: '0.3s',
+                    transitionProperty: 'transform',
+                  }}
+                />
+              </BSNavLink>
+            </NavItem>
+            <Collapse isOpen={this.state.isOpenXBRL}>
+              {XBRL.map(({ to, name, exact, Icon }, index) => (
                 <NavItem key={index} className={bem.e('nav-item')}>
                   <BSNavLink
                     id={`navItem-${name}-${index}`}

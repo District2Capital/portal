@@ -17,12 +17,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import DashboardPage from 'pages/DashboardPage';
 import AuthModalPage from 'pages/AuthModalPage';
 import AuthPage from 'pages/AuthPage';
-import HistoricalPage from 'pages/HistoricalPage';
-import FilingDocsPage from 'pages/FilingDocsPage';
+import FilingSpreadsheet from 'pages/FilingSpreadsheet';
 import FilingSearchPage from 'pages/FilingSearchPage';
-import EdgarFeedPage from 'pages/EdgarFeedPage';
+import FilingReaderPage from 'pages/FilingReaderPage';
 import SECFeedPage from 'pages/SECFeedPage';
+import SECHistoricalPage from 'pages/SECHistoricalPage';
 import StockPage from 'pages/StockPage';
+import XBRLFeedPage from 'pages/XBRLFeedPage';
+import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
+import FilingDocsPage from 'pages/FilingDocsPage';
 import auth from "services/auth";
 
 const getBasename = () => {
@@ -69,6 +72,7 @@ class App extends React.Component {
                 <AuthPage {...props} authState={STATE_LOGIN} />
               )}
             />
+            {!user && <Redirect from="/" to="/login" />}
             <LayoutRoute
               exact
               path="/signup"
@@ -83,7 +87,6 @@ class App extends React.Component {
               layout={MainLayout}
               component={AuthModalPage}
             />
-            {!user && <Redirect from="/" to="/login" />}
             <AxiosProvider instance={axiosInstance}>
               <LayoutRoute
                 exact
@@ -93,21 +96,9 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
-                path="/sec"
+                path="/spreadsheet"
                 layout={MainLayout}
-                component={SECFeedPage}
-              />
-              <LayoutRoute
-                exact
-                path="/historical"
-                layout={MainLayout}
-                component={HistoricalPage}
-              />
-              <LayoutRoute
-                exact
-                path="/filingDocs"
-                layout={MainLayout}
-                component={FilingDocsPage}
+                component={FilingSpreadsheet}
               />
               <LayoutRoute
                 exact
@@ -117,9 +108,39 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
-                path="/edgar"
+                path="/filingreader"
                 layout={MainLayout}
-                component={EdgarFeedPage}
+                component={FilingReaderPage}
+              />
+              <LayoutRoute
+                exact
+                path="/secfilings"
+                layout={MainLayout}
+                component={SECFeedPage}
+              />
+              <LayoutRoute
+                exact
+                path="/sechistorical"
+                layout={MainLayout}
+                component={SECHistoricalPage}
+              />
+              <LayoutRoute
+                exact
+                path="/xbrlhistorical"
+                layout={MainLayout}
+                component={XBRLHistoricalPage}
+              />
+              <LayoutRoute
+                exact
+                path="/xbrlfilings"
+                layout={MainLayout}
+                component={XBRLFeedPage}
+              />
+              <LayoutRoute
+                exact
+                path="/filingDocs"
+                layout={MainLayout}
+                component={FilingDocsPage}
               />
               <LayoutRoute
                 exact

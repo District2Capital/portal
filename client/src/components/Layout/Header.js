@@ -6,11 +6,7 @@ import React from 'react';
 import {
   MdClearAll,
   MdExitToApp,
-  MdHelp,
-  MdInsertChart,
-  MdMessage,
-  MdPersonPin,
-  MdSettingsApplications,
+  MdPersonPin
 } from 'react-icons/md';
 import {
   Button,
@@ -86,19 +82,7 @@ class Header extends React.Component {
                     <ListGroupItem tag="button" action className="border-light">
                       <MdPersonPin /> Profile
                     </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
-                      <MdInsertChart /> Stats
-                    </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
-                      <MdMessage /> Messages
-                    </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
-                      <MdSettingsApplications /> Settings
-                    </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
-                      <MdHelp /> Help
-                    </ListGroupItem>
-                    <ListGroupItem tag="button" action className="border-light">
+                    <ListGroupItem tag="button" action onClick={() => { localStorage.removeItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME); window.location = "/"; }} className="border-light">
                       <MdExitToApp /> Signout
                     </ListGroupItem>
                   </ListGroup>

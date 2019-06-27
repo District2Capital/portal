@@ -4,13 +4,12 @@ import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
 
-class SECFeedPage extends React.Component {
-
-  controller = new AbortController();
+class SECHistoricalPage extends React.Component {
 
   state = {
     time: Date.now(),
     data: null,
+    intervalIsSet: false,
     filter: [],
     numberItems: 200,
     availableFormTypes: [],
@@ -18,23 +17,25 @@ class SECFeedPage extends React.Component {
     numberdropdownOpen: false
   }
 
-  async componentDidMount() {
-    await this.getDataFromDb();
-    setInterval(await this.getDataFromDb, 10000);
+  componentDidMount() {
+    //this.getDataFromDb();
+    if (!this.state.intervalIsSet) {
+      let interval = setInterval(this.getDataFromDb, 10000);
+      this.setState({ intervalIsSet: interval });
+    }
   }
 
   componentWillUnmount() {
-    this.controller.abort();
     clearInterval(this.interval);
   }
 
-  getDataFromDb = async () => {
-    await axios.get('/api/sec/getData/?cik=&type=&company=', { signal: this.controller.signal }).then(res => {
+  getDataFromDb = () => {
+    axios.get('/api/sec/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
       if (!this.state.filter.length) {
         this.setState({
           data: res.data,
-          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-          filter: [...new Set(res.data.items.map(a => a.formType))]
+          availableFormTypes: [...new Set(res.data.map(a => a.formType))],
+          filter: [...new Set(res.data.map(a => a.formType))]
         });
       }
     });
@@ -61,13 +62,12 @@ class SECFeedPage extends React.Component {
   }
 
   render() {
-    let { data, filter, availableFormTypes, numberItems } = this.state;
-    if (!data) data = {};
-    var numberFilter = [5, 10, 25, 50, 100];
+    const { data, filter, availableFormTypes, numberItems } = this.state;
+    var numberFilter = [5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
-          <h1 className="mr-auto">SEC Recent Filings</h1>
+          <h1 className="mr-auto flex-column">SEC Historical Filings</h1>
           <div className="d-flex flex-wrap justify-content-end">
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
               <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
@@ -79,7 +79,7 @@ class SECFeedPage extends React.Component {
               <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
-                {availableFormTypes.map(formType => {
+                {availableFormTypes.map((formType, index) => {
                   var badgeColor = "primary";
                   var values = Object.values(filings);
                   for (var key = 0; key < values.length; key++) {
@@ -89,7 +89,7 @@ class SECFeedPage extends React.Component {
                       }
                     }
                   }
-                  return (<DropdownItem key={formType} onClick={() => this.handleFilterClick([formType])}>
+                  return (<DropdownItem key={formType + index} onClick={() => this.handleFilterClick([formType])}>
                     {formType} <Badge color={badgeColor}>{formType}</Badge>
                   </DropdownItem>);
                 })}
@@ -98,11 +98,11 @@ class SECFeedPage extends React.Component {
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings data={data.items} filter={filter} number={numberItems} />
+          <Filings data={data} filter={filter} number={numberItems} />
         </Row>
       </div>
     );
   }
 };
 
-export default SECFeedPage;
+export default SECHistoricalPage;
