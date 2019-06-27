@@ -11,21 +11,21 @@ import {
   ListGroupItem
 } from 'reactstrap';
 
-const EdgarFiling = ({ data, filter, number, showLoader }) => {
+const Filings = ({ data, filter, number, showLoader }) => {
   var counter = 0;
   if (data) {
     return data.map(({ title, formType, filingDate, fileLink }) => {
-      var badgeColor = "primary";  
+      var badgeColor = "primary";
       var values = Object.values(filings);
-      for(var key = 0; key < values.length; key++){
-        for(var filing = 0; filing < values[key].filingArray.length; filing++){
-          if(formType === values[key].filingArray[filing]){
+      for (var key = 0; key < values.length; key++) {
+        for (var filing = 0; filing < values[key].filingArray.length; filing++) {
+          if (formType === values[key].filingArray[filing]) {
             badgeColor = values[key].color;
           }
         }
       }
-      if(filter.includes(formType) && counter < number){
-        return (<Col key={counter++} lg={4} md={6} sm={6} xs={12} className="mb-3">
+      if (filter.includes(formType) && counter < number) {
+        return (<Col key={counter++} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
           <Card color='secondary'>
             <CardBody>
               <Badge color={badgeColor}>{formType}</Badge>
@@ -39,14 +39,15 @@ const EdgarFiling = ({ data, filter, number, showLoader }) => {
               </ListGroupItem>
             </ListGroup>
           </Card>
-        </Col>);}
-        return <div key={counter++} ></div>;
-      });
+        </Col>);
+      }
+      return <div key={counter++} ></div>;
+    });
   }
-  if(showLoader !== false){
+  if (showLoader !== false) {
     return (
       <div className="d-flex align-items-center flex-grow-1 justify-content-center">
-        <div className="spinner-grow d-flex align-items-center" style={{width: "75px", height: "75px"}} role="status">
+        <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
           <span className="sr-only">Loading...</span>
         </div>
       </div>
@@ -55,4 +56,4 @@ const EdgarFiling = ({ data, filter, number, showLoader }) => {
   return (<div></div>)
 }
 
-export default EdgarFiling;
+export default Filings;

@@ -1,4 +1,5 @@
 const express = require('express');
+const inputGoogleSheets = require('../models/googleSheets');
 const router = express.Router();
 const Data = require('../models/secData');
 const htmlToJson = require('html-to-json');
@@ -8,14 +9,18 @@ const db = require('../models/secData');
 router.get('/getData', async (req, res) => {
     var data = null;
     try {
-        var promise = htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik}&type=${req.query.type}&company=${req.query.company}&dateb=&owner=include&start=0&count=100&output=atom`, {
+        winston.info('Sending Request to SEC...');
+        var promise = await htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik}&type=${req.query.type}&company=${req.query.company}&dateb=&owner=include&start=0&count=100&output=atom`, {
             'items': ['entry', function ($item) {
+                let title = $item.find('title').text();
+                let type = $item.find('category').attr('term');
                 let date_time = (new Date($item.find('updated').text())).toLocaleString();
+                let link = $item.find('link').attr('href');
                 return {
-                    'title': $item.find('title').text(),
-                    'formType': $item.find('category').attr('term'),
+                    'title': title,
+                    'formType': type,
                     'filingDate': date_time,
-                    'fileLink': $item.find('link').attr('href')
+                    'fileLink': link
                 };
             }]
         }, async function (err, result) {
@@ -27,6 +32,7 @@ router.get('/getData', async (req, res) => {
                     if (!results.length) {
                         let newItem = new db(items[index]);
                         await newItem.save();
+                        inputGoogleSheets(newItem.title, newItem.formType, newItem.filingDate, newItem.fileLink);
                     }
                 });
             }

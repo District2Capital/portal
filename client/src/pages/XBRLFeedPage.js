@@ -4,13 +4,12 @@ import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
 
-class SECFeedPage extends React.Component {
-
-  controller = new AbortController();
+class XBRLFeedPage extends React.Component {
 
   state = {
     time: Date.now(),
     data: null,
+    intervalIsSet: false,
     filter: [],
     numberItems: 200,
     availableFormTypes: [],
@@ -18,18 +17,20 @@ class SECFeedPage extends React.Component {
     numberdropdownOpen: false
   }
 
-  async componentDidMount() {
-    await this.getDataFromDb();
-    setInterval(await this.getDataFromDb, 10000);
+  componentDidMount() {
+    if (!this.state.intervalIsSet) {
+      this.getDataFromDb();
+      setInterval(this.getDataFromDb, 10000);
+      this.setState({ intervalIsSet: true });
+    }
   }
 
   componentWillUnmount() {
-    this.controller.abort();
     clearInterval(this.interval);
   }
 
   getDataFromDb = async () => {
-    await axios.get('/api/sec/getData/?cik=&type=&company=', { signal: this.controller.signal }).then(res => {
+    await axios.get('/api/edgar/getData').then(res => {
       if (!this.state.filter.length) {
         this.setState({
           data: res.data,
@@ -63,11 +64,11 @@ class SECFeedPage extends React.Component {
   render() {
     let { data, filter, availableFormTypes, numberItems } = this.state;
     if (!data) data = {};
-    var numberFilter = [5, 10, 25, 50, 100];
+    var numberFilter = [5, 10, 25, 50, 100, 200];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
-          <h1 className="mr-auto">SEC Recent Filings</h1>
+          <h1 className="mr-auto">Edgar Filings</h1>
           <div className="d-flex flex-wrap justify-content-end">
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
               <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
@@ -105,4 +106,4 @@ class SECFeedPage extends React.Component {
   }
 };
 
-export default SECFeedPage;
+export default XBRLFeedPage;
