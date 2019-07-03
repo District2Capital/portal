@@ -24,14 +24,18 @@ class FilingFrequencyCard extends Component {
     }
 
     getFilingFrequency = async () => {
-        axios.get(`/api/stats/getData/?count=${this.state.filingCount}`).then(res => {
+        await axios.get(`/api/stats/getFilingFrequencyData/?count=${this.state.filingCount}`).then(res => {
             // Return array of arrays in format: ['formType', frequency]
             let sorted = res.data;
             var itemFrequency = [];
             var distinctItems = [];
+            var total = 0;
             if (sorted) {
                 for (var each = 0; each < sorted.length; each++) {
-                    itemFrequency.push(sorted[each][1][1]);
+                    total += sorted[each][1][1];
+                }
+                for (each = 0; each < sorted.length; each++) {
+                    itemFrequency.push(Math.round(sorted[each][1][1] / total * 100) / 100);
                     distinctItems.push(sorted[each][1][0]);
                 }
                 this.setState({

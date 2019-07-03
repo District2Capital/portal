@@ -23,6 +23,14 @@ const userSchema = new mongoose.Schema({
         minlength: 5,
         maxlength: 1024
     },
+    recentFilings: {
+        type: Array,
+        required: false
+    },
+    recentSearches: {
+        type: Array,
+        required: false
+    },
     isAdmin: Boolean
 });
 

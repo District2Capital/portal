@@ -3,7 +3,6 @@ import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
-
 class SECFeedPage extends React.Component {
 
   controller = new AbortController();
@@ -98,7 +97,7 @@ class SECFeedPage extends React.Component {
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings data={data.items} filter={filter} number={numberItems} />
+          <Filings data={data.items} filter={filter} number={numberItems} apiRoute={'sec'} />
         </Row>
       </div>
     );

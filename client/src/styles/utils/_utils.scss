@@ -39,11 +39,15 @@
   }
 }
 
-.modal-backdrop-light {
-  background: map-get($map: $theme-colors, $key: light);
-  opacity: 1;
+// .modal-backdrop-light {
+//   background: map-get($map: $theme-colors, $key: light);
+//   opacity: .5;
 
-  &.modal-backdrop.show {
-    opacity: 1;
-  }
-}
+//   &.modal-backdrop.show {
+//     opacity: .5;
+//   }
+// }
+
+// .modal-backdrop.in {
+//   background: rgba(0, 0, 0, 0.8);
+//   }

@@ -99,7 +99,7 @@ class XBRLFeedPage extends React.Component {
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings data={data.items} filter={filter} number={numberItems} />
+          <Filings data={data.items} filter={filter} number={numberItems} apiRoute={'edgar'} />
         </Row>
       </div>
     );

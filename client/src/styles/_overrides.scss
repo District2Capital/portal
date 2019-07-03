@@ -23,3 +23,22 @@
   display: inline-block;
 }
 
+// .modal-backdrop-light {
+//   background: theme-color("secondary");
+//   opacity: .5;
+
+//   &.modal-backdrop.show {
+//     opacity: 0 !important;
+//   }
+// }
+// .modal-backdrop.show {
+//   opacity: 0.2 !important;
+// }
+
+// .modal-backdrop {
+//   background: rgba(0,0,0,.1) !important;
+//   }
+
+.modal-content {
+  height: -webkit-fill-available;
+}

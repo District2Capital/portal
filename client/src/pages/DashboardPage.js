@@ -1,8 +1,10 @@
 import Page from 'components/Page';
 import React from 'react';
 import { Row } from 'reactstrap';
-import FilingFrequencyCard from '../components/Card/FilingFrequencyCard';
-import MarketOverviewCard from '../components/Card/MarketOverviewCard';
+import FilingFrequencyCard from 'components/Card/FilingFrequencyCard';
+import MarketOverviewCard from 'components/Card/MarketOverviewCard';
+import RecentViewedFilingsCard from 'components/Card/RecentViewedFilingsCard';
+import RecentSearchesCard from 'components/Card/RecentSearchesCard';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
@@ -18,6 +20,10 @@ class DashboardPage extends React.Component {
         <Row>
           <MarketOverviewCard />
           <FilingFrequencyCard />
+        </Row>
+        <Row>
+          <RecentViewedFilingsCard />
+          <RecentSearchesCard />
         </Row>
       </Page>
     );
