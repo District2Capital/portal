@@ -3,15 +3,16 @@ import SourceLink from 'components/SourceLink';
 import React from 'react';
 import {
   MdRssFeed,
-  MdShowChart,
+  //MdShowChart,
   MdDashboard,
   MdDescription,
   MdHistory,
   MdSearch,
   MdList,
-  MdFindInPage,
+  //MdFindInPage,
   MdKeyboardArrowDown,
-  MdBook
+  MdBook,
+  MdSettings
 } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import {
@@ -27,10 +28,11 @@ const navItems = [
   { to: '/', name: 'Dashboard', exact: true, Icon: MdDashboard },
   { to: '/spreadsheet', name: 'Filings Spreadsheet', exact: false, Icon: MdList },
   { to: '/search', name: 'Filing Search', exact: false, Icon: MdSearch },
-  { to: '/filingreader', name: 'Filing Reader', exact: false, Icon: MdFindInPage },
+  //{ to: '/filingreader', name: 'Filing Reader', exact: false, Icon: MdFindInPage },
   { to: '/secfilings', name: 'SEC Recent', exact: false, Icon: MdRssFeed },
   { to: '/sechistorical', name: 'SEC Historical', exact: false, Icon: MdRssFeed },
-  { to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart }
+  { to: '/settings', name: 'Settings', exact: false, Icon: MdSettings }
+  //{ to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart }
 ];
 
 const XBRL = [

@@ -13,7 +13,6 @@ class FilingSpreadsheet extends React.Component {
     }
 
     getDataFromGoogleSheets = async () => {
-        console.log('Spreadsheet data updated.');
         await axios.get('https://sheets.googleapis.com/v4/spreadsheets/1RV46luph_aEURrcXLLFC5C3NksRTM6uF_P2m6uoDR78/values:batchGet?dateTimeRenderOption=SERIAL_NUMBER&majorDimension=ROWS&ranges=B%3AE&valueRenderOption=FORMATTED_VALUE&key=AIzaSyDRzWoZ_fXKy5xqE2qDitRcxHeYI_-_npM').then((res) => {
             this.setState({ data: res });
         });

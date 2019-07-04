@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
 import SearchForm from '../components/SearchForm';
-
+import { getJwt } from 'services/auth';
 class FilingSearchPage extends React.Component {
 
   state = {
@@ -30,6 +30,14 @@ class FilingSearchPage extends React.Component {
         filter: [...new Set(res.data.items.map(a => a.formType))]
       });
     });
+    // Save queried filing as a recent search
+    var params = {
+      "x-auth-token": getJwt(),
+      companySearchString: this.state.companyQuery,
+      cikSearchString: this.state.cikQuery,
+      formTypeSearchString: this.state.typeQuery
+    };
+    await axios.post(`api/users/updateRecentSearches`, params);
   };
 
   toggleFormType = () => {

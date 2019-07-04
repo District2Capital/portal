@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardHeader, Col } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
+import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 
 class RecentSearchesCard extends Component {
     state = {
@@ -22,7 +23,7 @@ class RecentSearchesCard extends Component {
             let searches = res.data;
             if (searches && searches.data.length) {
                 this.setState({
-                    data: searches.data.splice(0, this.state.filingCount),
+                    data: searches.data.splice(0, this.state.SearchesCount),
                     defaultData: false
                 });
             }
@@ -34,9 +35,10 @@ class RecentSearchesCard extends Component {
 
     render() {
         const { data, defaultData } = this.state;
+        var counter = 0;
         if (defaultData) {
             return (
-                <Card className="m-2" style={{ width: 350 }}>
+                <Card className="m-2" style={{ width: 270 }}>
                     <CardHeader>Recent Searches</CardHeader>
                     <div className="d-flex m-3 align-items-center flex-grow-1 justify-content-center">
                         <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
@@ -46,11 +48,13 @@ class RecentSearchesCard extends Component {
                 </Card>);
         }
         return (
-            <Card className="m-2" style={{ maxWidth: 350 }}>
+            <Card className="m-2" style={{ width: 270, maxHeight: "min-content" }}>
                 <CardHeader>Recent Searches</CardHeader>
                 <Col className="justify-content-center">
-                    {/*data.map(({ title, formType, filingDate, htmlLink, badgeColor }) => (<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={htmlLink} previouslySaved={true} />))
-                    */}
+                    {data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => (
+                        <SmallRecentSearchCard key={counter++} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />
+                        //<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={htmlLink} previouslySaved={true} />
+                    ))}
                 </Col>
             </Card>
         );

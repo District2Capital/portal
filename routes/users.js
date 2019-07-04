@@ -75,7 +75,9 @@ router.post("/updateRecentSearches", async (req, res) => {
         var results = await User.updateOne({ "_id": decoded._id }, {
             $addToSet: {
                 "recentSearches": {
-                    searchText: req.body.searchString,
+                    companySearchString: req.body.companySearchString,
+                    cikSearchString: req.body.cikSearchString,
+                    formTypeSearchString: req.body.formTypeSearchString,
                     dateSearched: Date.now()
                 }
             }
