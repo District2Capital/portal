@@ -51,7 +51,7 @@ router.post("/updateViewedFilings", async (req, res) => {
         var results = await User.updateOne({ "_id": decoded._id }, {
             $addToSet: {
                 "recentFilings": {
-                    htmlLink: req.body.htmlLink,
+                    fileLink: req.body.fileLink,
                     badgeColor: req.body.badgeColor,
                     formType: req.body.formType,
                     title: req.body.title,

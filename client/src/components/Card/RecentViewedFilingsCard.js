@@ -3,7 +3,7 @@ import { Card, CardHeader, Col } from 'reactstrap';
 import axios from 'axios';
 import SmallFilingCard from './SmallFilingCard';
 import { getJwt } from 'services/auth';
-
+import { NavLink } from 'react-router-dom';
 class RecentViewedFilingsCard extends Component {
     state = {
         data: [],
@@ -50,7 +50,8 @@ class RecentViewedFilingsCard extends Component {
             <Card className="m-2" style={{ maxWidth: 350 }}>
                 <CardHeader>Recently Viewed Filings</CardHeader>
                 <Col className="justify-content-center">
-                    {data.map(({ title, formType, filingDate, htmlLink, badgeColor }) => (<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={htmlLink} previouslySaved={true} />))}
+                    {data.map(({ title, formType, filingDate, fileLink, badgeColor }) => (<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={fileLink} previouslySaved={true} />))}
+                    <NavLink to="/viewedfilings" style={{ width: "-webkit-fill-available" }} className="btn m-2 btn-outline-secondary">View All</NavLink>
                 </Col>
             </Card>
         );

@@ -3,6 +3,7 @@ import { Card, CardHeader, Col } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
+import { NavLink } from 'react-router-dom';
 
 class RecentSearchesCard extends Component {
     state = {
@@ -55,6 +56,7 @@ class RecentSearchesCard extends Component {
                         <SmallRecentSearchCard key={counter++} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />
                         //<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={htmlLink} previouslySaved={true} />
                     ))}
+                    <NavLink to="/searchhistory" style={{ width: "-webkit-fill-available" }} className="btn m-2 btn-outline-secondary">View All</NavLink>
                 </Col>
             </Card>
         );

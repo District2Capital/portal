@@ -13,20 +13,26 @@ import { toast } from 'react-toastify';
 import './styles/reduction.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Pages
+// Main Pages
 import DashboardPage from 'pages/DashboardPage';
-import AuthModalPage from 'pages/AuthModalPage';
-import AuthPage from 'pages/AuthPage';
-import FilingSpreadsheet from 'pages/FilingSpreadsheet';
-import FilingSearchPage from 'pages/FilingSearchPage';
-import FilingReaderPage from 'pages/FilingReaderPage';
+import MyFeedPage from 'pages/MyFeedPage';
 import SECFeedPage from 'pages/SECFeedPage';
+import FilingSearchPage from 'pages/FilingSearchPage';
+import ViewedFilingsPage from 'pages/ViewedFilingsPage';
+import SearchHistoryPage from 'pages/SearchHistoryPage';
+// Reference Docs
+import FilingDocsPage from 'pages/FilingDocsPage';
+
+// Others
+import FilingSpreadsheet from 'pages/FilingSpreadsheet';
 import SECHistoricalPage from 'pages/SECHistoricalPage';
-import StockPage from 'pages/StockPage';
 import XBRLFeedPage from 'pages/XBRLFeedPage';
 import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
-import FilingDocsPage from 'pages/FilingDocsPage';
+// import StockPage from 'pages/StockPage';
+// import FilingReaderPage from 'pages/FilingReaderPage';
 import auth from "services/auth";
+import AuthModalPage from 'pages/AuthModalPage';
+import AuthPage from 'pages/AuthPage';
 
 const getBasename = () => {
   return `/${process.env.PUBLIC_URL.split('/').pop()}`;
@@ -96,9 +102,15 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
-                path="/spreadsheet"
+                path="/myfeed"
                 layout={MainLayout}
-                component={FilingSpreadsheet}
+                component={MyFeedPage}
+              />
+              <LayoutRoute
+                exact
+                path="/secfilings"
+                layout={MainLayout}
+                component={SECFeedPage}
               />
               <LayoutRoute
                 exact
@@ -108,15 +120,27 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
-                path="/filingreader"
+                path="/viewedfilings"
                 layout={MainLayout}
-                component={FilingReaderPage}
+                component={ViewedFilingsPage}
               />
               <LayoutRoute
                 exact
-                path="/secfilings"
+                path="/searchhistory"
                 layout={MainLayout}
-                component={SECFeedPage}
+                component={SearchHistoryPage}
+              />
+              <LayoutRoute
+                exact
+                path="/filingDocs"
+                layout={MainLayout}
+                component={FilingDocsPage}
+              />
+              <LayoutRoute
+                exact
+                path="/spreadsheet"
+                layout={MainLayout}
+                component={FilingSpreadsheet}
               />
               <LayoutRoute
                 exact
@@ -136,18 +160,18 @@ class App extends React.Component {
                 layout={MainLayout}
                 component={XBRLFeedPage}
               />
-              <LayoutRoute
+              {/*<LayoutRoute
                 exact
-                path="/filingDocs"
+                path="/filingreader"
                 layout={MainLayout}
-                component={FilingDocsPage}
+                component={FilingReaderPage}
               />
               <LayoutRoute
                 exact
                 path="/stock"
                 layout={MainLayout}
                 component={StockPage}
-              />
+              />*/}
               <LayoutRoute
                 exact
                 path="/register"

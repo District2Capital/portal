@@ -68,7 +68,7 @@ class SmallFilingCard extends Component {
                 </CardBody>
                 <div style={{ margin: "auto 0" }}>
                     <div>
-                        <Button className="m-3" onClick={() => this.toggleModal()}>View</Button>
+                        <Button outline className="m-3" onClick={() => this.toggleModal()}>View</Button>
                         <Modal
                             isOpen={modal}
                             toggle={this.toggleModal}
@@ -82,10 +82,10 @@ class SmallFilingCard extends Component {
                             </div>}
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="primary" onClick={() => this.viewExternally()}>
+                                <Button outline color="primary" onClick={() => this.viewExternally()}>
                                     View In Browser
                                     </Button>{' '}
-                                <Button color="secondary" onClick={this.toggleModal}>
+                                <Button outline color="secondary" onClick={this.toggleModal}>
                                     Close
                                     </Button>
                             </ModalFooter>

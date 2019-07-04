@@ -69,13 +69,13 @@ class SECFeedPage extends React.Component {
           <h1 className="mr-auto">SEC Recent Filings</h1>
           <div className="d-flex flex-wrap justify-content-end">
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
-              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
+              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
               <DropdownMenu>
                 {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
               </DropdownMenu>
             </Dropdown>
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
-              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
+              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
                 {availableFormTypes.map(formType => {

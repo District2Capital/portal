@@ -10,6 +10,7 @@ import {
   MdSearch,
   MdList,
   //MdFindInPage,
+  MdRemoveRedEye,
   MdKeyboardArrowDown,
   MdBook,
   MdSettings
@@ -26,16 +27,20 @@ import bn from 'utils/bemnames';
 
 const navItems = [
   { to: '/', name: 'Dashboard', exact: true, Icon: MdDashboard },
-  { to: '/spreadsheet', name: 'Filings Spreadsheet', exact: false, Icon: MdList },
+  { to: '/myfeed', name: 'My Feed', exact: false, Icon: MdRssFeed },
+  { to: '/secfilings', name: 'SEC Feed', exact: false, Icon: MdRssFeed },
   { to: '/search', name: 'Filing Search', exact: false, Icon: MdSearch },
-  //{ to: '/filingreader', name: 'Filing Reader', exact: false, Icon: MdFindInPage },
-  { to: '/secfilings', name: 'SEC Recent', exact: false, Icon: MdRssFeed },
-  { to: '/sechistorical', name: 'SEC Historical', exact: false, Icon: MdRssFeed },
+  { to: '/viewedfilings', name: 'Viewed Filings', exact: false, Icon: MdRemoveRedEye },
+  { to: '/searchhistory', name: 'Search History', exact: false, Icon: MdHistory },
   { to: '/settings', name: 'Settings', exact: false, Icon: MdSettings }
-  //{ to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart }
 ];
 
-const XBRL = [
+//{ to: '/filingreader', name: 'Filing Reader', exact: false, Icon: MdFindInPage },
+//{ to: '/stock', name: 'Stock Analysis', exact: false, Icon: MdShowChart }
+
+const Others = [
+  { to: '/spreadsheet', name: 'Filings Spreadsheet', exact: false, Icon: MdList },
+  { to: '/sechistorical', name: 'SEC Historical', exact: false, Icon: MdRssFeed },
   { to: '/xbrlfilings', name: 'XBRL Filings', exact: false, Icon: MdRssFeed },
   { to: '/xbrlhistorical', name: 'XBRL Historical', exact: false, Icon: MdHistory }
 ];
@@ -49,7 +54,7 @@ const bem = bn.create('sidebar');
 class Sidebar extends React.Component {
   state = {
     isOpenReferenceDocs: false,
-    isOpenXBRL: false
+    isOpenOthers: false
   }
 
   handleClick = name => () => {
@@ -137,18 +142,18 @@ class Sidebar extends React.Component {
 
             <NavItem
               className={bem.e('nav-item')}
-              onClick={this.handleClick('XBRL')}
+              onClick={this.handleClick('Others')}
             >
               <BSNavLink className={bem.e('nav-item-collapse')}>
                 <div className="d-flex">
                   <MdBook className={bem.e('nav-item-icon')} />
-                  <span className=" align-self-start">XBRL (OUTDATED)</span>
+                  <span className=" align-self-start">Others</span>
                 </div>
                 <MdKeyboardArrowDown
                   className={bem.e('nav-item-icon')}
                   style={{
                     padding: 0,
-                    transform: this.state.isOpenXBRL
+                    transform: this.state.isOpenOthers
                       ? 'rotate(0deg)'
                       : 'rotate(-90deg)',
                     transitionDuration: '0.3s',
@@ -157,8 +162,8 @@ class Sidebar extends React.Component {
                 />
               </BSNavLink>
             </NavItem>
-            <Collapse isOpen={this.state.isOpenXBRL}>
-              {XBRL.map(({ to, name, exact, Icon }, index) => (
+            <Collapse isOpen={this.state.isOpenOthers}>
+              {Others.map(({ to, name, exact, Icon }, index) => (
                 <NavItem key={index} className={bem.e('nav-item')}>
                   <BSNavLink
                     id={`navItem-${name}-${index}`}

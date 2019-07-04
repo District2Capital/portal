@@ -38,7 +38,7 @@ class FilingCard extends Component {
             // Save queried filing as a recent search
             var params = {
                 "x-auth-token": getJwt(),
-                htmlLink: this.props.fileLink,
+                fileLink: this.props.fileLink,
                 badgeColor: this.props.badgeColor,
                 formType: this.props.formType,
                 title: this.props.title,
@@ -72,7 +72,7 @@ class FilingCard extends Component {
                     <ListGroupItem>Form Type: {formType}</ListGroupItem>
                     <ListGroupItem>Filing Date: {filingDate}</ListGroupItem>
                     <ListGroupItem className="d-flex justify-content-center">
-                        <Button onClick={() => this.toggleModal()}>View Filing</Button>
+                        <Button outline onClick={() => this.toggleModal()}>View Filing</Button>
                         <Modal
                             isOpen={modal}
                             toggle={this.toggleModal}
@@ -86,10 +86,10 @@ class FilingCard extends Component {
                             </div>}
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="primary" onClick={() => this.viewExternally()}>
+                                <Button outline color="primary" onClick={() => this.viewExternally()}>
                                     View In Browser
                                 </Button>{' '}
-                                <Button color="secondary" onClick={this.toggleModal}>
+                                <Button outline color="secondary" onClick={this.toggleModal}>
                                     Close
                                 </Button>
                             </ModalFooter>
