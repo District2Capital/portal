@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import { filings } from '../config';
+import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 
 class SearchHistoryPage extends Component {
     state = {
@@ -10,7 +10,7 @@ class SearchHistoryPage extends Component {
         data: null,
         filter: [],
         numberItems: 200,
-        availableFormTypes: [],
+        availableFilters: ["company", "cik", "formType"],
         formdropdownOpen: false,
         numberdropdownOpen: false
     }
@@ -31,10 +31,23 @@ class SearchHistoryPage extends Component {
         await axios.get('/api/stats/getRecentSearchData', config).then(res => {
             let searches = res.data;
             if (searches && searches.data.length && !this.state.filter.length) {
+                // Sort data by company
+                var newfilters = [];
+                searches.data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => {
+                    if (companySearchString && !this.state.filter.includes("company")) {
+                        newfilters.push("company");
+                    }
+                    if (cikSearchString && !this.state.filter.includes("cik")) {
+                        newfilters.push("cik");
+                    }
+                    if (formTypeSearchString && !this.state.filter.includes("formType")) {
+                        newfilters.push("formType");
+                    }
+                    return ("");
+                });
                 this.setState({
                     data: searches.data,
-                    availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-                    filter: [...new Set(res.data.items.map(a => a.formType))],
+                    filter: [...this.state.filter, ...newfilters],
                     defaultData: false
                 });
             }
@@ -66,9 +79,10 @@ class SearchHistoryPage extends Component {
 
 
     render() {
-        let { data, filter, availableFormTypes, numberItems } = this.state;
-        if (!data) data = {};
+        let { data, filter, availableFilters } = this.state;
+        if (!data) data = [];
         var numberFilter = [5, 10, 25, 50, 100];
+        var counter;
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
@@ -83,27 +97,20 @@ class SearchHistoryPage extends Component {
                         <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
                             <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
-                                {availableFormTypes.map(formType => {
-                                    var badgeColor = "primary";
-                                    var values = Object.values(filings);
-                                    for (var key = 0; key < values.length; key++) {
-                                        for (var filing = 0; filing < values[key].filingArray.length; filing++) {
-                                            if (formType === values[key].filingArray[filing]) {
-                                                badgeColor = values[key].color;
-                                            }
-                                        }
-                                    }
-                                    return (<DropdownItem key={formType} onClick={() => this.handleFilterClick([formType])}>
-                                        {formType} <Badge color={badgeColor}>{formType}</Badge>
-                                    </DropdownItem>);
-                                })}
+                                <DropdownItem onClick={() => this.handleFilterClick(availableFilters)}>All</DropdownItem>
+                                {availableFilters.map(searchString => (<DropdownItem key={searchString} onClick={() => this.handleFilterClick([searchString])}>{searchString}</DropdownItem>))}
                             </DropdownMenu>
                         </Dropdown>
                     </div>
                 </div>
                 <Row className="d-flex justify-content-center flex-grow-1">
-                    <h1>Search Card Goes Here </h1>
+                    {data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => {
+                        if ((filter.includes("company") && companySearchString) || (filter.includes("cik") && cikSearchString) || (filter.includes("formType") && formTypeSearchString)) {
+                            return (<SmallRecentSearchCard key={counter++} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+                        }
+                        return ("");
+                        //<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={htmlLink} previouslySaved={true} />
+                    })}
                 </Row>
             </div>
         );

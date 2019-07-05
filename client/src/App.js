@@ -13,21 +13,35 @@ import { toast } from 'react-toastify';
 import './styles/reduction.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Main Pages
+// * Main Pages
 import DashboardPage from 'pages/DashboardPage';
 import MyFeedPage from 'pages/MyFeedPage';
 import SECFeedPage from 'pages/SECFeedPage';
+
+// * Search
 import FilingSearchPage from 'pages/FilingSearchPage';
+import CompanySearchPage from 'pages/CompanySearchPage';
+import FormTypeSearchPage from 'pages/FormTypeSearchPage';
+
+// * Personal
+import MyCompaniesPage from 'pages/MyCompaniesPage';
+import MyFormTypesPage from 'pages/MyFormTypesPage';
+import SavedFilingsPage from 'pages/SavedFilingsPage';
 import ViewedFilingsPage from 'pages/ViewedFilingsPage';
 import SearchHistoryPage from 'pages/SearchHistoryPage';
-// Reference Docs
+
+// * Reference Docs
 import FilingDocsPage from 'pages/FilingDocsPage';
 
-// Others
+// * Others
 import FilingSpreadsheet from 'pages/FilingSpreadsheet';
 import SECHistoricalPage from 'pages/SECHistoricalPage';
 import XBRLFeedPage from 'pages/XBRLFeedPage';
 import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
+
+// * Settings
+import SettingsPage from 'pages/SettingsPage';
+
 // import StockPage from 'pages/StockPage';
 // import FilingReaderPage from 'pages/FilingReaderPage';
 import auth from "services/auth";
@@ -120,6 +134,36 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
+                path="/companysearch"
+                layout={MainLayout}
+                component={CompanySearchPage}
+              />
+              <LayoutRoute
+                exact
+                path="/formtypesearch"
+                layout={MainLayout}
+                component={FormTypeSearchPage}
+              />
+              <LayoutRoute
+                exact
+                path="/mycompanies"
+                layout={MainLayout}
+                component={MyCompaniesPage}
+              />
+              <LayoutRoute
+                exact
+                path="/myformtypes"
+                layout={MainLayout}
+                component={MyFormTypesPage}
+              />
+              <LayoutRoute
+                exact
+                path="/savedfilings"
+                layout={MainLayout}
+                component={SavedFilingsPage}
+              />
+              <LayoutRoute
+                exact
                 path="/viewedfilings"
                 layout={MainLayout}
                 component={ViewedFilingsPage}
@@ -159,6 +203,12 @@ class App extends React.Component {
                 path="/xbrlfilings"
                 layout={MainLayout}
                 component={XBRLFeedPage}
+              />
+              <LayoutRoute
+                exact
+                path="/settings"
+                layout={MainLayout}
+                component={SettingsPage}
               />
               {/*<LayoutRoute
                 exact

@@ -25,11 +25,27 @@ const userSchema = new mongoose.Schema({
     },
     recentFilings: {
         type: Array,
-        required: false
+        required: true
     },
     recentSearches: {
         type: Array,
-        required: false
+        required: true
+    },
+    savedFilings: {
+        type: Array,
+        required: true
+    },
+    historicalSavedFilings: {
+        type: Array,
+        required: true
+    },
+    followedCompanies: {
+        type: Array,
+        required: true
+    },
+    followedFormTypes: {
+        type: Array,
+        required: true
     },
     isAdmin: Boolean
 });

@@ -44,14 +44,12 @@ class FilingSearchPage extends React.Component {
     this.setState({
       formdropdownOpen: !this.state.formdropdownOpen
     });
-    this.getDataFromDb();
   }
 
   toggleNumber = () => {
     this.setState({
       numberdropdownOpen: !this.state.numberdropdownOpen
     });
-    this.getDataFromDb();
   }
 
   handleFilterClick(clickedFormType) {

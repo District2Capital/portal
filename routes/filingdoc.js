@@ -8,6 +8,8 @@ const db = require('../models/secData');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { User, validate } = require("../models/user");
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 router.get('/getData', async (req, result) => {
     try {
@@ -29,6 +31,26 @@ router.get('/getData', async (req, result) => {
         result.format({
             'application/json': function () {
                 result.send({ link: xmlLink, html: resultObject, htmllink: req.query.link });
+            }
+        });
+    }
+    catch{
+        winston.error(`Fetching data FAILED from ${req.query.link}l`);
+    }
+});
+
+router.get('/verifyFilingSaved', async (req, result) => {
+    const token = req.query["x-auth-token"];
+    var decoded = null;
+    try {
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var savedFiling = {};
+        var name = await User.find({ "_id": decoded._id, "savedFilings": { $elemMatch: { fileLink: req.query.link } } });
+        if (name["0"]) { savedFiling = true; }
+        else { savedFiling = false; }
+        result.format({
+            'application/json': function () {
+                result.send({ savedFiling: savedFiling });
             }
         });
     }

@@ -5,7 +5,7 @@ import FilingFrequencyCard from 'components/Card/FilingFrequencyCard';
 import MarketOverviewCard from 'components/Card/MarketOverviewCard';
 import RecentViewedFilingsCard from 'components/Card/RecentViewedFilingsCard';
 import RecentSearchesCard from 'components/Card/RecentSearchesCard';
-
+import RecentSavedFilingsCard from 'components/Card/RecentSavedFilingsCard';
 class DashboardPage extends React.Component {
   componentDidMount() {
     window.scrollTo(0, 0);
@@ -24,6 +24,7 @@ class DashboardPage extends React.Component {
         <Row>
           <RecentViewedFilingsCard />
           <RecentSearchesCard />
+          <RecentSavedFilingsCard />
         </Row>
       </Page>
     );

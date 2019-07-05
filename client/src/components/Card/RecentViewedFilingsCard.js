@@ -35,6 +35,7 @@ class RecentViewedFilingsCard extends Component {
 
     render() {
         const { data, defaultData } = this.state;
+        var counter = 0;
         if (defaultData) {
             return (
                 <Card className="m-2" style={{ width: 350 }}>
@@ -50,7 +51,7 @@ class RecentViewedFilingsCard extends Component {
             <Card className="m-2" style={{ maxWidth: 350 }}>
                 <CardHeader>Recently Viewed Filings</CardHeader>
                 <Col className="justify-content-center">
-                    {data.map(({ title, formType, filingDate, fileLink, badgeColor }) => (<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={fileLink} previouslySaved={true} />))}
+                    {data.map(({ title, formType, filingDate, fileLink, badgeColor }) => (<SmallFilingCard key={counter++} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={fileLink} previouslySaved={true} />))}
                     <NavLink to="/viewedfilings" style={{ width: "-webkit-fill-available" }} className="btn m-2 btn-outline-secondary">View All</NavLink>
                 </Col>
             </Card>

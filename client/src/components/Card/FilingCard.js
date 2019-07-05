@@ -21,7 +21,21 @@ class FilingCard extends Component {
         this.state = {
             modal: false,
             data: null,
-            link: null
+            link: null,
+            saved: false
+        }
+    }
+
+    async componentDidMount() {
+        var config = {
+            params: { "x-auth-token": getJwt() }
+        };
+        if (!this.state.saved) {
+            await axios.get(`/api/filingdoc/verifyFilingSaved/?link=${this.props.fileLink}`, config).then(res => {
+                this.setState({
+                    saved: res.data.savedFiling
+                });
+            });
         }
     }
 
@@ -35,6 +49,7 @@ class FilingCard extends Component {
                     link: res.data.link
                 });
             });
+
             // Save queried filing as a recent search
             var params = {
                 "x-auth-token": getJwt(),
@@ -53,6 +68,38 @@ class FilingCard extends Component {
         }
     };
 
+    saveFiling = async () => {
+        var params = {
+            "x-auth-token": getJwt(),
+            fileLink: this.props.fileLink,
+            badgeColor: this.props.badgeColor,
+            formType: this.props.formType,
+            title: this.props.title,
+            filingDate: this.props.filingDate
+        };
+        await axios.post(`api/users/addSavedFiling`, params).then(res => {
+            if (res.status === 200) {
+                this.setState({ saved: true });
+            }
+        });
+    };
+
+    unsaveFiling = async () => {
+        var params = {
+            "x-auth-token": getJwt(),
+            fileLink: this.props.fileLink,
+            badgeColor: this.props.badgeColor,
+            formType: this.props.formType,
+            title: this.props.title,
+            filingDate: this.props.filingDate
+        };
+        await axios.post(`api/users/removeSavedFiling`, params).then(res => {
+            if (res.status === 200) {
+                this.setState({ saved: false });
+            }
+        });
+    };
+
     viewExternally = async () => {
         if (this.state.link) {
             window.open(this.state.link);
@@ -61,7 +108,7 @@ class FilingCard extends Component {
 
     render() {
         const { badgeColor, formType, title, filingDate } = this.props;
-        const { modal, data } = this.state;
+        const { modal, data, saved } = this.state;
         return (
             <Card color='secondary'>
                 <CardBody>
@@ -72,7 +119,9 @@ class FilingCard extends Component {
                     <ListGroupItem>Form Type: {formType}</ListGroupItem>
                     <ListGroupItem>Filing Date: {filingDate}</ListGroupItem>
                     <ListGroupItem className="d-flex justify-content-center">
-                        <Button outline onClick={() => this.toggleModal()}>View Filing</Button>
+                        {!saved ? <Button className="m-1" outline onClick={() => this.saveFiling()}>Save</Button> : ""}
+                        {saved ? <Button className="m-1" outline onClick={() => this.unsaveFiling()}>UnSave</Button> : ""}
+                        <Button className="m-1" outline onClick={() => this.toggleModal()}>View</Button>
                         <Modal
                             isOpen={modal}
                             toggle={this.toggleModal}

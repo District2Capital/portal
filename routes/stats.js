@@ -70,4 +70,22 @@ router.get('/getRecentSearchData', async (req, res) => {
     }
 });
 
+router.get('/getRecentSavedFilings', async (req, res) => {
+    const token = req.query["x-auth-token"];
+    var decoded = null;
+    try {
+        // Get user saved Filings
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var user = await User.findById(decoded._id).select("-password");
+        res.status(200).format({
+            'application/json': function () {
+                res.send({ data: user.historicalSavedFilings });
+            }
+        });
+    } catch (e) {
+        winston.error(`${req.url} Request Failure`);
+        res.status(500);
+    }
+});
+
 module.exports = router;

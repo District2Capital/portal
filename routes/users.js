@@ -16,6 +16,23 @@ router.get("/me", auth, async (req, res) => {
     res.send(user);
 });
 
+router.get("/savedFilings", async (req, res) => {
+    const token = req.query["x-auth-token"];
+    var decoded = null;
+    try {
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var userSavedFilings = await User.findById(decoded._id).select("savedFilings");
+        winston.info("Successfully queried /savedFilings");
+        res.format({
+            'application/json': function () {
+                res.status(200).send(userSavedFilings);
+            }
+        });
+    } catch (ex) {
+        res.status(400).send("Invalid token.");
+    }
+});
+
 router.post("/", async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -49,13 +66,16 @@ router.post("/updateViewedFilings", async (req, res) => {
             )
             .run();*/
         var results = await User.updateOne({ "_id": decoded._id }, {
-            $addToSet: {
+            $push: {
                 "recentFilings": {
-                    fileLink: req.body.fileLink,
-                    badgeColor: req.body.badgeColor,
-                    formType: req.body.formType,
-                    title: req.body.title,
-                    filingDate: req.body.filingDate
+                    $each: [{
+                        fileLink: req.body.fileLink,
+                        badgeColor: req.body.badgeColor,
+                        formType: req.body.formType,
+                        title: req.body.title,
+                        filingDate: req.body.filingDate
+                    }],
+                    $position: 0
                 }
             }
         });
@@ -66,19 +86,98 @@ router.post("/updateViewedFilings", async (req, res) => {
     }
 });
 
-router.post("/updateRecentSearches", async (req, res) => {
+router.post("/addSavedFiling", async (req, res) => {
     const token = req.body["x-auth-token"];
     var decoded = null;
     try {
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         var user = await User.findById(decoded._id).select("-password");
+        await User.updateOne({ "_id": decoded._id }, {
+            $push: {
+                "savedFilings": {
+                    $each: [{
+                        fileLink: req.body.fileLink,
+                        badgeColor: req.body.badgeColor,
+                        formType: req.body.formType,
+                        title: req.body.title,
+                        filingDate: req.body.filingDate
+                    }],
+                    $position: 0
+                }
+            }
+        });
+        await User.updateOne({ "_id": decoded._id }, {
+            $push: {
+                "historicalSavedFilings": {
+                    $each: [{
+                        fileLink: req.body.fileLink,
+                        badgeColor: req.body.badgeColor,
+                        formType: req.body.formType,
+                        title: req.body.title,
+                        filingDate: req.body.filingDate
+                    }],
+                    $position: 0
+                }
+            }
+        });
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('Filing saved successfully.');
+    } catch (ex) {
+        res.status(400).send("Invalid token.");
+    }
+});
+
+router.post("/removeSavedFiling", async (req, res) => {
+    const token = req.body["x-auth-token"];
+    var decoded = null;
+    try {
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var user = await User.findById(decoded._id).select("-password");
+        await User.updateOne({ "_id": decoded._id }, {
+            $pull: {
+                "savedFilings": {
+                    //$each: [{
+                    fileLink: req.body.fileLink,
+                    badgeColor: req.body.badgeColor,
+                    formType: req.body.formType,
+                    title: req.body.title,
+                    filingDate: req.body.filingDate
+                    //}]
+                }
+            }
+        });
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('Filing saved successfully.');
+    } catch (ex) {
+        res.status(400).send("Invalid token.");
+    }
+});
+
+router.post("/updateRecentSearches", async (req, res) => {
+    const token = req.body["x-auth-token"];
+    var decoded = null;
+    try {
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        // * Similar Search Code to find the search in DB
+        // var similarSearch = await User.find({ "_id": decoded._id }, {
+        //     "recentSearches": {
+        //         $elemMatch: {
+        //             companySearchString: req.body.companySearchString,
+        //             cikSearchString: req.body.cikSearchString,
+        //             formTypeSearchString: req.body.formTypeSearchString
+        //         }
+        //     }
+        // });
         var results = await User.updateOne({ "_id": decoded._id }, {
-            $addToSet: {
+            $push: {
                 "recentSearches": {
-                    companySearchString: req.body.companySearchString,
-                    cikSearchString: req.body.cikSearchString,
-                    formTypeSearchString: req.body.formTypeSearchString,
-                    dateSearched: Date.now()
+                    $each: [{
+                        companySearchString: req.body.companySearchString,
+                        cikSearchString: req.body.cikSearchString,
+                        formTypeSearchString: req.body.formTypeSearchString,
+                        dateSearched: Date.now()
+                    }],
+                    $position: 0
                 }
             }
         });

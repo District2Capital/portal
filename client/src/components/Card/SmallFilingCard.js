@@ -20,7 +20,21 @@ class SmallFilingCard extends Component {
         this.state = {
             modal: false,
             data: null,
-            link: null
+            link: null,
+            saved: false
+        }
+    }
+
+    async componentDidMount() {
+        var config = {
+            params: { "x-auth-token": getJwt() }
+        };
+        if (!this.state.saved) {
+            await axios.get(`/api/filingdoc/verifyFilingSaved/?link=${this.props.fileLink}`, config).then(res => {
+                this.setState({
+                    saved: res.data.savedFiling
+                });
+            });
         }
     }
 
@@ -50,6 +64,38 @@ class SmallFilingCard extends Component {
         }
     };
 
+    saveFiling = async () => {
+        var params = {
+            "x-auth-token": getJwt(),
+            fileLink: this.props.fileLink,
+            badgeColor: this.props.badgeColor,
+            formType: this.props.formType,
+            title: this.props.title,
+            filingDate: this.props.filingDate
+        };
+        await axios.post(`api/users/addSavedFiling`, params).then(res => {
+            if (res.status === 200) {
+                this.setState({ saved: true });
+            }
+        });
+    };
+
+    unsaveFiling = async () => {
+        var params = {
+            "x-auth-token": getJwt(),
+            fileLink: this.props.fileLink,
+            badgeColor: this.props.badgeColor,
+            formType: this.props.formType,
+            title: this.props.title,
+            filingDate: this.props.filingDate
+        };
+        await axios.post(`api/users/removeSavedFiling`, params).then(res => {
+            if (res.status === 200) {
+                this.setState({ saved: false });
+            }
+        });
+    };
+
     viewExternally = async () => {
         if (this.state.link) {
             window.open(this.state.link);
@@ -58,7 +104,7 @@ class SmallFilingCard extends Component {
 
     render() {
         const { badgeColor, formType, title, filingDate } = this.props;
-        const { modal, data } = this.state;
+        const { modal, data, saved } = this.state;
         const entityName = title.slice(title.indexOf("-") + 2, title.indexOf("("));
         return (
             <Card className="m-2 flex-row">
@@ -67,8 +113,10 @@ class SmallFilingCard extends Component {
                     <CardText>{filingDate}</CardText>
                 </CardBody>
                 <div style={{ margin: "auto 0" }}>
-                    <div>
-                        <Button outline className="m-3" onClick={() => this.toggleModal()}>View</Button>
+                    <div style={{ width: "min-content", textAlign: "center" }}>
+                        {!saved ? <Button className="m-2" outline onClick={() => this.saveFiling()}>Save</Button> : ""}
+                        {saved ? <Button className="m-2" outline onClick={() => this.unsaveFiling()}>UnSave</Button> : ""}
+                        <Button outline className="m-2" onClick={() => this.toggleModal()}>View</Button>
                         <Modal
                             isOpen={modal}
                             toggle={this.toggleModal}
@@ -82,6 +130,8 @@ class SmallFilingCard extends Component {
                             </div>}
                             </ModalBody>
                             <ModalFooter>
+                                {!saved ? <Button outline onClick={() => this.saveFiling()}>Save</Button> : ""}
+                                {saved ? <Button outline onClick={() => this.unsaveFiling()}>UnSave</Button> : ""}
                                 <Button outline color="primary" onClick={() => this.viewExternally()}>
                                     View In Browser
                                     </Button>{' '}

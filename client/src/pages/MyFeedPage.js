@@ -3,7 +3,10 @@ import React, { Component } from 'react';
 class MyFeedPage extends Component {
     state = {}
     render() {
-        return (<div></div>);
+        // * Small, single-row card on top showing recently followed companies and filings
+        return (
+            <div></div>
+        );
     }
 }
 
