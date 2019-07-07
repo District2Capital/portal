@@ -39,11 +39,27 @@ const userSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    followedCompanies: {
+    savedCompanies: {
         type: Array,
         required: true
     },
-    followedFormTypes: {
+    historicalSavedCompanies: {
+        type: Array,
+        required: true
+    },
+    savedFormTypes: {
+        type: Array,
+        required: true
+    },
+    historicalSavedFormTypes: {
+        type: Array,
+        required: true
+    },
+    recentCompanySearches: {
+        type: Array,
+        required: true
+    },
+    recentFormTypeSearches: {
         type: Array,
         required: true
     },

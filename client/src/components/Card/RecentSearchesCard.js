@@ -40,7 +40,7 @@ class RecentSearchesCard extends Component {
         if (defaultData) {
             return (
                 <Card className="m-2" style={{ width: 270 }}>
-                    <CardHeader>Recent Searches</CardHeader>
+                    <CardHeader>Recent Filing Searches</CardHeader>
                     <div className="d-flex m-3 align-items-center flex-grow-1 justify-content-center">
                         <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
                             <span className="sr-only">Loading...</span>

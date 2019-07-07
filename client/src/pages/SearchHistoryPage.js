@@ -9,7 +9,7 @@ class SearchHistoryPage extends Component {
         time: Date.now(),
         data: null,
         filter: [],
-        numberItems: 200,
+        numberItems: "All",
         availableFilters: ["company", "cik", "formType"],
         formdropdownOpen: false,
         numberdropdownOpen: false
@@ -79,10 +79,10 @@ class SearchHistoryPage extends Component {
 
 
     render() {
-        let { data, filter, availableFilters } = this.state;
+        let { data, filter, numberItems, availableFilters } = this.state;
         if (!data) data = [];
-        var numberFilter = [5, 10, 25, 50, 100];
-        var counter;
+        var numberFilter = ["All", 5, 10, 25, 50, 100];
+        var counter = 0;
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
@@ -91,7 +91,12 @@ class SearchHistoryPage extends Component {
                         <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
                             <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
                             <DropdownMenu>
-                                {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
+                                {numberFilter.map((number, index) => {
+                                    if (!index) {
+                                        return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{number}</DropdownItem>);
+                                    }
+                                    return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
+                                })}
                             </DropdownMenu>
                         </Dropdown>
                         <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
@@ -106,7 +111,9 @@ class SearchHistoryPage extends Component {
                 <Row className="d-flex justify-content-center flex-grow-1">
                     {data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => {
                         if ((filter.includes("company") && companySearchString) || (filter.includes("cik") && cikSearchString) || (filter.includes("formType") && formTypeSearchString)) {
-                            return (<SmallRecentSearchCard key={counter++} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+                            if (numberItems === "All" || counter < numberItems) {
+                                return (<SmallRecentSearchCard key={counter++} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+                            }
                         }
                         return ("");
                         //<SmallFilingCard key={title} badgeColor={badgeColor} formType={formType} title={title} filingDate={filingDate} fileLink={htmlLink} previouslySaved={true} />

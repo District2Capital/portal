@@ -11,7 +11,7 @@ class XBRLHistoricalPage extends React.Component {
     data: null,
     intervalIsSet: false,
     filter: [],
-    numberItems: 200,
+    numberItems: 100,
     availableFormTypes: [],
     formdropdownOpen: false,
     numberdropdownOpen: false
@@ -63,7 +63,7 @@ class XBRLHistoricalPage extends React.Component {
 
   render() {
     const { data, filter, availableFormTypes, numberItems } = this.state;
-    var numberFilter = [5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
+    var numberFilter = ["All", 5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
@@ -72,7 +72,12 @@ class XBRLHistoricalPage extends React.Component {
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
               <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
               <DropdownMenu>
-                {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
+                {numberFilter.map((number, index) => {
+                  if (!index) {
+                    return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{number}</DropdownItem>);
+                  }
+                  return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
+                })}
               </DropdownMenu>
             </Dropdown>
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>

@@ -5,11 +5,12 @@ const Data = require('../models/secData');
 const htmlToJson = require('html-to-json');
 const winston = require("winston");
 const db = require('../models/secData');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 router.get('/getData', async (req, res) => {
     var data = null;
     try {
-        winston.info('Sending Request to SEC...');
         var promise = await htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=${req.query.cik}&type=${req.query.type}&company=${req.query.company}&dateb=&owner=include&start=0&count=100&output=atom`, {
             'items': ['entry', function ($item) {
                 let title = $item.find('title').text();
@@ -49,10 +50,42 @@ router.get('/getHistoricalData', async (req, res) => {
     var data = null;
     try {
         let items = await db.find({});
-        items = items.splice(0, req.query.number)
+        if (req.query.number !== "All") {
+            items = items.splice(0, req.query.number)
+        }
         winston.debug("Number of items: " + items.length);
         res.status(200).send(items);
         winston.info(`${req.url} Request Successful`);
+    } catch (e) {
+        winston.error(`${req.url} Request Failure`);
+        res.status(500);
+    }
+});
+
+router.get('/getCompanies', async (req, res) => {
+    try {
+        var companyString = req.query.company;
+        var arrayCompanies = [];
+        await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?company=${companyString}&owner=exclude&action=getcompany`).then(async secresults => {
+            // Parse data with cheerio
+            const $ = cheerio.load(secresults.data);
+            $('table.tableFile2 tbody tr').each(function (i, row) {
+                if (i > 0) {
+                    arrayCompanies.push({
+                        cik: $(this).find('td:nth-child(1) a').text(),
+                        companyName: $(this).find('td:nth-child(2)').html().split("<br>")[0],//.text(),
+                        location: $(this).find('td:nth-child(3) a').text()
+                    });
+                }
+            });
+        }).catch(error => {
+            winston.error(`Fetching data FAILED`);
+        });
+        res.format({
+            'application/json': function () {
+                res.send({ companies: arrayCompanies });
+            }
+        });
     } catch (e) {
         winston.error(`${req.url} Request Failure`);
         res.status(500);

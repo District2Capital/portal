@@ -10,7 +10,7 @@ class SavedFilingsPage extends Component {
         time: Date.now(),
         data: null,
         filter: [],
-        numberItems: 200,
+        numberItems: "All",
         availableFormTypes: [],
         formdropdownOpen: false,
         numberdropdownOpen: false
@@ -63,7 +63,7 @@ class SavedFilingsPage extends Component {
     render() {
         let { data, filter, availableFormTypes, numberItems } = this.state;
         if (!data) data = [];
-        var numberFilter = [5, 10, 25, 50, 100];
+        var numberFilter = ["All", 5, 10, 25, 50, 100];
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
@@ -72,7 +72,12 @@ class SavedFilingsPage extends Component {
                         <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
                             <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
                             <DropdownMenu>
-                                {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
+                                {numberFilter.map((number, index) => {
+                                    if (!index) {
+                                        return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{number}</DropdownItem>);
+                                    }
+                                    return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
+                                })}
                             </DropdownMenu>
                         </Dropdown>
                         <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>

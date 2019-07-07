@@ -10,16 +10,16 @@ class FilingSearchPage extends React.Component {
   state = {
     time: Date.now(),
     data: null,
-    intervalIsSet: false,
     filter: [],
-    numberItems: 100,
+    numberItems: "All",
     availableFormTypes: [],
     formdropdownOpen: false,
     numberdropdownOpen: false,
     cikQuery: "",
     typeQuery: "",
     companyQuery: "",
-    showLoader: false
+    showLoader: false,
+    searchExecuted: false
   }
 
   getDataFromDb = async () => {
@@ -27,7 +27,9 @@ class FilingSearchPage extends React.Component {
       this.setState({
         data: res.data,
         availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-        filter: [...new Set(res.data.items.map(a => a.formType))]
+        filter: [...new Set(res.data.items.map(a => a.formType))],
+        showLoader: false,
+        searchExecuted: true
       });
     });
     // Save queried filing as a recent search
@@ -66,22 +68,27 @@ class FilingSearchPage extends React.Component {
   }
 
   render() {
-    let { data, filter, availableFormTypes, numberItems, showLoader } = this.state;
+    let { data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
     if (!data) data = {};
-    var numberFilter = [5, 10, 25, 50, 100, 200];
+    var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
           <h1 className="mr-auto">Filing Search</h1>
           <div className="d-flex flex-wrap justify-content-end">
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
-              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
+              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
               <DropdownMenu>
-                {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
+                {numberFilter.map((number, index) => {
+                  if (!index) {
+                    return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{number}</DropdownItem>);
+                  }
+                  return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
+                })}
               </DropdownMenu>
             </Dropdown>
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
-              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
+              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
                 {availableFormTypes.map(formType => {
@@ -104,7 +111,7 @@ class FilingSearchPage extends React.Component {
         </div>
         <SearchForm searchHandler={(company, type, cik) => this.searchHandler(company, type, cik)} />
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings showLoader={showLoader} data={data.items} filter={filter} number={numberItems} />
+          <Filings showLoader={showLoader} searchExecuted={searchExecuted} data={data.items} filter={filter} number={numberItems} />
         </Row>
       </div>
     );

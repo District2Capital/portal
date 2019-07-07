@@ -31,6 +31,14 @@ class SearchForm extends React.Component {
         this.setState({ cik: e.target.value });
     }
 
+    handleEnterClicked = async (e) => {
+        var code = e.key;
+        if (code === 'Enter') {
+            e.preventDefault();
+            await this.props.searchHandler(this.state.company, this.state.type, this.state.cik);
+        }
+    }
+
     render() {
         //let { company, type, cik } = this.state;
         return (
@@ -48,6 +56,7 @@ class SearchForm extends React.Component {
                                     name="company"
                                     placeholder="Company Name"
                                     onChange={(e) => this.handleCompanyChange(e)}
+                                    onKeyPress={(e) => this.handleEnterClicked(e)}
                                 />
                             </Col>
                         </FormGroup>
@@ -61,6 +70,7 @@ class SearchForm extends React.Component {
                                     name="cik"
                                     placeholder="Company CIK"
                                     onChange={(e) => this.handleCIKChange(e)}
+                                    onKeyPress={(e) => this.handleEnterClicked(e)}
                                 />
                             </Col>
                         </FormGroup>
@@ -74,12 +84,13 @@ class SearchForm extends React.Component {
                                     name="type"
                                     placeholder="Form Type"
                                     onChange={(e) => this.handleTypeChange(e)}
+                                    onKeyPress={(e) => this.handleEnterClicked(e)}
                                 />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Col sm={{ size: 9, offset: 3 }}>
-                                <Button className="float-right" onClick={() => this.props.searchHandler(this.state.company, this.state.type, this.state.cik)}>Search</Button>
+                                <Button outline className="float-right" onClick={() => this.props.searchHandler(this.state.company, this.state.type, this.state.cik)}>Search</Button>
                             </Col>
                         </FormGroup>
                     </Form>
