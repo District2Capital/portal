@@ -9,7 +9,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "prod": "npm i && nodemon server.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "npm config set '@bit:registry' https://node.bit.dev && cd client && npm install && npm run build"
   },
   "engines": {
     "node": "11.9.0"
