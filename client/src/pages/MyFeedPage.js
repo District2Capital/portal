@@ -1,16 +1,16 @@
 import React from 'react';
-import { Badge, Card, CardHeader, CardBody, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import axios from 'axios';
-import { Filings } from '../components/Card';
-import { filings } from '../config';
 import { getJwt } from 'services/auth';
+import FollowedFilingCard from 'components/Card/FollowedFilingCard';
 class MyFeedPage extends React.Component {
 
     state = {
         time: Date.now(),
         companyFilings: [],
         FormTypeFilings: [],
-        filter: []
+        filter: [],
+        noData: true
     }
 
     async componentDidMount() {
@@ -31,44 +31,70 @@ class MyFeedPage extends React.Component {
 
         // * Fetch Filings for each company in the past 24 hours
         await axios.get('/api/users/followedCompanyFilings', config).then(res => {
-            companyFilings = res.data;
+            if (res.data) {
+                companyFilings = res.data.data;
+            }
         });
 
         // * Fetch Filings for each FormType in the past 24 hours
         await axios.get('/api/users/followedFormTypeFilings', config).then(res => {
-            FormTypeFilings = res.data;
+            if (res.data) {
+                FormTypeFilings = res.data.data;
+            }
         });
 
         // * Set State Filing Arrays
         this.setState({
             companyFilings: companyFilings,
-            FormTypeFilings: FormTypeFilings
+            FormTypeFilings: FormTypeFilings,
+            noData: false
         });
     };
 
     render() {
-        let { companyFilings, FormTypeFilings } = this.state;
+        let { companyFilings, FormTypeFilings, noData } = this.state;
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
-                <div className="py-3 d-flex flex-row">
-                    <h1 className="mr-auto">My Feed</h1>
-                </div>
                 <Card className="m-2">
                     <CardHeader>Followed Company Filings</CardHeader>
-                    <CardBody>
-                        <Row className="flex-row flex-nowrap d-flex justify-content-center flex-grow-1">
+                    <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
+                        <Row style={{ overflowX: "scroll", marginRight: "200px" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+                            {(!companyFilings.length && noData) ? (
+                                <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+                                    <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : (<div></div>)}
+                            {(!noData && !companyFilings.length) ? (
+                                <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+                                    <h3>No Filings of Followed Companies</h3>
+                                </div>
+                            ) : (<div></div>)}
                             {companyFilings.map((Filing, index) => {
-                                return ('')
+                                return (<FollowedFilingCard key={index} companyName={Filing.companyName} badgeColor={Filing.badgeColor} formType={Filing.formType} title={Filing.title} filingDate={Filing.filingDate} fileLink={Filing.fileLink} apiRoute={'sec'} />);
                             })}
                         </Row>
                     </CardBody>
                 </Card>
                 <Card className="m-2">
                     <CardHeader>Followed FormType Filings</CardHeader>
-                    <CardBody>
-                        <Row className="flex-row flex-nowrap d-flex justify-content-center flex-grow-1">
+                    <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
+                        <Row style={{ overflowX: "scroll", marginRight: "200px" }} className="flex-row flex-nowrap d-flex flex-grow-1">
+                            {(!FormTypeFilings.length && noData) ? (
+                                <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+                                    <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : (<div></div>)}
+                            {(!noData && !FormTypeFilings.length) ? (
+                                <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+                                    <h3>No Recent Followed Filings</h3>
+                                </div>
+                            ) : (<div></div>)}
                             {FormTypeFilings.map((Filing, index) => {
-                                return ('')
+                                return (<FollowedFilingCard key={index} companyName={''} badgeColor={Filing.badgeColor} formType={Filing.formType} title={Filing.title} filingDate={Filing.filingDate} fileLink={Filing.fileLink} apiRoute={'sec'} />);
                             })}
                         </Row>
                     </CardBody>

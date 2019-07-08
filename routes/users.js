@@ -11,8 +11,9 @@ const mongoose = require("mongoose");
 const db = require('../models/secData');
 const inputGoogleSheets = require('../models/googleSheets');
 const cheerio = require('cheerio');
+const htmlToJson = require('html-to-json');
 const axios = require('axios');
-const { filings } = require('./filings');
+const filingColors = require('./filings');
 const Fawn = require('fawn');
 Fawn.init(mongoose);
 
@@ -75,68 +76,69 @@ router.get("/savedFormTypes", async (req, res) => {
 router.get('/followedCompanyFilings', async (req, res) => {
     const token = req.query["x-auth-token"];
     var decoded = null;
+    var filings = [];
     try {
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         var followedCompanyFilings = [];
         var userSavedCompanies = await User.findById(decoded._id).select("savedCompanies");
-        var filings = [];
-        var title = '';
-        var formType = '';
-        var fileLink = '';
-        var filingDate = '';
-        winston.info(userSavedCompanies);
-        userSavedCompanies.savedCompanies.map(async (company, companyindex) => {
-            winston.info(company.cik);
+        var badgeColors = Object.values(filingColors);
+        var badgeColor = 'primary';
+        var ftColor = 0;
+        var company = '';
+        var companyindex = 0;
+        for (companyindex = 0; companyindex < userSavedCompanies.savedCompanies.length; companyindex++) {
+            company = userSavedCompanies.savedCompanies[companyindex];
             await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${company.cik}&type=&dateb=&owner=exclude&count=10&output=xml`).then(async secresults => {
-                // Parse data with cheerio
-                //winston.debug(secresults.data);
+                // * Parse data with cheerio
                 const $ = cheerio.load(secresults.data);
-                $('results filing').each((i, row) => {
-                    //winston.debug($(this).find('formName').text());
-                    formType = $(this).find('type').text();
-                    fileLink = $(this).find('filingHREF').text();
-                    title = ($(this).find('formName').text());
-                    filingDate = $(this).find('dateFiled').text();
-                    winston.debug("Form Title:", title);
-                    var badgeColors = Object.values(filings);
-                    var badgeColor = 'primary';
-                    var ftColor = 0;
-                    // for (ftColor = 0; ftColor < badgeColors.length; ftColor += 1) {
-                    //     if (badgeColors[ftColor].filingArray.includes(formType)) {
-                    //         badgeColor = badgeColors[ftColor].color;
-                    //     }
-                    // }
+                $('results filing').each(function (i, row) {
+                    // * Find BadgeColor
+                    badgeColor = 'primary';
+                    for (ftColor = 0; ftColor < badgeColors.length; ftColor += 1) {
+                        if (badgeColors[ftColor].filingArray.includes($(this).find('type').text())) {
+                            badgeColor = badgeColors[ftColor].color;
+                        }
+                    }
+                    // * Push filing to filings array
                     filings.push({
-                        cik: company.cik,
-                        companyName: company.companyName,
-                        formType: formType,
-                        fileLink: fileLink,
-                        title: title,
-                        filingDate: filingDate,
-                        badgeColor: badgeColor
+                        'cik': company.cik,
+                        'companyName': company.companyName,
+                        'formType': $(this).find('type').text(),
+                        'fileLink': $(this).find('filingHREF').text(),
+                        'title': $(this).find('formName').text(),
+                        'filingDate': $(this).find('dateFiled').text(),
+                        'badgeColor': badgeColor
                     });
                 });
-                // for (var index = 0; index < filings.length; index++) {
-                //     let item = await db.find({ title: filings[index].title }, async function (err, results) {
-                //         if (results.length === 0) { winston.debug(filings[index]); }
-                //         if (!results.length) {
-                //             let newItem = new db(filings[index]);
-                //             await newItem.save();
-                //             inputGoogleSheets(newItem.title, newItem.formType, newItem.filingDate, newItem.fileLink);
-                //         }
-                //     });
-                // }
             }).catch(error => {
-                winston.error(`Fetching data FAILED`);
+                winston.error(`Fetching data FAILED for company: ${company.cik}`);
             });
-            winston.info(filings);
-            followedCompanyFilings.concat(filings);
-            return ('');
+        }
+        // * Sort filings by date
+        filings.sort(function (a, b) {
+            if (b.filingDate.slice(0, 4) - a.filingDate.slice(0, 4) === 0) {
+                if (b.filingDate.slice(5, 7) - a.filingDate.slice(5, 7) === 0) {
+                    return (b.filingDate.slice(8, 10) - a.filingDate.slice(8, 10));
+                }
+                return (b.filingDate.slice(5, 7) - a.filingDate.slice(5, 7));
+            }
+            return (b.filingDate.slice(0, 4) - a.filingDate.slice(0, 4));
         });
+        for (var index = 0; index < filings.length; index++) {
+            // * Save filing to database if not there
+            await db.find({ title: filings[index].title }, async function (err, results) {
+                if (results.length === 0) { winston.debug(filings[index]); }
+                if (!results.length) {
+                    let newItem = new db(filings[index]);
+                    await newItem.save();
+                    inputGoogleSheets(newItem.title, newItem.formType, newItem.filingDate, newItem.fileLink);
+                }
+            });
+        }
         winston.info(`${req.url} Request Successful`);
         res.format({
             'application/json': function () {
-                res.send({ followedCompanyFilings: followedCompanyFilings });
+                res.send({ data: filings });
             }
         });
     }
@@ -145,25 +147,72 @@ router.get('/followedCompanyFilings', async (req, res) => {
     }
 });
 
-// router.get('/followedFormTypeFilings', async (req, result) => {
-//     const token = req.query["x-auth-token"];
-//     var decoded = null;
-//     try {
-//         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-//         var savedCompany = {};
-//         var name = await User.find({ "_id": decoded._id, "savedCompanies": { $elemMatch: { companyName: req.query.company } } });
-//         if (name["0"]) { savedCompany = true; }
-//         else { savedCompany = false; }
-//         result.format({
-//             'application/json': function () {
-//                 result.send({ savedCompany: savedCompany });
-//             }
-//         });
-//     }
-//     catch{
-//         winston.error(`Fetching data FAILED from ${req.query.link}l`);
-//     }
-// });
+router.get('/followedFormTypeFilings', async (req, res) => {
+    const token = req.query["x-auth-token"];
+    var decoded = null;
+    try {
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var filings = [];
+        var badgeColors = Object.values(filingColors);
+        var badgeColor = 'primary';
+        var ftColor = 0;
+        var userSavedFormTypes = await User.findById(decoded._id).select("savedFormTypes");
+        // * Get Recent Filings of each form type
+        var FTindex = 0;
+        for (FTindex = 0; FTindex < userSavedFormTypes.savedFormTypes.length; FTindex++) {
+            var promise = await htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=${userSavedFormTypes.savedFormTypes[FTindex].FormType}&company=&dateb=&owner=include&start=0&count=100&output=atom`, {
+                'items': ['entry', function ($item) {
+                    let title = $item.find('title').text();
+                    let type = $item.find('category').attr('term');
+                    let date_time = (new Date($item.find('updated').text())).toLocaleString();
+                    let link = $item.find('link').attr('href');
+                    for (ftColor = 0; ftColor < badgeColors.length; ftColor += 1) {
+                        if (badgeColors[ftColor].filingArray.includes($item.find('category').attr('term'))) {
+                            badgeColor = badgeColors[ftColor].color;
+                        }
+                    }
+                    return {
+                        'title': title,
+                        'formType': type,
+                        'filingDate': date_time,
+                        'fileLink': link,
+                        'badgeColor': badgeColor
+                    };
+                }]
+            }, async function (err, result) {
+                var items = result.items;
+                for (var index = 0; index < items.length; index++) {
+                    filings.push(items[index]);
+                    let item = await db.find({ title: items[index].title }, async function (err, results) {
+                        if (results.length === 0) { winston.debug(items[index]); }
+                        if (!results.length) {
+                            let newItem = new db(items[index]);
+                            await newItem.save();
+                            inputGoogleSheets(newItem.title, newItem.formType, newItem.filingDate, newItem.fileLink);
+                        }
+                    });
+                }
+            });
+        }
+        // * Sort filings by date
+        filings.sort(function (a, b) {
+            winston.info(a.filingDate.slice(0, 8));
+            if (b.filingDate.slice(0, 8) - a.filingDate.slice(0, 8) === 0) {
+                return (b.filingDate.slice(8) - a.filingDate.slice(8));
+            }
+            return (b.filingDate.slice(0, 8) - a.filingDate.slice(0, 8));
+        });
+        winston.info(`${req.url} Request Successful`);
+        res.format({
+            'application/json': function () {
+                res.send({ data: filings });
+            }
+        });
+    }
+    catch{
+        winston.error(`Fetching data FAILED from ${req.query.link}l`);
+    }
+});
 
 router.get('/verifySavedCompany', async (req, result) => {
     const token = req.query["x-auth-token"];
