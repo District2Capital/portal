@@ -196,11 +196,17 @@ router.get('/followedFormTypeFilings', async (req, res) => {
         }
         // * Sort filings by date
         filings.sort(function (a, b) {
-            winston.info(a.filingDate.slice(0, 8));
-            if (b.filingDate.slice(0, 8) - a.filingDate.slice(0, 8) === 0) {
-                return (b.filingDate.slice(8) - a.filingDate.slice(8));
+            var bHour = parseInt(b.filingDate.split(" ")[1].split(":")[0]);
+            var aHour = parseInt(a.filingDate.split(" ")[1].split(":")[0]);
+            if (bHour != 12 && b.filingDate.split(" ")[2] === "PM") {
+                bHour += 12;
             }
-            return (b.filingDate.slice(0, 8) - a.filingDate.slice(0, 8));
+            if (aHour != 12 && a.filingDate.split(" ")[2] === "PM") {
+                aHour += 12;
+            }
+            var secondDateTime = new Date(parseInt(b.filingDate.split(" ")[0].split("/")[2]), parseInt(b.filingDate.split(" ")[0].split("/")[0]), parseInt(b.filingDate.split(" ")[0].split("/")[1]), bHour, parseInt(b.filingDate.split(" ")[1].split(":")[1]), parseInt(b.filingDate.split(" ")[1].split(":")[2]), 0);
+            var firstDateTime = new Date(parseInt(a.filingDate.split(" ")[0].split("/")[2]), parseInt(a.filingDate.split(" ")[0].split("/")[0]), parseInt(a.filingDate.split(" ")[0].split("/")[1]), aHour, parseInt(a.filingDate.split(" ")[1].split(":")[1]), parseInt(a.filingDate.split(" ")[1].split(":")[2]), 0);
+            return (secondDateTime - firstDateTime);
         });
         winston.info(`${req.url} Request Successful`);
         res.format({

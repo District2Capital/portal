@@ -58,7 +58,7 @@ class MyFeedPage extends React.Component {
                 <Card className="m-2">
                     <CardHeader>Followed Company Filings</CardHeader>
                     <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
-                        <Row style={{ overflowX: "scroll", marginRight: "200px" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+                        <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
                             {(!companyFilings.length && noData) ? (
                                 <div className="d-flex align-items-center flex-grow-1 justify-content-center">
                                     <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
@@ -80,7 +80,7 @@ class MyFeedPage extends React.Component {
                 <Card className="m-2">
                     <CardHeader>Followed FormType Filings</CardHeader>
                     <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
-                        <Row style={{ overflowX: "scroll", marginRight: "200px" }} className="flex-row flex-nowrap d-flex flex-grow-1">
+                        <Row style={{ overflowX: "scroll" }} className="flex-row flex-nowrap d-flex flex-grow-1">
                             {(!FormTypeFilings.length && noData) ? (
                                 <div className="d-flex align-items-center flex-grow-1 justify-content-center">
                                     <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">

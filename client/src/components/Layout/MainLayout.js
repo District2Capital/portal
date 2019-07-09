@@ -18,7 +18,7 @@ class MainLayout extends React.Component {
 
   componentDidMount() {
     this.checkBreakpoint(this.props.breakpoint);
-    if(window.innerWidth < 700){
+    if (window.innerWidth < 700) {
       this.openSidebar('close');
     }
     setTimeout(() => {
@@ -75,7 +75,7 @@ class MainLayout extends React.Component {
     return (
       <main className="cr-app bg-light">
         <Sidebar />
-        <Content fluid onClick={this.handleContentClick}>
+        <Content style={{ width: "-webkit-fill-available" }} fluid onClick={this.handleContentClick}>
           <Header />
           {children}
           <Footer />
