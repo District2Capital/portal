@@ -8,11 +8,12 @@ class SmallRecentSearchCard extends Component {
         // { dateSearched } = this.props
         const { companySearchString, cikSearchString, formTypeSearchString } = this.props;
         return (
-            <Card className="m-2 flex-row" style={{ minWidth: "150px", height: "min-content" }}>
-                <CardBody className="p-2">
-                    {companySearchString ? <div className="ml-2 d-flex" style={{ height: "100%", alignItems: "center", justifyContent: "space-between" }}><div><MdAccountBalance /> {companySearchString}</div><Button outline color="secondary">Search</Button></div> : <div></div>}
-                    {cikSearchString ? <div className="ml-2 d-flex" style={{ height: "100%", alignItems: "center", justifyContent: "space-between" }}><div><MdFingerprint /> {cikSearchString}</div><Button outline color="secondary">Search</Button></div> : <div></div>}
-                    {formTypeSearchString ? <div className="ml-2 d-flex" style={{ height: "100%", alignItems: "center", justifyContent: "space-between" }}><div><MdLabelOutline /> {formTypeSearchString}</div><Button outline color="secondary">Search</Button></div> : <div></div>}
+            <Card className="m-2 flex-row" style={{ minWidth: "150px" }}>
+                <CardBody className="p-2 m-auto">
+                    {companySearchString ? <div className="d-flex" style={{ justifyContent: "center" }}><div style={{ margin: "10px" }}><MdAccountBalance /> {companySearchString}</div></div> : <div></div>}
+                    {cikSearchString ? <div className="d-flex" style={{ justifyContent: "center" }}><div style={{ margin: "10px" }}><MdFingerprint /> {cikSearchString}</div></div> : <div></div>}
+                    {formTypeSearchString ? <div className="d-flex" style={{ justifyContent: "center" }}><div style={{ margin: "10px" }}><MdLabelOutline /> {formTypeSearchString}</div></div> : <div></div>}
+                    <div style={{ width: "min-content", margin: "0px auto" }}><Button outline color="secondary">Search</Button></div>
                 </CardBody>
             </Card>
         );

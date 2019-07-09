@@ -14,7 +14,8 @@ class SECFeedPage extends React.Component {
     numberItems: "All",
     availableFormTypes: [],
     formdropdownOpen: false,
-    numberdropdownOpen: false
+    numberdropdownOpen: false,
+    showLoader: true
   }
 
   async componentDidMount() {
@@ -32,6 +33,7 @@ class SECFeedPage extends React.Component {
       if (!this.state.filter.length) {
         this.setState({
           data: res.data,
+          showLoader: false,
           availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
           filter: [...new Set(res.data.items.map(a => a.formType))]
         });
@@ -60,7 +62,7 @@ class SECFeedPage extends React.Component {
   }
 
   render() {
-    let { data, filter, availableFormTypes, numberItems } = this.state;
+    let { data, filter, availableFormTypes, showLoader, numberItems } = this.state;
     if (!data) data = {};
     var numberFilter = ["All", 5, 10, 25, 50, 100];
     return (
@@ -102,7 +104,7 @@ class SECFeedPage extends React.Component {
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings data={data.items} filter={filter} number={numberItems} apiRoute={'sec'} />
+          <Filings data={data.items} showLoader={showLoader} filter={filter} number={numberItems} apiRoute={'sec'} />
         </Row>
       </div>
     );

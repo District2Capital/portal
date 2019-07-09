@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Badge, Col, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { Filings } from 'components/Card';
+import { NavLink } from 'react-router-dom';
 import { filings } from '../config';
 import { getJwt } from 'services/auth';
 
 class SavedFilingsPage extends Component {
     state = {
         time: Date.now(),
-        data: null,
+        data: [],
         filter: [],
         numberItems: "All",
         availableFormTypes: [],
@@ -62,7 +63,6 @@ class SavedFilingsPage extends Component {
 
     render() {
         let { data, filter, availableFormTypes, numberItems } = this.state;
-        if (!data) data = [];
         var numberFilter = ["All", 5, 10, 25, 50, 100];
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
@@ -102,8 +102,14 @@ class SavedFilingsPage extends Component {
                         </Dropdown>
                     </div>
                 </div>
-                <Row className="d-flex justify-content-center flex-grow-1">
+                <Row className="d-flex flex-grow-1">
                     <Filings data={data} filter={filter} number={numberItems} apiRoute={'sec'} />
+                    {(!data.length) ? (
+                        <div style={{ height: "100px", marginTop: "200px" }} className="d-flex flex-row align-items-center flex-grow-1 justify-content-center">
+                            <Col><div><h3 style={{ textAlign: "center" }}>No Saved Filings</h3></div>
+                                <div style={{ width: "fit-content", margin: "auto" }}><NavLink to="/search" className="btn m-2 btn-outline-secondary">Search For Filings</NavLink></div>
+                            </Col>
+                        </div>) : (<div></div>)}
                 </Row>
             </div>
         );

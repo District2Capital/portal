@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    historicalSearches: {
+        type: Array,
+        required: true
+    },
     savedFilings: {
         type: Array,
         required: true

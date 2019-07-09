@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
+import { NavLink } from 'react-router-dom';
 import FormTypeCard from 'components/Card/FormTypeCard';
 
 class MyFormTypesPage extends Component {
@@ -48,7 +49,7 @@ class MyFormTypesPage extends Component {
         let { data, numberItems, showLoader } = this.state;
         var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
         return (
-            <div className="px-3 h-100 d-flex overflow-hidden flex-column">
+            <div className="px-3 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
                     <h1 className="mr-auto">Followed FormTypes</h1>
                     <div className="d-flex flex-wrap justify-content-end">
@@ -75,7 +76,7 @@ class MyFormTypesPage extends Component {
                     ) : (data.map((Form, index) => {
                         if (numberItems === "All" || index < numberItems) {
                             return (
-                                <Col key={index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
+                                <Col style={{ height: "min-content" }} key={index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
                                     <FormTypeCard BadgeColor={Form.BadgeColor} FormType={Form.FormType} />
                                 </Col>
                             );
@@ -83,6 +84,12 @@ class MyFormTypesPage extends Component {
                         return (<div></div>);
                     }
                     ))}
+                    {(!data.length) ? (
+                        <div style={{ height: "100px", marginTop: "200px" }} className="d-flex flex-row align-items-center flex-grow-1 justify-content-center">
+                            <Col><div><h3 style={{ textAlign: "center" }}>No Followed Form Types</h3></div>
+                                <div style={{ width: "fit-content", margin: "auto" }}><NavLink to="/formtypesearch" className="btn m-2 btn-outline-secondary">Search For Form Types</NavLink></div>
+                            </Col>
+                        </div>) : (<div></div>)}
                 </Row>
             </div>
         );

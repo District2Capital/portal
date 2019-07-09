@@ -28,6 +28,9 @@ class RecentSearchesCard extends Component {
                     defaultData: false
                 });
             }
+            else {
+                this.setState({ defaultData: false });
+            }
         })
             .catch(error => {
                 console.log('ERROR. Could not get recent searches.');
@@ -48,9 +51,23 @@ class RecentSearchesCard extends Component {
                     </div>
                 </Card>);
         }
+        if (!data.length) {
+            return (
+                <Card className="m-2" style={{ maxWidth: 350 }}>
+                    <CardHeader>Recent Filing Searches</CardHeader>
+                    <Col className="justify-content-center">
+                        <div style={{ marginTop: "20px" }} className="d-flex flex-row align-items-center flex-grow-1 justify-content-center">
+                            <Col><div><h3 style={{ textAlign: "center" }}>No Recent Searches</h3></div>
+                                <div style={{ width: "fit-content", margin: "auto" }}><NavLink to="/search" className="btn m-2 btn-outline-secondary">Search For Filings</NavLink></div>
+                            </Col>
+                        </div>
+                    </Col>
+                </Card>
+            );
+        }
         return (
             <Card className="m-2" style={{ width: 270, maxHeight: "min-content" }}>
-                <CardHeader>Recent Searches</CardHeader>
+                <CardHeader>Recent Filing Searches</CardHeader>
                 <Col className="justify-content-center">
                     {data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => (
                         <SmallRecentSearchCard key={counter++} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />

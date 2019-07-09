@@ -370,6 +370,19 @@ router.post("/removeSavedCompany", async (req, res) => {
     }
 });
 
+router.post("/clearSearchHistory", async (req, res) => {
+    const token = req.body["x-auth-token"];
+    var decoded = null;
+    try {
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        await User.update({ "_id": decoded._id }, { $set: { "recentSearches": [] } });
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('Company removed successfully.');
+    } catch (ex) {
+        res.status(400).send("Invalid token.");
+    }
+});
+
 router.post("/addSavedFiling", async (req, res) => {
     const token = req.body["x-auth-token"];
     var decoded = null;
@@ -505,6 +518,19 @@ router.post("/updateRecentSearches", async (req, res) => {
         var results = await User.updateOne({ "_id": decoded._id }, {
             $push: {
                 "recentSearches": {
+                    $each: [{
+                        companySearchString: req.body.companySearchString,
+                        cikSearchString: req.body.cikSearchString,
+                        formTypeSearchString: req.body.formTypeSearchString,
+                        dateSearched: Date.now()
+                    }],
+                    $position: 0
+                }
+            }
+        });
+        await User.updateOne({ "_id": decoded._id }, {
+            $push: {
+                "historicalSearches": {
                     $each: [{
                         companySearchString: req.body.companySearchString,
                         cikSearchString: req.body.cikSearchString,
