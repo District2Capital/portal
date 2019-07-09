@@ -1,15 +1,17 @@
 import React from 'react';
-import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Card, CardHeader, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
 import SearchForm from '../components/SearchForm';
 import { getJwt } from 'services/auth';
+import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 class FilingSearchPage extends React.Component {
 
   state = {
     time: Date.now(),
-    data: null,
+    recentSearches: [],
+    data: [],
     filter: [],
     numberItems: "All",
     availableFormTypes: [],
@@ -22,7 +24,13 @@ class FilingSearchPage extends React.Component {
     searchExecuted: false
   }
 
+  componentDidMount = async () => {
+    await this.getRecentSearchData();
+  }
+
   getDataFromDb = async () => {
+    await this.updateRecentSearches();
+    await this.getRecentSearchData();
     await axios.get(`/api/sec/getData/?cik=${this.state.cikQuery}&type=${this.state.typeQuery}&company=${this.state.companyQuery}`).then(res => {
       this.setState({
         data: res.data,
@@ -32,6 +40,25 @@ class FilingSearchPage extends React.Component {
         searchExecuted: true
       });
     });
+  };
+
+  getRecentSearchData = async () => {
+    var config = {
+      params: { "x-auth-token": getJwt() }
+    };
+    await axios.get('/api/stats/getRecentSearchData', config).then(res => {
+      let searches = res.data;
+      if (searches && searches.data.length) {
+        // Sort data by company
+        this.setState({ recentSearches: searches.data });
+      }
+    })
+      .catch(error => {
+        console.log('ERROR. Could not get recent searches.');
+      });
+  }
+
+  updateRecentSearches = async () => {
     // Save queried filing as a recent search
     var params = {
       "x-auth-token": getJwt(),
@@ -40,7 +67,7 @@ class FilingSearchPage extends React.Component {
       formTypeSearchString: this.state.typeQuery
     };
     await axios.post(`api/users/updateRecentSearches`, params);
-  };
+  }
 
   toggleFormType = () => {
     this.setState({
@@ -64,12 +91,11 @@ class FilingSearchPage extends React.Component {
 
   searchHandler = async (company, type, cik) => {
     await this.setState({ companyQuery: company, typeQuery: type, cikQuery: cik, showLoader: true });
-    this.getDataFromDb();
+    await this.getDataFromDb();
   }
 
   render() {
-    let { data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
-    if (!data) data = {};
+    let { recentSearches, data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
     var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
@@ -110,6 +136,16 @@ class FilingSearchPage extends React.Component {
           </div>
         </div>
         <SearchForm searchHandler={(company, type, cik) => this.searchHandler(company, type, cik)} />
+        {(recentSearches.length) ? (<Card className="m-2">
+          <CardHeader>Recent Searches</CardHeader>
+          <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
+            <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+              {recentSearches.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }, index) => {
+                return (<SmallRecentSearchCard key={index} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+              })}
+            </Row>
+          </CardBody>
+        </Card>) : ("")}
         <Row className="d-flex justify-content-center flex-grow-1">
           <Filings showLoader={showLoader} searchExecuted={searchExecuted} data={data.items} filter={filter} number={numberItems} />
         </Row>

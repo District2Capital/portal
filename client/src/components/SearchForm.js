@@ -10,7 +10,7 @@ import {
     Input,
     Label
 } from 'reactstrap';
-
+import { MdAccountBalance, MdFingerprint, MdLabelOutline } from 'react-icons/md';
 
 class SearchForm extends React.Component {
     state = {
@@ -42,14 +42,12 @@ class SearchForm extends React.Component {
     render() {
         //let { company, type, cik } = this.state;
         return (
-            <Card className="my-3">
+            <Card className="m-2">
                 <CardHeader>Search Parameters</CardHeader>
                 <CardBody>
                     <Form>
                         <FormGroup row>
-                            <Label for="company" sm={3}>
-                                Company
-                    </Label>
+                            <Label for="company" sm={3}><MdAccountBalance /> Company</Label>
                             <Col sm={9}>
                                 <Input
                                     type="company"
@@ -61,9 +59,7 @@ class SearchForm extends React.Component {
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="cik" sm={3}>
-                                CIK
-                    </Label>
+                            <Label for="cik" sm={3}><MdFingerprint /> CIK</Label>
                             <Col sm={9}>
                                 <Input
                                     type="cik"
@@ -75,9 +71,7 @@ class SearchForm extends React.Component {
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="type" sm={3}>
-                                Form Type
-                    </Label>
+                            <Label for="type" sm={3}><MdLabelOutline /> Form Type</Label>
                             <Col sm={9}>
                                 <Input
                                     type="type"

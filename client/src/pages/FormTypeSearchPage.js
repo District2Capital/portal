@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import FormTypeSearchForm from 'components/FormTypeSearchForm';
 import FormTypeCard from 'components/Card/FormTypeCard';
 import { filings } from '../config';
+import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 
 class FormTypeSearchPage extends Component {
 
     state = {
         time: Date.now(),
+        recentSearches: [],
         data: [],
         numberItems: "All",
         numberdropdownOpen: false,
@@ -18,7 +20,18 @@ class FormTypeSearchPage extends Component {
         searchExecuted: false
     }
 
+    componentDidMount = async () => {
+        await this.getRecentSearchData();
+    }
+
     getDataFromDb = async () => {
+        // * Save FormType Query in recent FormType searches
+        var params = {
+            "x-auth-token": getJwt(),
+            FormTypeSearchString: this.state.FormTypeQuery
+        };
+        await axios.post(`api/users/updateFormTypeSearches`, params);
+        await this.getRecentSearchData();
         // * Compare FormTypes in state data to FormType Search String
         var values = Object.values(filings);
         var FormTypeArray = [];
@@ -36,14 +49,23 @@ class FormTypeSearchPage extends Component {
             showLoader: false,
             searchExecuted: true
         });
-
-        // * Save FormType Query in recent FormType searches
-        var params = {
-            "x-auth-token": getJwt(),
-            FormTypeSearchString: this.state.FormTypeQuery
-        };
-        await axios.post(`api/users/updateFormTypeSearches`, params);
     };
+
+    getRecentSearchData = async () => {
+        var config = {
+            params: { "x-auth-token": getJwt() }
+        };
+        await axios.get('/api/stats/getRecentFormTypeSearchData', config).then(res => {
+            let searches = res.data;
+            if (searches && searches.data.length) {
+                // Sort data by company
+                this.setState({ recentSearches: searches.data });
+            }
+        })
+            .catch(error => {
+                console.log('ERROR. Could not get recent searches.');
+            });
+    }
 
     toggleNumber = () => {
         this.setState({
@@ -61,12 +83,12 @@ class FormTypeSearchPage extends Component {
     }
 
     render() {
-        let { data, numberItems, showLoader, searchExecuted } = this.state;
+        let { recentSearches, data, numberItems, showLoader, searchExecuted } = this.state;
         var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
-                    <h1 className="mr-auto">FormType Search</h1>
+                    <h1 className="mr-auto">Form Type Search</h1>
                     <div className="d-flex flex-wrap justify-content-end">
                         <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
                             <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
@@ -82,6 +104,16 @@ class FormTypeSearchPage extends Component {
                     </div>
                 </div>
                 <FormTypeSearchForm props={this.props} searchHandler={(FormType) => this.searchHandler(FormType)} />
+                {(recentSearches.length) ? (<Card className="m-2">
+                    <CardHeader>Recent Form Type Searches</CardHeader>
+                    <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
+                        <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+                            {recentSearches.map(({ FormTypeSearchString, dateSearched }, index) => {
+                                return (<SmallRecentSearchCard key={index} formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
+                            })}
+                        </Row>
+                    </CardBody>
+                </Card>) : ("")}
                 <Row className="d-flex justify-content-center flex-grow-1">
                     {(showLoader) ? (
                         <div className="d-flex align-items-center flex-grow-1 justify-content-center">

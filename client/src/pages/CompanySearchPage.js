@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import CompanySearchForm from 'components/CompanySearchForm';
 import CompanyCard from 'components/Card/CompanyCard';
+import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 class CompanySearchPage extends Component {
 
     state = {
         time: Date.now(),
+        recentSearches: [],
         data: [],
         numberItems: "All",
         numberdropdownOpen: false,
@@ -16,7 +18,18 @@ class CompanySearchPage extends Component {
         searchExecuted: false
     }
 
+    componentDidMount = async () => {
+        await this.getRecentSearchData();
+    }
+
     getDataFromDb = async () => {
+        // * Save company query as recent Company search in DB
+        var params = {
+            "x-auth-token": getJwt(),
+            companySearchString: this.state.companyQuery
+        };
+        await axios.post(`api/users/updateCompanySearches`, params);
+        await this.getRecentSearchData();
         // * Fetch list of companies from DB
         await axios.get(`/api/sec/getCompanies/?company=${this.state.companyQuery}`).then(res => {
             this.setState({
@@ -25,13 +38,23 @@ class CompanySearchPage extends Component {
                 searchExecuted: true
             });
         });
-        // * Save company query as recent Company search in DB
-        var params = {
-            "x-auth-token": getJwt(),
-            companySearchString: this.state.companyQuery
-        };
-        await axios.post(`api/users/updateCompanySearches`, params);
     };
+
+    getRecentSearchData = async () => {
+        var config = {
+            params: { "x-auth-token": getJwt() }
+        };
+        await axios.get('/api/stats/getRecentCompanySearchData', config).then(res => {
+            let searches = res.data;
+            if (searches && searches.data.length) {
+                // Sort data by company
+                this.setState({ recentSearches: searches.data });
+            }
+        })
+            .catch(error => {
+                console.log('ERROR. Could not get recent searches.');
+            });
+    }
 
     toggleNumber = () => {
         this.setState({
@@ -49,7 +72,7 @@ class CompanySearchPage extends Component {
     }
 
     render() {
-        let { data, numberItems, showLoader, searchExecuted } = this.state;
+        let { recentSearches, data, numberItems, showLoader, searchExecuted } = this.state;
         var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
         return (
             <div className="px-3 h-100 d-flex overflow-hidden flex-column">
@@ -70,6 +93,16 @@ class CompanySearchPage extends Component {
                     </div>
                 </div>
                 <CompanySearchForm props={this.props} searchHandler={(company) => this.searchHandler(company)} />
+                {(recentSearches.length) ? (<Card className="m-2">
+                    <CardHeader>Recent Searches</CardHeader>
+                    <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
+                        <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+                            {recentSearches.map(({ companySearchString, dateSearched }, index) => {
+                                return (<SmallRecentSearchCard key={index} companySearchString={companySearchString} dateSearched={dateSearched} />);
+                            })}
+                        </Row>
+                    </CardBody>
+                </Card>) : ("")}
                 <Row className="d-flex justify-content-center flex-grow-1">
                     {(showLoader) ? (
                         <div className="d-flex align-items-center flex-grow-1 justify-content-center">

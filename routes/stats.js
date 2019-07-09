@@ -70,6 +70,42 @@ router.get('/getRecentSearchData', async (req, res) => {
     }
 });
 
+router.get('/getRecentCompanySearchData', async (req, res) => {
+    const token = req.query["x-auth-token"];
+    var decoded = null;
+    try {
+        // Get user search queries
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var user = await User.findById(decoded._id).select("-password");
+        res.status(200).format({
+            'application/json': function () {
+                res.send({ data: user.recentCompanySearches });
+            }
+        });
+    } catch (e) {
+        winston.error(`${req.url} Request Failure`);
+        res.status(500);
+    }
+});
+
+router.get('/getRecentFormTypeSearchData', async (req, res) => {
+    const token = req.query["x-auth-token"];
+    var decoded = null;
+    try {
+        // Get user search queries
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        var user = await User.findById(decoded._id).select("-password");
+        res.status(200).format({
+            'application/json': function () {
+                res.send({ data: user.recentFormTypeSearches });
+            }
+        });
+    } catch (e) {
+        winston.error(`${req.url} Request Failure`);
+        res.status(500);
+    }
+});
+
 router.get('/getRecentSavedFilings', async (req, res) => {
     const token = req.query["x-auth-token"];
     var decoded = null;

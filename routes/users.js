@@ -515,19 +515,21 @@ router.post("/updateRecentSearches", async (req, res) => {
         //         }
         //     }
         // });
-        var results = await User.updateOne({ "_id": decoded._id }, {
-            $push: {
-                "recentSearches": {
-                    $each: [{
-                        companySearchString: req.body.companySearchString,
-                        cikSearchString: req.body.cikSearchString,
-                        formTypeSearchString: req.body.formTypeSearchString,
-                        dateSearched: Date.now()
-                    }],
-                    $position: 0
+        if (req.body.companySearchString || req.body.cikSearchString || req.body.formTypeSearchString) {
+            await User.updateOne({ "_id": decoded._id }, {
+                $push: {
+                    "recentSearches": {
+                        $each: [{
+                            companySearchString: req.body.companySearchString,
+                            cikSearchString: req.body.cikSearchString,
+                            formTypeSearchString: req.body.formTypeSearchString,
+                            dateSearched: Date.now()
+                        }],
+                        $position: 0
+                    }
                 }
-            }
-        });
+            });
+        }
         await User.updateOne({ "_id": decoded._id }, {
             $push: {
                 "historicalSearches": {
@@ -553,17 +555,19 @@ router.post("/updateCompanySearches", async (req, res) => {
     var decoded = null;
     try {
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-        var results = await User.updateOne({ "_id": decoded._id }, {
-            $push: {
-                "recentCompanySearches": {
-                    $each: [{
-                        companySearchString: req.body.companySearchString,
-                        dateSearched: Date.now()
-                    }],
-                    $position: 0
+        if (req.body.companySearchString) {
+            await User.updateOne({ "_id": decoded._id }, {
+                $push: {
+                    "recentCompanySearches": {
+                        $each: [{
+                            companySearchString: req.body.companySearchString,
+                            dateSearched: Date.now()
+                        }],
+                        $position: 0
+                    }
                 }
-            }
-        });
+            });
+        }
         winston.info("Successfully queried", req.url);
         res.status(200).send('User saved successfully.');
     } catch (ex) {
@@ -576,17 +580,19 @@ router.post("/updateFormTypeSearches", async (req, res) => {
     var decoded = null;
     try {
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-        var results = await User.updateOne({ "_id": decoded._id }, {
-            $push: {
-                "recentFormTypeSearches": {
-                    $each: [{
-                        FormTypeSearchString: req.body.FormTypeSearchString,
-                        dateSearched: Date.now()
-                    }],
-                    $position: 0
+        if (req.body.FormTypeSearchString) {
+            await User.updateOne({ "_id": decoded._id }, {
+                $push: {
+                    "recentFormTypeSearches": {
+                        $each: [{
+                            FormTypeSearchString: req.body.FormTypeSearchString,
+                            dateSearched: Date.now()
+                        }],
+                        $position: 0
+                    }
                 }
-            }
-        });
+            });
+        }
         winston.info("Successfully queried", req.url);
         res.status(200).send('User saved successfully.');
     } catch (ex) {

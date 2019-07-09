@@ -13,7 +13,7 @@ class SmallRecentSearchCard extends Component {
                     {companySearchString ? <div className="d-flex" style={{ justifyContent: "center" }}><div style={{ margin: "10px" }}><MdAccountBalance /> {companySearchString}</div></div> : <div></div>}
                     {cikSearchString ? <div className="d-flex" style={{ justifyContent: "center" }}><div style={{ margin: "10px" }}><MdFingerprint /> {cikSearchString}</div></div> : <div></div>}
                     {formTypeSearchString ? <div className="d-flex" style={{ justifyContent: "center" }}><div style={{ margin: "10px" }}><MdLabelOutline /> {formTypeSearchString}</div></div> : <div></div>}
-                    <div style={{ width: "min-content", margin: "0px auto" }}><Button outline color="secondary">Search</Button></div>
+                    <div style={{ width: "min-content", margin: "0px auto" }}><Button style={{ boxShadow: "none" }} outline color="secondary">Search</Button></div>
                 </CardBody>
             </Card>
         );

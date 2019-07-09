@@ -10,7 +10,7 @@ import {
     Input,
     Label
 } from 'reactstrap';
-
+import { MdAccountBalance } from 'react-icons/md';
 
 class CompanySearchForm extends React.Component {
     state = {
@@ -37,7 +37,7 @@ class CompanySearchForm extends React.Component {
                     <Form>
                         <Row>
                             <Col className="my-2" sm={2}>
-                                <Label for="company">Company</Label>
+                                <Label for="company"><MdAccountBalance /> Company</Label>
                             </Col>
                             <Col className="my-2" sm={8}>
                                 <Input

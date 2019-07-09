@@ -19,7 +19,7 @@ class FilingDocSection extends Component {
         return (
             <div>
                 <Row>
-                    <Button onClick={() => this.handleSectionSize()} style={{ boxShadow: "none", padding: "2px", margin: "10px" }} outline color="secondary">{(isHidden) ? (<MdExpandMore />) : (<MdExpandLess />)}</Button>
+                    <Button className="px-2 py-1" onClick={() => this.handleSectionSize()} style={{ boxShadow: "none", margin: "10px" }} outline color="secondary">{(isHidden) ? (<MdExpandMore />) : (<MdExpandLess />)}</Button>
                     <h4 style={{ margin: "auto 0px" }}>{keys[valueindex]}</h4>
                 </Row>
                 {value.filingArray.map((filing, filingindex) => {

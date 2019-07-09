@@ -67,7 +67,7 @@ class MyFeedPage extends React.Component {
                                 </div>
                             ) : (<div></div>)}
                             {(!noData && !companyFilings.length) ? (
-                                <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+                                <div className="m-4 d-flex align-items-center flex-grow-1 justify-content-center">
                                     <h3>No Filings of Followed Companies</h3>
                                 </div>
                             ) : (<div></div>)}
@@ -89,7 +89,7 @@ class MyFeedPage extends React.Component {
                                 </div>
                             ) : (<div></div>)}
                             {(!noData && !FormTypeFilings.length) ? (
-                                <div className="d-flex align-items-center flex-grow-1 justify-content-center">
+                                <div className="m-4 d-flex align-items-center flex-grow-1 justify-content-center">
                                     <h3>No Recent Followed Filings</h3>
                                 </div>
                             ) : (<div></div>)}

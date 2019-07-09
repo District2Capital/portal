@@ -10,6 +10,7 @@ import {
     Input,
     Label
 } from 'reactstrap';
+import { MdLabelOutline } from 'react-icons/md';
 
 class FormTypeSearchForm extends Component {
     state = {
@@ -37,7 +38,7 @@ class FormTypeSearchForm extends Component {
                     <Form>
                         <Row>
                             <Col className="my-2" sm={2}>
-                                <Label for="FormType">FormType</Label>
+                                <Label for="FormType"><MdLabelOutline /> FormType</Label>
                             </Col>
                             <Col className="my-2" sm={8}>
                                 <Input
