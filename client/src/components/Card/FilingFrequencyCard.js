@@ -4,6 +4,11 @@ import { Chart } from '@bit/primefaces.primereact.chart';
 import axios from 'axios';
 
 class FilingFrequencyCard extends Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         data: {
             labels: ['1', '2', '3', '4', '5'],
@@ -19,44 +24,52 @@ class FilingFrequencyCard extends Component {
         defaultFilings: true
     }
 
-    componentDidMount() {
-        this.getFilingFrequency();
+    async componentDidMount() {
+        this._isMounted = true;
+        await this.getFilingFrequency();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        clearInterval(this.interval);
     }
 
     getFilingFrequency = async () => {
-        await axios.get(`/api/stats/getFilingFrequencyData/?count=${this.state.filingCount}`).then(res => {
-            // Return array of arrays in format: ['formType', frequency]
-            let sorted = res.data;
-            var itemFrequency = [];
-            var distinctItems = [];
-            var total = 0;
-            if (sorted) {
-                for (var each = 0; each < sorted.length; each++) {
-                    total += sorted[each][1][1];
+        if (this._isMounted) {
+            await axios.get(`/api/stats/getFilingFrequencyData/?count=${this.state.filingCount}`).then(res => {
+                // Return array of arrays in format: ['formType', frequency]
+                let sorted = res.data;
+                var itemFrequency = [];
+                var distinctItems = [];
+                var total = 0;
+                if (sorted) {
+                    for (var each = 0; each < sorted.length; each++) {
+                        total += sorted[each][1][1];
+                    }
+                    for (each = 0; each < sorted.length; each++) {
+                        itemFrequency.push(Math.round(sorted[each][1][1] / total * 100) / 100);
+                        distinctItems.push(sorted[each][1][0]);
+                    }
+                    this.setState({
+                        data: {
+                            labels: distinctItems,
+                            datasets: [
+                                {
+                                    data: itemFrequency,
+                                    backgroundColor: this.state.data.datasets[0].backgroundColor,
+                                    hoverBackgroundColor: this.state.data.datasets[0].hoverBackgroundColor,
+                                }
+                            ]
+                        },
+                        filingCount: this.state.filingCount,
+                        defaultFilings: false
+                    });
                 }
-                for (each = 0; each < sorted.length; each++) {
-                    itemFrequency.push(Math.round(sorted[each][1][1] / total * 100) / 100);
-                    distinctItems.push(sorted[each][1][0]);
-                }
-                this.setState({
-                    data: {
-                        labels: distinctItems,
-                        datasets: [
-                            {
-                                data: itemFrequency,
-                                backgroundColor: this.state.data.datasets[0].backgroundColor,
-                                hoverBackgroundColor: this.state.data.datasets[0].hoverBackgroundColor,
-                            }
-                        ]
-                    },
-                    filingCount: this.state.filingCount,
-                    defaultFilings: false
+            })
+                .catch(error => {
+                    console.log('ERROR::Could not get form frequencies.');
                 });
-            }
-        })
-            .catch(error => {
-                console.log('ERROR::Could not get form frequencies.');
-            });
+        }
     };
 
     render() {

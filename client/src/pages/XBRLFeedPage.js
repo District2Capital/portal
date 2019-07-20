@@ -5,11 +5,13 @@ import { Filings } from '../components/Card';
 import { filings } from '../config';
 
 class XBRLFeedPage extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
   state = {
     time: Date.now(),
     data: null,
-    intervalIsSet: false,
     filter: [],
     numberItems: "All",
     availableFormTypes: [],
@@ -17,28 +19,29 @@ class XBRLFeedPage extends React.Component {
     numberdropdownOpen: false
   }
 
-  componentDidMount() {
-    if (!this.state.intervalIsSet) {
-      this.getDataFromDb();
-      setInterval(this.getDataFromDb, 10000);
-      this.setState({ intervalIsSet: true });
-    }
+  async componentDidMount() {
+    this._isMounted = true;
+    await this.getDataFromDb();
+    setInterval(this.getDataFromDb, 10000);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     clearInterval(this.interval);
   }
 
   getDataFromDb = async () => {
-    await axios.get('/api/edgar/getData').then(res => {
-      if (!this.state.filter.length) {
-        this.setState({
-          data: res.data,
-          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-          filter: [...new Set(res.data.items.map(a => a.formType))]
-        });
-      }
-    });
+    if (this._isMounted) {
+      await axios.get('/api/edgar/getData').then(res => {
+        if (!this.state.filter.length) {
+          this.setState({
+            data: res.data,
+            availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
+            filter: [...new Set(res.data.items.map(a => a.formType))]
+          });
+        }
+      });
+    }
   };
 
   toggleFormType = () => {

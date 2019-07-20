@@ -7,6 +7,11 @@ import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
 
 class ViewedFilingsPage extends Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         time: Date.now(),
         data: [],
@@ -18,32 +23,36 @@ class ViewedFilingsPage extends Component {
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromDb();
         setInterval(await this.getDataFromDb, 10000);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
     getDataFromDb = async () => {
-        var config = {
-            params: { "x-auth-token": getJwt() }
-        };
-        await axios.get('/api/stats/getRecentlyViewedFilingData', config).then(res => {
-            let searches = res.data;
-            if (searches && searches.data.length && !this.state.filter.length) {
-                this.setState({
-                    data: searches.data,
-                    availableFormTypes: [...new Set(searches.data.map(a => a.formType))],
-                    filter: [...new Set(searches.data.map(a => a.formType))],
-                    defaultData: false
+        if (this._isMounted) {
+            var config = {
+                params: { "x-auth-token": getJwt() }
+            };
+            await axios.get('/api/stats/getRecentlyViewedFilingData', config).then(res => {
+                let searches = res.data;
+                if (searches && searches.data.length && !this.state.filter.length) {
+                    this.setState({
+                        data: searches.data,
+                        availableFormTypes: [...new Set(searches.data.map(a => a.formType))],
+                        filter: [...new Set(searches.data.map(a => a.formType))],
+                        defaultData: false
+                    });
+                }
+            })
+                .catch(error => {
+                    console.log('ERROR. Could not get recent searches.');
                 });
-            }
-        })
-            .catch(error => {
-                console.log('ERROR. Could not get recent searches.');
-            });
+        }
     };
 
     toggleFormType = () => {

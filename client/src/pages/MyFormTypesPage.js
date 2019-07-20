@@ -6,6 +6,10 @@ import { NavLink } from 'react-router-dom';
 import FormTypeCard from 'components/Card/FormTypeCard';
 
 class MyFormTypesPage extends Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
 
     state = {
         time: Date.now(),
@@ -16,23 +20,27 @@ class MyFormTypesPage extends Component {
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromDb();
         setInterval(await this.getDataFromDb, 10000);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
     getDataFromDb = async () => {
-        var config = {
-            params: { "x-auth-token": getJwt() }
-        };
-        await axios.get('/api/users/savedFormTypes', config).then(res => {
-            this.setState({
-                data: res.data.savedFormTypes
+        if (this._isMounted) {
+            var config = {
+                params: { "x-auth-token": getJwt() }
+            };
+            await axios.get('/api/users/savedFormTypes', config).then(res => {
+                this.setState({
+                    data: res.data.savedFormTypes
+                });
             });
-        });
+        }
     };
 
     toggleNumber = () => {

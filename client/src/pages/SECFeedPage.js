@@ -5,7 +5,10 @@ import { Filings } from '../components/Card';
 import { filings } from '../config';
 class SECFeedPage extends React.Component {
 
-  controller = new AbortController();
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
 
   state = {
     time: Date.now(),
@@ -19,26 +22,29 @@ class SECFeedPage extends React.Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     await this.getDataFromDb();
     setInterval(await this.getDataFromDb, 10000);
   }
 
   componentWillUnmount() {
-    this.controller.abort();
+    this._isMounted = false;
     clearInterval(this.interval);
   }
 
   getDataFromDb = async () => {
-    await axios.get('/api/sec/getData/?cik=&type=&company=', { signal: this.controller.signal }).then(res => {
-      if (!this.state.filter.length) {
-        this.setState({
-          data: res.data,
-          showLoader: false,
-          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-          filter: [...new Set(res.data.items.map(a => a.formType))]
-        });
-      }
-    });
+    if (this._isMounted) {
+      await axios.get('/api/sec/getData/?cik=&type=&company=').then(res => {
+        if (!this.state.filter.length) {
+          this.setState({
+            data: res.data,
+            showLoader: false,
+            availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
+            filter: [...new Set(res.data.items.map(a => a.formType))]
+          });
+        }
+      });
+    }
   };
 
   toggleFormType = () => {

@@ -6,38 +6,47 @@ import FollowedFilingCard from 'components/Card/FollowedFilingCard';
 
 class FollowedFormTypeFilings extends Component {
 
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         FormTypeFilings: [],
         noData: true
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromDb();
         setInterval(await this.getDataFromDb, 10000);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
     getDataFromDb = async () => {
-        var FormTypeFilings = [];
-        var config = {
-            params: { "x-auth-token": getJwt() }
-        };
+        if (this._isMounted) {
+            var FormTypeFilings = [];
+            var config = {
+                params: { "x-auth-token": getJwt() }
+            };
 
-        // * Fetch Filings for each FormType in the past 24 hours
-        await axios.get('/api/users/followedFormTypeFilings', config).then(res => {
-            if (res.data) {
-                FormTypeFilings = res.data.data;
-            }
-        });
+            // * Fetch Filings for each FormType in the past 24 hours
+            await axios.get('/api/users/followedFormTypeFilings', config).then(res => {
+                if (res.data) {
+                    FormTypeFilings = res.data.data;
+                }
+            });
 
-        // * Set State Filing Arrays
-        this.setState({
-            FormTypeFilings: FormTypeFilings,
-            noData: false
-        });
+            // * Set State Filing Arrays
+            this.setState({
+                FormTypeFilings: FormTypeFilings,
+                noData: false
+            });
+        }
     };
 
     render() {

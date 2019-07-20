@@ -7,6 +7,11 @@ import { filings } from '../config';
 import { getJwt } from 'services/auth';
 
 class SavedFilingsPage extends Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         time: Date.now(),
         data: [],
@@ -18,27 +23,31 @@ class SavedFilingsPage extends Component {
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromDb();
         setInterval(await this.getDataFromDb, 10000);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
     getDataFromDb = async () => {
-        var config = {
-            params: { "x-auth-token": getJwt() }
-        };
-        await axios.get('/api/users/savedFilings', config).then(res => {
-            if (!this.state.filter.length) {
-                this.setState({
-                    data: res.data.savedFilings,
-                    availableFormTypes: [...new Set(res.data.savedFilings.map(a => a.formType))],
-                    filter: [...new Set(res.data.savedFilings.map(a => a.formType))]
-                });
-            }
-        });
+        if (this._isMounted) {
+            var config = {
+                params: { "x-auth-token": getJwt() }
+            };
+            await axios.get('/api/users/savedFilings', config).then(res => {
+                if (!this.state.filter.length) {
+                    this.setState({
+                        data: res.data.savedFilings,
+                        availableFormTypes: [...new Set(res.data.savedFilings.map(a => a.formType))],
+                        filter: [...new Set(res.data.savedFilings.map(a => a.formType))]
+                    });
+                }
+            });
+        }
     };
 
     toggleFormType = () => {

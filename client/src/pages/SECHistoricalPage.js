@@ -5,11 +5,13 @@ import { Filings } from '../components/Card';
 import { filings } from '../config';
 
 class SECHistoricalPage extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
   state = {
     time: Date.now(),
     data: null,
-    intervalIsSet: false,
     filter: [],
     numberItems: 100,
     availableFormTypes: [],
@@ -17,28 +19,29 @@ class SECHistoricalPage extends React.Component {
     numberdropdownOpen: false
   }
 
-  componentDidMount() {
-    //this.getDataFromDb();
-    if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 10000);
-      this.setState({ intervalIsSet: interval });
-    }
+  async componentDidMount() {
+    this._isMounted = true;
+    await this.getDataFromDb();
+    setInterval(this.getDataFromDb, 10000);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     clearInterval(this.interval);
   }
 
-  getDataFromDb = () => {
-    axios.get('/api/sec/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
-      if (!this.state.filter.length) {
-        this.setState({
-          data: res.data,
-          availableFormTypes: [...new Set(res.data.map(a => a.formType))],
-          filter: [...new Set(res.data.map(a => a.formType))]
-        });
-      }
-    });
+  getDataFromDb = async () => {
+    if (this._isMounted) {
+      await axios.get('/api/sec/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
+        if (!this.state.filter.length) {
+          this.setState({
+            data: res.data,
+            availableFormTypes: [...new Set(res.data.map(a => a.formType))],
+            filter: [...new Set(res.data.map(a => a.formType))]
+          });
+        }
+      });
+    }
   };
 
   toggleFormType = () => {

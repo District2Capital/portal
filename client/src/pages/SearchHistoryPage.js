@@ -6,6 +6,11 @@ import { NavLink } from 'react-router-dom';
 import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 
 class SearchHistoryPage extends Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         time: Date.now(),
         data: [],
@@ -18,45 +23,49 @@ class SearchHistoryPage extends Component {
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromDb();
         setInterval(await this.getDataFromDb, 10000);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
     getDataFromDb = async () => {
-        var config = {
-            params: { "x-auth-token": getJwt() }
-        };
-        await axios.get('/api/stats/getRecentSearchData', config).then(res => {
-            let searches = res.data;
-            if (searches && searches.data.length && !this.state.filter.length) {
-                // Sort data by company
-                var newfilters = [];
-                searches.data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => {
-                    if (companySearchString && !this.state.filter.includes("company")) {
-                        newfilters.push("company");
-                    }
-                    if (cikSearchString && !this.state.filter.includes("cik")) {
-                        newfilters.push("cik");
-                    }
-                    if (formTypeSearchString && !this.state.filter.includes("formType")) {
-                        newfilters.push("formType");
-                    }
-                    return ("");
+        if (this._isMounted) {
+            var config = {
+                params: { "x-auth-token": getJwt() }
+            };
+            await axios.get('/api/stats/getRecentSearchData', config).then(res => {
+                let searches = res.data;
+                if (searches && searches.data.length && !this.state.filter.length) {
+                    // Sort data by company
+                    var newfilters = [];
+                    searches.data.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }) => {
+                        if (companySearchString && !this.state.filter.includes("company")) {
+                            newfilters.push("company");
+                        }
+                        if (cikSearchString && !this.state.filter.includes("cik")) {
+                            newfilters.push("cik");
+                        }
+                        if (formTypeSearchString && !this.state.filter.includes("formType")) {
+                            newfilters.push("formType");
+                        }
+                        return ("");
+                    });
+                    this.setState({
+                        data: searches.data,
+                        filter: [...this.state.filter, ...newfilters],
+                        defaultData: false
+                    });
+                }
+            })
+                .catch(error => {
+                    console.log('ERROR. Could not get recent searches.');
                 });
-                this.setState({
-                    data: searches.data,
-                    filter: [...this.state.filter, ...newfilters],
-                    defaultData: false
-                });
-            }
-        })
-            .catch(error => {
-                console.log('ERROR. Could not get recent searches.');
-            });
+        }
     };
 
     toggleFormType = () => {

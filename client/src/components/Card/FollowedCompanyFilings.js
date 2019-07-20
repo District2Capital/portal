@@ -5,38 +5,47 @@ import { getJwt } from 'services/auth';
 import FollowedFilingCard from 'components/Card/FollowedFilingCard';
 
 class FollowedCompanyFilings extends Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         companyFilings: [],
         noData: true
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromDb();
         setInterval(await this.getDataFromDb, 10000);
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearInterval(this.interval);
     }
 
     getDataFromDb = async () => {
-        var companyFilings = [];
-        var config = {
-            params: { "x-auth-token": getJwt() }
-        };
+        if (this._isMounted) {
+            var companyFilings = [];
+            var config = {
+                params: { "x-auth-token": getJwt() }
+            };
 
-        // * Fetch Filings for each company in the past 24 hours
-        await axios.get('/api/users/followedCompanyFilings', config).then(res => {
-            if (res.data) {
-                companyFilings = res.data.data;
-            }
-        });
+            // * Fetch Filings for each company in the past 24 hours
+            await axios.get('/api/users/followedCompanyFilings', config).then(res => {
+                if (res.data) {
+                    companyFilings = res.data.data;
+                }
+            });
 
-        // * Set State Filing Arrays
-        this.setState({
-            companyFilings: companyFilings,
-            noData: false
-        });
+            // * Set State Filing Arrays
+            this.setState({
+                companyFilings: companyFilings,
+                noData: false
+            });
+        }
     };
 
     render() {
