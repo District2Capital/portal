@@ -86,7 +86,7 @@ class FormTypeSearchPage extends Component {
         let { recentSearches, data, numberItems, showLoader, searchExecuted } = this.state;
         var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
         return (
-            <div className="px-3 h-100 d-flex overflow-hidden flex-column">
+            <div className="px-4 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
                     <h1 className="mr-auto">Form Type Search</h1>
                     <div className="d-flex flex-wrap justify-content-end">
@@ -104,7 +104,7 @@ class FormTypeSearchPage extends Component {
                     </div>
                 </div>
                 <FormTypeSearchForm props={this.props} searchHandler={(FormType) => this.searchHandler(FormType)} />
-                {(recentSearches.length) ? (<Card className="m-2">
+                {(recentSearches.length) ? (<Card className="mt-2">
                     <CardHeader>Recent Form Type Searches</CardHeader>
                     <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
                         <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">

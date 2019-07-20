@@ -32,6 +32,7 @@ class CompanySearchPage extends Component {
         await this.getRecentSearchData();
         // * Fetch list of companies from DB
         await axios.get(`/api/sec/getCompanies/?company=${this.state.companyQuery}`).then(res => {
+            console.log(res.data);
             this.setState({
                 data: res.data.companies,
                 showLoader: false,
@@ -75,7 +76,7 @@ class CompanySearchPage extends Component {
         let { recentSearches, data, numberItems, showLoader, searchExecuted } = this.state;
         var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
         return (
-            <div className="px-3 h-100 d-flex overflow-hidden flex-column">
+            <div className="px-4 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
                     <h1 className="mr-auto">Company Search</h1>
                     <div className="d-flex flex-wrap justify-content-end">
@@ -93,7 +94,7 @@ class CompanySearchPage extends Component {
                     </div>
                 </div>
                 <CompanySearchForm props={this.props} searchHandler={(company) => this.searchHandler(company)} />
-                {(recentSearches.length) ? (<Card className="m-2">
+                {(recentSearches.length) ? (<Card className="my-2">
                     <CardHeader>Recent Searches</CardHeader>
                     <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
                         <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">

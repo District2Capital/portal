@@ -13,25 +13,33 @@ const jwt = require('jsonwebtoken');
 
 router.get('/getData', async (req, result) => {
     try {
-        var resultObject = {};
-        var xmlLink = 'https://sec.gov';
-        await axios.get(`${req.query.link}l`).then(async res => {
-            // Parse data with cheerio
+        var resultObject = [];
+        var xmlLink = '';
+        await axios.get(`${req.query.link}`).then(async function (res) {
+            // * Parse data with cheerio
+            // * Cheerio each() function doesn't work due to synchronous nature
             const $ = cheerio.load(res.data);
-            xmlLink = xmlLink + $('table.tableFile tr:nth-child(2) td:nth-child(3) a').attr('href');
-            winston.info('Filing Loaded using reference:', xmlLink);
-            await axios.get(xmlLink).then(linkresult => {
-                resultObject = linkresult.data;
-            }).catch(error => {
-                winston.error('Issue with sending json');
-            })
+            var rows = $("table.tableFile").find("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var current = rows[i];
+                var description = $(current).children('td:nth-child(2)').text();
+                var templink = $(current).children('td').find('a').attr('href');
+                xmlLink = "https://sec.gov" + templink;
+                if (templink) {
+                    await axios.get(xmlLink).then(linkresult => {
+                        resultObject.push({ title: description, data: linkresult.data, docLink: xmlLink });
+                    }).catch(error => {
+                        winston.error('Issue with sending json');
+                    });
+                }
+            }
+            result.format({
+                'application/json': function () {
+                    result.send({ link: xmlLink, htmlArray: resultObject, htmllink: req.query.link });
+                }
+            });
         }).catch(error => {
             winston.error(`Fetching data FAILED from ${req.query.link}l`);
-        });
-        result.format({
-            'application/json': function () {
-                result.send({ link: xmlLink, html: resultObject, htmllink: req.query.link });
-            }
         });
     }
     catch{

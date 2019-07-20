@@ -102,10 +102,10 @@ router.get('/followedCompanyFilings', async (req, res) => {
                     // * Push filing to filings array
                     filings.push({
                         'cik': company.cik,
-                        'companyName': company.companyName,
+                        'companyName': company.companyName.split('&amp;').join('&'),
                         'formType': $(this).find('type').text(),
                         'fileLink': $(this).find('filingHREF').text(),
-                        'title': $(this).find('formName').text(),
+                        'title': $(this).find('formName').text().split('&amp;').join('&'),
                         'filingDate': $(this).find('dateFiled').text(),
                         'badgeColor': badgeColor
                     });
@@ -162,7 +162,7 @@ router.get('/followedFormTypeFilings', async (req, res) => {
         for (FTindex = 0; FTindex < userSavedFormTypes.savedFormTypes.length; FTindex++) {
             var promise = await htmlToJson.request(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=${userSavedFormTypes.savedFormTypes[FTindex].FormType}&company=&dateb=&owner=include&start=0&count=100&output=atom`, {
                 'items': ['entry', function ($item) {
-                    let title = $item.find('title').text();
+                    let title = $item.find('title').text().split('&amp;').join('&');
                     let type = $item.find('category').attr('term');
                     let date_time = (new Date($item.find('updated').text())).toLocaleString();
                     let link = $item.find('link').attr('href');

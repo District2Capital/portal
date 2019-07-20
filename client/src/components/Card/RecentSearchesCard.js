@@ -58,7 +58,7 @@ class RecentSearchesCard extends Component {
                     <Col className="justify-content-center">
                         <div style={{ marginTop: "20px" }} className="d-flex flex-row align-items-center flex-grow-1 justify-content-center">
                             <Col><div><h3 style={{ textAlign: "center" }}>No Recent Searches</h3></div>
-                                <div style={{ width: "fit-content", margin: "auto" }}><NavLink to="/search" className="btn m-2 btn-outline-secondary">Search For Filings</NavLink></div>
+                                <div style={{ width: "fit-content", margin: "auto" }}><NavLink to="/search" className="btn m-2 btn-outline-info">Search For Filings</NavLink></div>
                             </Col>
                         </div>
                     </Col>

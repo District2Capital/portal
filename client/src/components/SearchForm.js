@@ -42,7 +42,7 @@ class SearchForm extends React.Component {
     render() {
         //let { company, type, cik } = this.state;
         return (
-            <Card className="m-2">
+            <Card className="mb-3">
                 <CardHeader>Search Parameters</CardHeader>
                 <CardBody>
                     <Form>

@@ -51,14 +51,14 @@ class CompanyCard extends Component {
 
     render() {
         const { saved } = this.state;
-        const { company } = this.props;
+        const { company, searchHandler, searchCard } = this.props;
         return (
             <Card className="m-2 flex-row" style={{ minWidth: "150px", height: "min-content", width: "fit-content" }}>
                 <CardBody className="p-2" style={{ margin: "auto 5px" }}><div><Badge className="mr-1" color='light'>{company.location}</Badge>{company.companyName}</div></CardBody>
                 <div style={{ margin: "auto 0" }}>
                     <div style={{ width: "min-content", textAlign: "center" }}>
-                        {!saved ? <Button className="m-2" outline onClick={() => this.saveCompany()}>Follow</Button> : ""}
-                        {saved ? <Button className="m-2" outline onClick={() => this.unsaveCompany()}>UnFollow</Button> : ""}
+                        {searchCard ? <Button className="m-2" outline onClick={() => searchHandler('', '', company.cik)}>Show Filings</Button> : ""}
+                        {!saved ? (<Button className="m-2" color="success" outline onClick={() => this.saveCompany()}>Follow</Button>) : (<Button className="m-2" color="danger" outline onClick={() => this.unsaveCompany()}>UnFollow</Button>)}
                     </div>
                 </div>
             </Card>

@@ -6,22 +6,16 @@ import {
     CardBody,
     CardTitle,
     ListGroup,
-    ListGroupItem,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader
+    ListGroupItem
 } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
+import ViewModalLogic from '../ViewModalLogic';
 
 class FollowedFilingCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modal: false,
-            data: null,
-            link: null,
             saved: false
         }
     }
@@ -38,35 +32,6 @@ class FollowedFilingCard extends Component {
             });
         }
     }
-
-    toggleModal = async () => {
-        if (!this.state.modal) {
-            // Query api route to get filing data
-            await axios.get(`api/filingdoc/getData/?link=${this.props.fileLink}`).then(async res => {
-                this.setState({
-                    modal: !this.state.modal,
-                    data: res.data.html,
-                    link: res.data.link
-                });
-            });
-
-            // Save queried filing as a recent search
-            var params = {
-                "x-auth-token": getJwt(),
-                fileLink: this.props.fileLink,
-                badgeColor: this.props.badgeColor,
-                formType: this.props.formType,
-                title: this.props.title,
-                filingDate: this.props.filingDate
-            };
-            await axios.post(`api/users/updateViewedFilings`, params);
-        }
-        else {
-            this.setState({
-                modal: !this.state.modal
-            });
-        }
-    };
 
     saveFiling = async () => {
         var params = {
@@ -100,15 +65,9 @@ class FollowedFilingCard extends Component {
         });
     };
 
-    viewExternally = async () => {
-        if (this.state.link) {
-            window.open(this.state.link);
-        }
-    }
-
     render() {
-        const { badgeColor, formType, title, filingDate, companyName } = this.props;
-        const { modal, data, saved } = this.state;
+        const { badgeColor, fileLink, formType, title, filingDate, companyName } = this.props;
+        const { saved } = this.state;
         return (
             <Card style={{ margin: "5px", minWidth: "250px", minHeight: "300px" }} color='secondary'>
                 <CardBody>
@@ -120,30 +79,8 @@ class FollowedFilingCard extends Component {
                     <ListGroupItem>Form Type: {formType}</ListGroupItem>
                     <ListGroupItem>Filing Date: {filingDate}</ListGroupItem>
                     <ListGroupItem className="d-flex justify-content-center">
-                        {!saved ? <Button className="m-1" outline onClick={() => this.saveFiling()}>Save</Button> : ""}
-                        {saved ? <Button className="m-1" outline onClick={() => this.unsaveFiling()}>UnSave</Button> : ""}
-                        <Button className="m-1" outline onClick={() => this.toggleModal()}>View</Button>
-                        <Modal
-                            isOpen={modal}
-                            toggle={this.toggleModal}
-                            className={this.props.className}
-                            style={{ maxWidth: '80%', margin: "1.7rem auto" }}>
-                            <ModalHeader toggle={this.toggleModal}>{title}</ModalHeader>
-                            <ModalBody style={{ overflowY: "scroll" }}>{data !== null ? <div dangerouslySetInnerHTML={{ __html: data }} style={{ maxHeight: "80%", overflowY: "scroll" }}></div> : <div className="d-flex align-items-center flex-grow-1 justify-content-center">
-                                <div className="spinner-grow d-flex align-items-center" style={{ width: "75px", height: "75px" }} role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
-                            </div>}
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button outline color="primary" onClick={() => this.viewExternally()}>
-                                    View In Browser
-                                </Button>{' '}
-                                <Button outline color="secondary" onClick={this.toggleModal}>
-                                    Close
-                                </Button>
-                            </ModalFooter>
-                        </Modal>
+                        {!saved ? (<Button className="m-1" color="success" outline onClick={() => this.saveFiling()}>Save</Button>) : (<Button className="m-1" outline color="danger" onClick={() => this.unsaveFiling()}>UnSave</Button>)}
+                        <ViewModalLogic saved={saved} unsaveFiling={this.unsaveFiling} saveFiling={this.saveFiling} badgeColor={badgeColor} fileLink={fileLink} formType={formType} filingDate={filingDate} companyName={companyName} title={title} />
                     </ListGroupItem>
                 </ListGroup>
             </Card>

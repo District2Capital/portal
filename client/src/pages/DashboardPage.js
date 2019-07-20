@@ -6,6 +6,9 @@ import MarketOverviewCard from 'components/Card/MarketOverviewCard';
 import RecentViewedFilingsCard from 'components/Card/RecentViewedFilingsCard';
 import RecentSearchesCard from 'components/Card/RecentSearchesCard';
 import RecentSavedFilingsCard from 'components/Card/RecentSavedFilingsCard';
+import FollowedCompanyFilings from 'components/Card/FollowedCompanyFilings';
+import FollowedFormTypeFilings from 'components/Card/FollowedFormTypeFilings';
+
 class DashboardPage extends React.Component {
   componentDidMount() {
     window.scrollTo(0, 0);
@@ -25,6 +28,10 @@ class DashboardPage extends React.Component {
           <RecentViewedFilingsCard />
           <RecentSearchesCard />
           <RecentSavedFilingsCard />
+        </Row>
+        <Row>
+          <FollowedCompanyFilings />
+          <FollowedFormTypeFilings />
         </Row>
       </Page>
     );

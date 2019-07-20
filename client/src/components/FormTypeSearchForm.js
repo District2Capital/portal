@@ -32,7 +32,7 @@ class FormTypeSearchForm extends Component {
 
     render() {
         return (
-            <Card className="my-3">
+            <Card className="mb-3">
                 <CardHeader>Search Parameters</CardHeader>
                 <CardBody>
                     <Form>

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Card, CardHeader, Col, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
 import SearchForm from '../components/SearchForm';
+import CompanyCard from 'components/Card/CompanyCard';
 import { getJwt } from 'services/auth';
 import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 class FilingSearchPage extends React.Component {
@@ -21,6 +22,7 @@ class FilingSearchPage extends React.Component {
     typeQuery: "",
     companyQuery: "",
     showLoader: false,
+    companiesBool: false,
     searchExecuted: false
   }
 
@@ -32,13 +34,24 @@ class FilingSearchPage extends React.Component {
     await this.updateRecentSearches();
     await this.getRecentSearchData();
     await axios.get(`/api/sec/getData/?cik=${this.state.cikQuery}&type=${this.state.typeQuery}&company=${this.state.companyQuery}`).then(res => {
-      this.setState({
-        data: res.data,
-        availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-        filter: [...new Set(res.data.items.map(a => a.formType))],
-        showLoader: false,
-        searchExecuted: true
-      });
+      console.log(res);
+      if (res.data.companiesBool) {
+        this.setState({
+          data: res.data.data,
+          companiesBool: res.data.companiesBool,
+          showLoader: false,
+          searchExecuted: true
+        });
+      }
+      else {
+        this.setState({
+          data: res.data,
+          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
+          filter: [...new Set(res.data.items.map(a => a.formType))],
+          showLoader: false,
+          searchExecuted: true
+        });
+      }
     });
   };
 
@@ -90,15 +103,15 @@ class FilingSearchPage extends React.Component {
   }
 
   searchHandler = async (company, type, cik) => {
-    await this.setState({ companyQuery: company, typeQuery: type, cikQuery: cik, showLoader: true });
+    await this.setState({ companiesBool: false, companyQuery: company, typeQuery: type, cikQuery: cik, showLoader: true });
     await this.getDataFromDb();
   }
 
   render() {
-    let { recentSearches, data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
+    let { recentSearches, companiesBool, data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
     var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
     return (
-      <div className="px-3 h-100 d-flex overflow-hidden flex-column">
+      <div className="px-4 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
           <h1 className="mr-auto">Filing Search</h1>
           <div className="d-flex flex-wrap justify-content-end">
@@ -136,7 +149,7 @@ class FilingSearchPage extends React.Component {
           </div>
         </div>
         <SearchForm searchHandler={(company, type, cik) => this.searchHandler(company, type, cik)} />
-        {(recentSearches.length) ? (<Card className="m-2">
+        {(recentSearches.length) ? (<Card className="mt-2">
           <CardHeader>Recent Searches</CardHeader>
           <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
             <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
@@ -147,7 +160,18 @@ class FilingSearchPage extends React.Component {
           </CardBody>
         </Card>) : ("")}
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings showLoader={showLoader} searchExecuted={searchExecuted} data={data.items} filter={filter} number={numberItems} />
+          {(companiesBool) ? (data.map((company, index) => {
+            if (numberItems === "All" || index < numberItems) {
+              return (
+                <Col key={index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
+                  <CompanyCard searchHandler={this.searchHandler} searchCard={true} company={company} />
+                </Col>
+              );
+            }
+            return (<div></div>);
+          })) : (
+              <Filings showLoader={showLoader} searchExecuted={searchExecuted} data={data.items} filter={filter} number={numberItems} />
+            )}
         </Row>
       </div>
     );

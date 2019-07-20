@@ -55,8 +55,7 @@ class FormTypeCard extends Component {
                 <CardBody className="p-2" style={{ margin: "auto 5px" }}><div><Badge className="mr-1" color={BadgeColor}>{FormType}</Badge></div></CardBody>
                 <div style={{ margin: "auto 0" }}>
                     <div style={{ width: "min-content", textAlign: "center" }}>
-                        {!saved ? <Button className="m-2" outline onClick={() => this.saveFormType()}>Follow</Button> : ""}
-                        {saved ? <Button className="m-2" outline onClick={() => this.unsaveFormType()}>UnFollow</Button> : ""}
+                        {!saved ? (<Button className="m-2" outline color="success" onClick={() => this.saveFormType()}>Follow</Button>) : (<Button className="m-2" color="danger" outline onClick={() => this.unsaveFormType()}>UnFollow</Button>)}
                     </div>
                 </div>
             </Card>
