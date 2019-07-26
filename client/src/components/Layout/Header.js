@@ -12,13 +12,12 @@ import {
   Button,
   ListGroup,
   ListGroupItem,
-  // NavbarToggler,
   Nav,
   Navbar,
   NavItem,
   NavLink,
-  Popover,
-  PopoverBody,
+  Modal,
+  ModalBody,
 } from 'reactstrap';
 import bn from 'utils/bemnames';
 
@@ -26,12 +25,12 @@ const bem = bn.create('header');
 
 class Header extends React.Component {
   state = {
-    isOpenUserCardPopover: false
+    isOpenUserModal: false
   };
 
-  toggleUserCardPopover = () => {
+  toggleUserModal = () => {
     this.setState({
-      isOpenUserCardPopover: !this.state.isOpenUserCardPopover,
+      isOpenUserModal: !this.state.isOpenUserModal,
     });
   };
 
@@ -42,7 +41,7 @@ class Header extends React.Component {
   };
 
   render() {
-
+    const { isOpenUserModal } = this.state;
     return (
       <Navbar light expand className={bem.b('bg-white')}>
         <Nav navbar className="mr-2">
@@ -57,38 +56,34 @@ class Header extends React.Component {
           <NavItem>
             <NavLink id="Popover2">
               <Avatar
-                onClick={this.toggleUserCardPopover}
+                onClick={this.toggleUserModal}
                 src={defaultUser}
                 className="can-click"
               />
             </NavLink>
-            <Popover
-              placement="bottom-end"
-              isOpen={this.state.isOpenUserCardPopover}
-              toggle={this.toggleUserCardPopover}
-              target="Popover2"
-              className="p-0 border-0"
-              style={{ minWidth: 250 }}
-            >
-              <PopoverBody className="p-0 border-light">
-                <UserCard
-                  title=""
-                  subtitle=""
-                  text=""
-                  avatar={defaultUser}
-                  className="border-light"
-                >
-                  <ListGroup flush>
-                    <ListGroupItem tag="button" action className="border-light">
-                      <MdPersonPin /> Profile
+            <Modal
+              className="m-0"
+              id="userCardModal"
+              isOpen={isOpenUserModal}
+              toggle={this.toggleUserModal}
+              style={{ minWidth: 250, top: "5rem", right: "1rem", position: "absolute" }}>
+              <UserCard
+                title=""
+                subtitle=""
+                text=""
+                avatar={defaultUser}
+                className="border-light"
+              >
+                <ListGroup flush>
+                  <ListGroupItem tag="button" action onClick={() => { window.location = "/settings"; }} className="border-light">
+                    <MdPersonPin /> Settings
                     </ListGroupItem>
-                    <ListGroupItem tag="button" action onClick={() => { localStorage.removeItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME); window.location = "/"; }} className="border-light">
-                      <MdExitToApp /> Signout
+                  <ListGroupItem tag="button" action onClick={() => { localStorage.removeItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME); window.location = "/"; }} className="border-light">
+                    <MdExitToApp /> Signout
                     </ListGroupItem>
-                  </ListGroup>
-                </UserCard>
-              </PopoverBody>
-            </Popover>
+                </ListGroup>
+              </UserCard>
+            </Modal>
           </NavItem>
         </Nav>
       </Navbar>

@@ -42,3 +42,7 @@
 .modal-content {
   height: -webkit-fill-available;
 }
+
+#userCardModal .modal-content {
+    height: min-content;
+}

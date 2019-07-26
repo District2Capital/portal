@@ -2,7 +2,7 @@ import React from 'react';
 import FollowedFormTypeFilings from 'components/Card/FollowedFormTypeFilings';
 import FollowedCompanyFilings from 'components/Card/FollowedCompanyFilings';
 
-class MyFeedPage extends React.Component {
+class MainFeedPage extends React.Component {
     state = {}
     render() {
         return (
@@ -14,4 +14,4 @@ class MyFeedPage extends React.Component {
     }
 };
 
-export default MyFeedPage;
+export default MainFeedPage;
