@@ -3,20 +3,32 @@ import axios from 'axios';
 import { Card, CardBody, Button, CardHeader, Col, Row, Table } from 'reactstrap';
 
 class FilingSpreadsheet extends React.Component {
+    constructor(props) {
+        super(props);
+        this._isMounted = false;
+    }
+
     state = {
         data: null
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.getDataFromGoogleSheets();
         setInterval(await this.getDataFromGoogleSheets, 10000);
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+        clearInterval(this.interval);
+    }
+
     getDataFromGoogleSheets = async () => {
-        console.log('Spreadsheet data updated.');
-        await axios.get('https://sheets.googleapis.com/v4/spreadsheets/1RV46luph_aEURrcXLLFC5C3NksRTM6uF_P2m6uoDR78/values:batchGet?dateTimeRenderOption=SERIAL_NUMBER&majorDimension=ROWS&ranges=B%3AE&valueRenderOption=FORMATTED_VALUE&key=AIzaSyDRzWoZ_fXKy5xqE2qDitRcxHeYI_-_npM').then((res) => {
-            this.setState({ data: res });
-        });
+        if (this._isMounted) {
+            await axios.get('https://sheets.googleapis.com/v4/spreadsheets/1RV46luph_aEURrcXLLFC5C3NksRTM6uF_P2m6uoDR78/values:batchGet?dateTimeRenderOption=SERIAL_NUMBER&majorDimension=ROWS&ranges=B%3AE&valueRenderOption=FORMATTED_VALUE&key=AIzaSyDRzWoZ_fXKy5xqE2qDitRcxHeYI_-_npM').then((res) => {
+                this.setState({ data: res });
+            });
+        }
     }
 
     render() {

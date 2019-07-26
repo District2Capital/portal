@@ -1,7 +1,7 @@
-<<<<<<< HEAD
-# dependencies
-/node_modules
-=======
 # Node Modules
 /node_modules
->>>>>>> restructured
+
+/logs
+
+*.log
+*.psd

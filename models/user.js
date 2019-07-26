@@ -23,6 +23,54 @@ const userSchema = new mongoose.Schema({
         minlength: 5,
         maxlength: 1024
     },
+    myLists: {
+        type: Object,
+        required: true
+    },
+    recentFilings: {
+        type: Array,
+        required: true
+    },
+    recentSearches: {
+        type: Array,
+        required: true
+    },
+    historicalSearches: {
+        type: Array,
+        required: true
+    },
+    savedFilings: {
+        type: Array,
+        required: true
+    },
+    historicalSavedFilings: {
+        type: Array,
+        required: true
+    },
+    savedCompanies: {
+        type: Array,
+        required: true
+    },
+    historicalSavedCompanies: {
+        type: Array,
+        required: true
+    },
+    savedFormTypes: {
+        type: Array,
+        required: true
+    },
+    historicalSavedFormTypes: {
+        type: Array,
+        required: true
+    },
+    recentCompanySearches: {
+        type: Array,
+        required: true
+    },
+    recentFormTypeSearches: {
+        type: Array,
+        required: true
+    },
     isAdmin: Boolean
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { filings } from '../config';
-import { Badge } from 'reactstrap';
+import FilingDocSection from './FilingDocSection';
 
 const FilingDocs = () => {
     var values = Object.values(filings);
@@ -9,17 +9,13 @@ const FilingDocs = () => {
         <div>
             {values.map((value, valueindex) => {
                 return (
-                    <div key={value + valueindex}>
-                        <h4>{keys[valueindex]}</h4>
-                        {value.filingArray.map((filing, filingindex) => {
-                            return (<p key={filing + filingindex}>
-                                <Badge color={value.color || "primary"}>{filing}</Badge> - {filing} - {value.descriptionArray[filingindex]}
-                            </p>);
-                        })}
-                    </div>);
+                    <div key={valueindex}>
+                        <FilingDocSection keys={keys} value={value} valueindex={valueindex} />
+                    </div>
+                );
             })}
         </div>
-    );      
+    );
 }
- 
+
 export default FilingDocs;

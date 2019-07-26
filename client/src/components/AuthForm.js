@@ -59,7 +59,7 @@ class AuthForm extends React.Component {
         }
       }
       catch (e) {
-        toast.error('Internal Error.', { className: 'rounded' });
+        toast.error('Incorrect Email Or Password.', { className: 'rounded' });
         console.log('Login Failure:', e);
       }
     }
@@ -81,6 +81,14 @@ class AuthForm extends React.Component {
     const data = { ...this.state.data };
     data.password = e.target.value;
     this.setState({ data, errors: errors });
+  }
+
+  handleEnterClicked = async (e) => {
+    var code = e.key;
+    if (code === 'Enter') {
+      e.preventDefault();
+      await this.handleSubmit();
+    }
   }
 
   render() {
@@ -113,11 +121,11 @@ class AuthForm extends React.Component {
         )}
         <FormGroup>
           <Label for={usernameLabel}>{usernameLabel}</Label>
-          <Input {...usernameInputProps} onChange={this.handleUsernameChange} />
+          <Input {...usernameInputProps} onKeyPress={(e) => this.handleEnterClicked(e)} onChange={this.handleUsernameChange} />
         </FormGroup>
         <FormGroup>
           <Label for={passwordLabel}>{passwordLabel}</Label>
-          <Input {...passwordInputProps} onChange={this.handlePasswordChange} />
+          <Input {...passwordInputProps} onKeyPress={(e) => this.handleEnterClicked(e)} onChange={this.handlePasswordChange} />
         </FormGroup>
         {this.isSignup && (
           <FormGroup>
