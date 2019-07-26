@@ -5,40 +5,44 @@ import { Filings } from '../components/Card';
 import { filings } from '../config';
 
 class XBRLHistoricalPage extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
   state = {
     time: Date.now(),
     data: null,
-    intervalIsSet: false,
     filter: [],
-    numberItems: 200,
+    numberItems: 100,
     availableFormTypes: [],
     formdropdownOpen: false,
     numberdropdownOpen: false
   }
 
-  componentDidMount() {
-    //this.getDataFromDb();
-    if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 10000);
-      this.setState({ intervalIsSet: interval });
-    }
+  async componentDidMount() {
+    this._isMounted = true;
+    await this.getDataFromDb();
+    setInterval(this.getDataFromDb, 10000);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     clearInterval(this.interval);
   }
 
-  getDataFromDb = () => {
-    axios.get('/api/edgar/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
-      if (!this.state.filter.length) {
-        this.setState({
-          data: res.data,
-          availableFormTypes: [...new Set(res.data.map(a => a.formType))],
-          filter: [...new Set(res.data.map(a => a.formType))]
-        });
-      }
-    });
+  getDataFromDb = async () => {
+    if (this._isMounted) {
+      await axios.get('/api/edgar/getHistoricalData', { params: { number: this.state.numberItems } }).then(res => {
+        if (!this.state.filter.length) {
+          this.setState({
+            data: res.data,
+            availableFormTypes: [...new Set(res.data.map(a => a.formType))],
+            filter: [...new Set(res.data.map(a => a.formType))]
+          });
+        }
+      });
+
+    }
   };
 
   toggleFormType = () => {
@@ -63,20 +67,25 @@ class XBRLHistoricalPage extends React.Component {
 
   render() {
     const { data, filter, availableFormTypes, numberItems } = this.state;
-    var numberFilter = [5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
+    var numberFilter = ["All", 5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000];
     return (
       <div className="px-3 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
           <h1 className="mr-auto flex-column">XBRL Historical Filings</h1>
           <div className="d-flex flex-wrap justify-content-end">
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
-              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
+              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
               <DropdownMenu>
-                {numberFilter.map((number, index) => (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{numberFilter[index - 1] || 0} - {number}</DropdownItem>))}
+                {numberFilter.map((number, index) => {
+                  if (!index) {
+                    return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{number}</DropdownItem>);
+                  }
+                  return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
+                })}
               </DropdownMenu>
             </Dropdown>
             <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
-              <DropdownToggle className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
+              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
                 {availableFormTypes.map((formType, index) => {
@@ -98,7 +107,7 @@ class XBRLHistoricalPage extends React.Component {
           </div>
         </div>
         <Row className="d-flex justify-content-center flex-grow-1">
-          <Filings data={data} filter={filter} number={numberItems} />
+          <Filings data={data} filter={filter} number={numberItems} apiRoute={'edgar'} />
         </Row>
       </div>
     );

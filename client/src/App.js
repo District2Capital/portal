@@ -1,36 +1,56 @@
-import React, { Suspense } from 'react';
+import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
+import { getJwt } from 'services/auth';
 import { AxiosProvider } from 'react-axios';
-import LoadingOverlay from "react-loading-overlay";
-import componentQueries from 'react-component-queries';
-import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 // Components
 import { STATE_LOGIN, STATE_SIGNUP } from 'components/AuthForm';
 import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
-import HashLoader from "react-spinners/HashLoader";
-import { toast } from 'react-toastify';
 import './styles/reduction.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Pages
+// * Main Pages
 import DashboardPage from 'pages/DashboardPage';
-import AuthModalPage from 'pages/AuthModalPage';
-import AuthPage from 'pages/AuthPage';
-import FilingSpreadsheet from 'pages/FilingSpreadsheet';
-import FilingSearchPage from 'pages/FilingSearchPage';
-import FilingReaderPage from 'pages/FilingReaderPage';
+import ListsFeedPage from 'pages/ListsFeedPage';
+import MainFeedPage from 'pages/MainFeedPage';
 import SECFeedPage from 'pages/SECFeedPage';
+
+// * Lists
+import ListPage from 'pages/ListPage';
+import CreateNewListPage from 'pages/CreateNewListPage';
+
+// * Search
+import FilingSearchPage from 'pages/FilingSearchPage';
+import CompanySearchPage from 'pages/CompanySearchPage';
+import FormTypeSearchPage from 'pages/FormTypeSearchPage';
+
+// * Personal
+import MyCompaniesPage from 'pages/MyCompaniesPage';
+import MyFormTypesPage from 'pages/MyFormTypesPage';
+import SavedFilingsPage from 'pages/SavedFilingsPage';
+import ViewedFilingsPage from 'pages/ViewedFilingsPage';
+import SearchHistoryPage from 'pages/SearchHistoryPage';
+
+// * Reference Docs
+import FilingDocsPage from 'pages/FilingDocsPage';
+
+// * Others
+import FilingSpreadsheet from 'pages/FilingSpreadsheet';
 import SECHistoricalPage from 'pages/SECHistoricalPage';
-import StockPage from 'pages/StockPage';
 import XBRLFeedPage from 'pages/XBRLFeedPage';
 import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
-import FilingDocsPage from 'pages/FilingDocsPage';
-import auth from "services/auth";
 
-const getBasename = () => {
-  return `/${process.env.PUBLIC_URL.split('/').pop()}`;
-};
+// * Settings
+import SettingsPage from 'pages/SettingsPage';
+
+// import StockPage from 'pages/StockPage';
+// import FilingReaderPage from 'pages/FilingReaderPage';
+import auth from "services/auth";
+import AuthModalPage from 'pages/AuthModalPage';
+import AuthPage from 'pages/AuthPage';
+import GlobalContext from './context/global-context';
 
 toast.configure();
 
@@ -42,71 +62,187 @@ const axiosInstance = axios.create({
   }
 });
 
-class App extends React.Component {
-  state = {}
-
-  componentDidMount() {
-    const user = auth.getCurrentUser();
-    this.setState({ user });
-  }
-
-  render() {
-    const { user } = this.state;
+const App = () => {
+  const user = auth.getCurrentUser();
+  if (!user) {
     return (
-      <Suspense
-        fallback={
-          <LoadingOverlay
-            active
-            classNamePrefix={"SuspenseLoader_"}
-            spinner={<HashLoader size={85} color={"#0212cb"} />}
-          />
-        }
-      >
-        <BrowserRouter basename={getBasename()}>
-          <Switch>
-            <LayoutRoute
-              exact
-              path="/login"
-              layout={EmptyLayout}
-              component={props => (
-                <AuthPage {...props} authState={STATE_LOGIN} />
-              )}
-            />
-            {!user && <Redirect from="/" to="/login" />}
-            <LayoutRoute
-              exact
-              path="/signup"
-              layout={EmptyLayout}
-              component={props => (
-                <AuthPage {...props} authState={STATE_SIGNUP} />
-              )}
-            />
-            <LayoutRoute
-              exact
-              path="/login-modal"
-              layout={MainLayout}
-              component={AuthModalPage}
-            />
-            <AxiosProvider instance={axiosInstance}>
-              <LayoutRoute
-                exact
-                path="/"
-                layout={MainLayout}
-                component={DashboardPage}
-              />
-              <LayoutRoute
-                exact
-                path="/spreadsheet"
-                layout={MainLayout}
-                component={FilingSpreadsheet}
-              />
-              <LayoutRoute
-                exact
-                path="/search"
-                layout={MainLayout}
-                component={FilingSearchPage}
-              />
-              <LayoutRoute
+      <div>
+        <LayoutRoute
+          exact
+          path="/login"
+          layout={EmptyLayout}
+          component={props => (
+            <AuthPage {...props} authState={STATE_LOGIN} />
+          )}
+        />
+        <Redirect from="/" to="/login" />
+      </div>);
+  }
+  const value = useContext(GlobalContext);
+  useEffect(() => {
+    async function fetchData() {
+      // Fetch request to api/users and update Context lists
+      var config = {
+        params: { "x-auth-token": getJwt() }
+      };
+      await axios.get('/api/lists/getListNames', config).then(res => {
+        value['updateListNames'](res.data);
+      });
+    }
+    fetchData();
+  }, []);
+
+  return (
+    < Switch >
+      <LayoutRoute
+        exact
+        path="/login"
+        layout={EmptyLayout}
+        component={props => (
+          <AuthPage {...props} authState={STATE_LOGIN} />
+        )}
+      />
+      <LayoutRoute
+        exact
+        path="/signup"
+        layout={EmptyLayout}
+        component={props => (
+          <AuthPage {...props} authState={STATE_SIGNUP} />
+        )}
+      />
+      <LayoutRoute
+        exact
+        path="/login-modal"
+        layout={MainLayout}
+        component={AuthModalPage}
+      />
+      <AxiosProvider instance={axiosInstance}>
+        <LayoutRoute
+          exact
+          path="/"
+          layout={MainLayout}
+          component={DashboardPage}
+        />
+        <LayoutRoute
+          exact
+          path="/listfeeds"
+          layout={MainLayout}
+          component={ListsFeedPage}
+        />
+        <LayoutRoute
+          exact
+          path="/mainfeed"
+          layout={MainLayout}
+          component={MainFeedPage}
+        />
+        <LayoutRoute
+          exact
+          path="/secfilings"
+          layout={MainLayout}
+          component={SECFeedPage}
+        />
+        {(value && value.lists.lists) ? value.lists.lists.map((listName, index) => {
+          return (<LayoutRoute
+            key={listName}
+            exact
+            path={`/${listName}List`}
+            layout={MainLayout}
+            component={props => (
+              <ListPage {...props} listName={listName} />
+            )}
+          />);
+        }) : ('')}
+        <LayoutRoute
+          exact
+          path='/createnewList'
+          layout={MainLayout}
+          component={CreateNewListPage}
+        />
+        <LayoutRoute
+          exact
+          path="/search"
+          layout={MainLayout}
+          component={FilingSearchPage}
+        />
+        <LayoutRoute
+          exact
+          path="/companysearch"
+          layout={MainLayout}
+          component={CompanySearchPage}
+        />
+        <LayoutRoute
+          exact
+          path="/formtypesearch"
+          layout={MainLayout}
+          component={FormTypeSearchPage}
+        />
+        <LayoutRoute
+          exact
+          path="/mycompanies"
+          layout={MainLayout}
+          component={MyCompaniesPage}
+        />
+        <LayoutRoute
+          exact
+          path="/myformtypes"
+          layout={MainLayout}
+          component={MyFormTypesPage}
+        />
+        <LayoutRoute
+          exact
+          path="/savedfilings"
+          layout={MainLayout}
+          component={SavedFilingsPage}
+        />
+        <LayoutRoute
+          exact
+          path="/viewedfilings"
+          layout={MainLayout}
+          component={ViewedFilingsPage}
+        />
+        <LayoutRoute
+          exact
+          path="/searchhistory"
+          layout={MainLayout}
+          component={SearchHistoryPage}
+        />
+        <LayoutRoute
+          exact
+          path="/filingDocs"
+          layout={MainLayout}
+          component={FilingDocsPage}
+        />
+        <LayoutRoute
+          exact
+          path="/spreadsheet"
+          layout={MainLayout}
+          component={FilingSpreadsheet}
+        />
+        <LayoutRoute
+          exact
+          path="/sechistorical"
+          layout={MainLayout}
+          component={SECHistoricalPage}
+        />
+        <LayoutRoute
+          exact
+          path="/xbrlhistorical"
+          layout={MainLayout}
+          component={XBRLHistoricalPage}
+        />
+        <LayoutRoute
+          exact
+          path="/xbrlfilings"
+          layout={MainLayout}
+          component={XBRLFeedPage}
+        />
+        <LayoutRoute
+          exact
+          path="/settings"
+          layout={MainLayout}
+          component={SettingsPage}
+        />
+        {/*<LayoutRoute
                 exact
                 path="/filingreader"
                 layout={MainLayout}
@@ -114,77 +250,20 @@ class App extends React.Component {
               />
               <LayoutRoute
                 exact
-                path="/secfilings"
-                layout={MainLayout}
-                component={SECFeedPage}
-              />
-              <LayoutRoute
-                exact
-                path="/sechistorical"
-                layout={MainLayout}
-                component={SECHistoricalPage}
-              />
-              <LayoutRoute
-                exact
-                path="/xbrlhistorical"
-                layout={MainLayout}
-                component={XBRLHistoricalPage}
-              />
-              <LayoutRoute
-                exact
-                path="/xbrlfilings"
-                layout={MainLayout}
-                component={XBRLFeedPage}
-              />
-              <LayoutRoute
-                exact
-                path="/filingDocs"
-                layout={MainLayout}
-                component={FilingDocsPage}
-              />
-              <LayoutRoute
-                exact
                 path="/stock"
                 layout={MainLayout}
                 component={StockPage}
-              />
-              <LayoutRoute
-                exact
-                path="/register"
-                layout={MainLayout}
-                component={AuthPage}
-              />
-            </AxiosProvider>
-            <Redirect to="/" />
-          </Switch>
-        </BrowserRouter>
-      </Suspense>
-    );
-  }
+              />*/}
+        <LayoutRoute
+          exact
+          path="/register"
+          layout={MainLayout}
+          component={AuthPage}
+        />
+      </AxiosProvider>
+      <Redirect to="/" />
+    </Switch >
+  );
 }
 
-const query = ({ width }) => {
-  if (width < 575) {
-    return { breakpoint: 'xs' };
-  }
-
-  if (576 < width && width < 767) {
-    return { breakpoint: 'sm' };
-  }
-
-  if (768 < width && width < 991) {
-    return { breakpoint: 'md' };
-  }
-
-  if (992 < width && width < 1199) {
-    return { breakpoint: 'lg' };
-  }
-
-  if (width > 1200) {
-    return { breakpoint: 'xl' };
-  }
-
-  return { breakpoint: 'xs' };
-};
-
-export default componentQueries(query)(App);
+export default App;

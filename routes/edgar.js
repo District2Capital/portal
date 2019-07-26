@@ -43,7 +43,9 @@ router.get('/getHistoricalData', async (req, res) => {
     var data = null;
     try {
         let items = await db.find({});
-        items = items.splice(0, req.query.number)
+        if (req.query.number !== "All") {
+            items = items.splice(0, req.query.number)
+        }
         winston.debug("Number of items: " + items.length);
         res.status(200).send(items);
         winston.info(`${req.url} Request Successful`);

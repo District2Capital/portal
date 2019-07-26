@@ -5,18 +5,11 @@
   "author": "Andreas Bigger",
   "main": "server.js",
   "scripts": {
-<<<<<<< HEAD
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --kill-others \"cd client && npm start\" \"cd backend && npm start\"",
-    "start": "cd backend && npm run prod",
-    "heroku-postbuild": "cd client && npm run prod && cd .."
-=======
     "test": "echo \"Error: no test specified\"",
     "dev": "nodemon server.js",
     "start": "node server.js",
     "prod": "npm i && nodemon server.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
->>>>>>> restructured
+    "heroku-postbuild": "npm config set '@bit:registry' https://node.bit.dev && cd client && npm install && npm run build"
   },
   "engines": {
     "node": "11.9.0"
@@ -29,6 +22,7 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-express-serializer": "^1.0.0",
+    "cheerio": "^1.0.0-rc.3",
     "config": "^3.1.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
@@ -36,6 +30,7 @@
     "express": "^4.17.1",
     "express-request-id": "^1.4.1",
     "fast-xml-parser": "^3.12.16",
+    "fawn": "^2.1.5",
     "google-spreadsheet": "^2.0.7",
     "googleapis": "^39.2.0",
     "gs": "0.0.2",

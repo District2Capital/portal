@@ -41,6 +41,6 @@ else {
   app.listen(app.get('port'), 'localhost', function () {
     var host = this.address().address;
     var port = this.address().port;
-    console.log(`listening at http://${host}:${port}`);
+    console.log(`listening at https://${host}:${port}`);
   });
 }
