@@ -18,6 +18,7 @@ const ListContentsCard = ({ listName, ...props }) => {
         };
         await axios.get('/api/lists/getListContents', config).then(res => {
             updateContent(res.data);
+            changeLoading(false);
         }).catch(err => {
             changeLoading(false);
             console.log(err);
@@ -65,9 +66,15 @@ const ListContentsCard = ({ listName, ...props }) => {
             </Card>
         );
         if ((!fetchedContent[0].length && !fetchedContent[1].length) && !fetchedContent[2].length) {
+            [FormTypesContent, CompaniesContent, SingleFilingsContent] = ['', '', ''];
             NoContent = (
-                <div className="m-4 d-flex align-items-center flex-grow-1 justify-content-center">
-                    <h4 style={{ padding: "0.75rem" }}>No companies or filings in this list. Search and add to this list below.</h4>
+                <div className="m-4">
+                    <h4 style={{ width: "fit-content", margin: "1rem auto" }}>No companies or filings in this list. Search and add to this list below.</h4>
+                    <Row style={{ width: "fit-content", margin: "1rem auto" }}>
+                        <NavLink to="/search" className="btn m-2 btn-outline-secondary">Search Filings</NavLink>
+                        <NavLink to="/companysearch" className="btn m-2 btn-outline-secondary">Search Companies</NavLink>
+                        <NavLink to="/formtypesearch" className="btn m-2 btn-outline-secondary">Search Form Types</NavLink>
+                    </Row>
                 </div>
             );
         }
@@ -84,8 +91,13 @@ const ListContentsCard = ({ listName, ...props }) => {
     }
     else {
         NoContent = (
-            <div className="m-4 d-flex align-items-center flex-grow-1 justify-content-center">
-                <h3>No companies or filings in this list. Search and add to this list below.</h3>
+            <div className="m-4">
+                <h4 style={{ width: "fit-content", margin: "1rem auto" }}>No companies, formtypes, or filings in this list. Search and add to this list below.</h4>
+                <Row style={{ width: "fit-content", margin: "1rem auto" }}>
+                    <NavLink to="/search" className="btn m-2 btn-outline-secondary">Search Filings</NavLink>
+                    <NavLink to="/companysearch" className="btn m-2 btn-outline-secondary">Search Companies</NavLink>
+                    <NavLink to="/formtypesearch" className="btn m-2 btn-outline-secondary">Search Form Types</NavLink>
+                </Row>
             </div>
         );
     }

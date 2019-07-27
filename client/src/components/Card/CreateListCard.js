@@ -2,16 +2,35 @@ import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardBody, Row, Col, Input, Button, Label } from 'reactstrap';
 import GlobalContext from '../../context/global-context';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import { getJwt } from '../../services/auth';
 
 const CreateListCard = () => {
     const [inputState, changeInput] = useState('');
     const value = useContext(GlobalContext);
 
-    const handleEnterClicked = () => {
-        var regex = new RegExp(value.lists.lists.join("|"), "i");
-        if (value && value.lists.lists.length) {
-            if (regex.test(inputState.toLowerCase())) {
-                toast.error(`List with name "${inputState}" already exists!`, { autoClose: 3000 });
+    const handleEnterClicked = async (e) => {
+        var code = e ? e.key : 'Enter';
+        if (code === 'Enter') {
+            if (value && value.lists.lists.length) {
+                // * Test if list with same name does not already exist
+                var regex = new RegExp(value.lists.lists.join("|"), "i");
+                if (regex.test(inputState.toLowerCase())) {
+                    toast.error(`List with name "${inputState}" already exists!`, { autoClose: 3000 });
+                }
+                else {
+                    // * Post to /createNewList
+                    var params = {
+                        "x-auth-token": getJwt(),
+                        'listName': inputState
+                    };
+
+                    await axios.post('api/lists/createNewList', params).then(res => {
+                        if (res.status === 200) {
+                            toast.success(`List "${inputState}" created!`, { autoClose: 3000 });
+                        }
+                    });
+                }
             }
         }
     }
@@ -27,7 +46,7 @@ const CreateListCard = () => {
                             name="list"
                             placeholder="List Name"
                             onChange={(e) => changeInput(e.target.value)}
-                            onKeyPress={() => handleEnterClicked()}
+                            onKeyPress={(e) => handleEnterClicked(e)}
                         />
                     </Col>
                     <Col className="my-2" sm={2}>

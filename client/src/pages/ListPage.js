@@ -1,17 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ListFilingsCard from '../components/Card/ListFilingsCard';
 import ListContentsCard from '../components/Card/ListContentsCard';
+import GlobalContext from '../context/global-context';
+import SECFilingsCard from '../components/Card/SECFilingsCard';
 
 const ListPage = ({ listName, ...props }) => {
     // List Filings Card
     // List Contents
 
-    console.log([].length);
+    const value = useContext(GlobalContext);
+
+    let content;
+    if (value && value.lists.lists.includes(listName)) {
+        content = (
+            <SECFilingsCard listName={listName} count={15} />
+        );
+    }
     return (
         <div>
             <h1 className="m-2">{listName} List</h1>
             <ListFilingsCard listName={listName} />
             <ListContentsCard listName={listName} />
+            {content}
         </div>
     );
 }

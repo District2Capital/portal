@@ -18,6 +18,7 @@ const ListFilingsCard = ({ listName, ...props }) => {
         };
         await axios.get('/api/lists/getListFilings', config).then(res => {
             updateFilings(res.data);
+            changeLoading(false);
         }).catch(err => {
             changeLoading(false);
             console.log(err);
@@ -49,7 +50,7 @@ const ListFilingsCard = ({ listName, ...props }) => {
     else {
         content = (
             <div className="m-4 d-flex align-items-center flex-grow-1 justify-content-center">
-                <h3>No Filings From List</h3>
+                <h4>No Filings From List</h4>
             </div>
         );
     }
