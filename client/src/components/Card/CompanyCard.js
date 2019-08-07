@@ -60,9 +60,7 @@ const CompanyCard = ({ company, searchHandler, searchCard }) => {
     const addToList = async (companyItem, listname) => {
         var params = {
             "x-auth-token": getJwt(),
-            CompanyName: companyItem.companyName,
-            cik: companyItem.cik,
-            companyLocation: companyItem.location,
+            Company: companyItem,
             ListName: listname
         };
         await axios.post(`/api/lists/addCompanyToList`, params).then(res => {

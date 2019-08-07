@@ -73,12 +73,16 @@ router.post('/addFormTypeToList', async (req, res) => {
         const token = req.body["x-auth-token"];
         const ListName = req.body["ListName"];
         const FormType = req.body["FormType"];
+        const BadgeColor = req.body["BadgeColor"];
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         let userLists = await User.findById(decoded._id).select("myLists");
         if (!userLists.myLists[ListName]['FormTypes'].includes(FormType)) {
             const myArray = `myLists.${ListName}.FormTypes`;
             const pushObject = {
-                [myArray]: FormType
+                [myArray]: {
+                    "FormType": FormType,
+                    "BadgeColor": BadgeColor
+                }
             };
             await User.updateOne({ "_id": decoded._id }, {
                 $push: pushObject
