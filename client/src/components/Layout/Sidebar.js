@@ -27,8 +27,6 @@ import {
   NavLink as BSNavLink,
 } from 'reactstrap';
 import bn from 'utils/bemnames';
-import axios from 'axios';
-import { getJwt } from 'services/auth';
 import GlobalContext from '../../context/global-context';
 
 const navItems = [

@@ -68,6 +68,54 @@ router.post('/createNewList', async (req, res) => {
     }
 });
 
+router.post('/addFormTypeToList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const ListName = req.body["ListName"];
+        const FormType = req.body["FormType"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        if (!userLists.myLists[ListName]['FormTypes'].includes(FormType)) {
+            const myArray = `myLists.${ListName}.FormTypes`;
+            const pushObject = {
+                [myArray]: FormType
+            };
+            await User.updateOne({ "_id": decoded._id }, {
+                $push: pushObject
+            });
+        }
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
+router.post('/addCompanyToList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const ListName = req.body["ListName"];
+        const Company = req.body["Company"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        if (!userLists.myLists[ListName]['Companies'].includes(Company)) {
+            const myArray = `myLists.${ListName}.Companies`;
+            const pushObject = {
+                [myArray]: Company
+            };
+            await User.updateOne({ "_id": decoded._id }, {
+                $push: pushObject
+            });
+        }
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
 router.get("/getListFilings", async (req, res) => {
     try {
         const token = req.query["x-auth-token"];
