@@ -285,13 +285,6 @@ router.post("/updateViewedFilings", async (req, res) => {
     try {
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         var user = await User.findById(decoded._id).select("-password");
-        /*new Fawn.Task()
-            .update(
-                "users",
-                { "_id": decoded._id },
-                { $addToSet: { "recents": req.body.htmlLink } }
-            )
-            .run();*/
         var results = await User.updateOne({ "_id": decoded._id }, {
             $push: {
                 "recentFilings": {
