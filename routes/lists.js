@@ -71,6 +71,33 @@ router.get('/getFormTypeLists', async (req, res) => {
     }
 });
 
+router.get('/getCompanyLists', async (req, res) => {
+    try {
+        const token = req.query["x-auth-token"];
+        const Company = req.query["CompanyCik"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        var listsWithoutCompany = [];
+        (_.keys(userLists.myLists)).forEach((list, index) => {
+            if (userLists.myLists[list].Companies) {
+                var inList = false;
+                (_.values(userLists.myLists[list].Companies)).forEach((companyItem, index) => {
+                    if (companyItem.cik == Company) {
+                        inList = true;
+                    }
+                });
+                if (!inList) {
+                    listsWithoutCompany.push(_.keys(userLists.myLists)[index]);
+                }
+            }
+        });
+        winston.info("Successfully queried", req.url);
+        res.send(listsWithoutCompany);
+    } catch (err) {
+        winston.error(`Error with ${req.url} route.`);
+    }
+});
+
 router.post('/createNewList', async (req, res) => {
     try {
         const token = req.body["x-auth-token"];

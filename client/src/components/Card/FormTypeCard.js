@@ -66,11 +66,9 @@ const FormTypeCard = ({ FormType, BadgeColor }) => {
             ListName: listname
         };
         await axios.post(`/api/lists/addFormTypeToList`, params).then(res => {
-            var index = formTypeLists.filter((formTypeName, i) => { if (formTypeName === listname) { return i; } });
-            var tempList = formTypeLists;
-            tempList = [...tempList.splice(0, index), ...formTypeLists.splice(index + 1)];
-            updateFormTypeLists(tempList);
-            console.log(tempList);
+            var index = formTypeLists.indexOf(listname);
+            formTypeLists.splice(index, 1);
+            updateFormTypeLists(formTypeLists);
         });
     }
 

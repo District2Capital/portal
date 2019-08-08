@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Card, CardBody, Button, Badge, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import GlobalContext from '../../context/global-context';
 
 const CompanyCard = ({ company, searchHandler, searchCard }) => {
     const [saved, changeSaved] = useState(false);
     const [addToListOpen, changeAddToListOpen] = useState(false);
-    const value = useContext(GlobalContext);
+    const [companyLists, updateCompanyLists] = useState([]);
 
     useEffect(() => {
         async function getSaved() {
@@ -19,6 +18,11 @@ const CompanyCard = ({ company, searchHandler, searchCard }) => {
                     if (res.data.savedCompany) {
                         changeSaved(true);
                     }
+                });
+            }
+            if (!companyLists.length) {
+                await axios.get(`/api/lists/getCompanyLists/?CompanyCik=${company.cik}`, config).then(res => {
+                    updateCompanyLists(res.data);
                 });
             }
         }
@@ -63,7 +67,11 @@ const CompanyCard = ({ company, searchHandler, searchCard }) => {
             Company: companyItem,
             ListName: listname
         };
-        await axios.post(`/api/lists/addCompanyToList`, params);
+        await axios.post(`/api/lists/addCompanyToList`, params).then(res => {
+            var index = companyLists.indexOf(listname);
+            companyLists.splice(index, 1);
+            updateCompanyLists(companyLists);
+        });
     }
 
     return (
@@ -76,7 +84,7 @@ const CompanyCard = ({ company, searchHandler, searchCard }) => {
                     <Dropdown className="p-2" isOpen={addToListOpen} toggle={toggleAddToList}>
                         <DropdownToggle outline className="w-120" style={{ boxShadow: "none" }} caret>Add To List</DropdownToggle>
                         <DropdownMenu>
-                            {value.lists.lists.map((listname, index) => {
+                            {companyLists.map((listname, index) => {
                                 return (<DropdownItem key={index} onClick={() => addToList(company, listname)}>{listname}</DropdownItem>);
                             })}
                         </DropdownMenu>
