@@ -12,7 +12,7 @@ const FilingCard = ({ badgeColor, fileLink, formType, title, filingDate }) => {
             var config = {
                 params: { "x-auth-token": getJwt() }
             };
-            if (!this.state.saved) {
+            if (!saved) {
                 await axios.get(`/api/filingdoc/verifyFilingSaved/?link=${fileLink}`, config).then(res => {
                     changeSaved(res.data.savedFiling);
                 });
@@ -54,7 +54,7 @@ const FilingCard = ({ badgeColor, fileLink, formType, title, filingDate }) => {
     };
 
     return (
-        <Card color='secondary'>
+        <Card className="m-2" color='secondary' style={{ minWidth: "250px" }}>
             <CardBody>
                 <Badge color={badgeColor}>{formType}</Badge>
                 <CardTitle className="text-light">{title}</CardTitle>

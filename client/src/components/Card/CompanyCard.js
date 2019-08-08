@@ -63,15 +63,11 @@ const CompanyCard = ({ company, searchHandler, searchCard }) => {
             Company: companyItem,
             ListName: listname
         };
-        await axios.post(`/api/lists/addCompanyToList`, params).then(res => {
-            if (res.status === 200) {
-                changeSaved(false);
-            }
-        });
+        await axios.post(`/api/lists/addCompanyToList`, params);
     }
 
     return (
-        <Card className="m-2 flex-row" style={{ minWidth: "180px", height: "min-content", width: "fit-content" }}>
+        <Card className="m-2 flex-row" style={{ minWidth: "min-content", height: "min-content", width: "fit-content" }}>
             <CardBody className="p-2" style={{ margin: "auto 5px" }}><div><Badge className="mr-1" color='light'>{company.location}</Badge>{company.companyName}</div></CardBody>
             <div style={{ margin: "auto 0" }}>
                 <div style={{ width: "fit-content", textAlign: "center" }}>

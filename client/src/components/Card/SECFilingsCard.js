@@ -3,6 +3,7 @@ import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import LoadingSpinner from '../LoadingSpinner';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
+import FilingCard from './FilingCard';
 
 const SECFilingsCard = ({ listName, count, ...args }) => {
     let content;
@@ -29,20 +30,21 @@ const SECFilingsCard = ({ listName, count, ...args }) => {
         fetchRecentSECFilings();
     }, []);
 
-    if (!content) {
-        if (isLoading) {
-            content = (<LoadingSpinner />);
-        }
-        else {
-            content = (<h4 style={{ margin: "1rem auto", padding: "0.75rem" }}>Could not fetch SEC Filings</h4>);
-        }
+    if (isLoading) {
+        content = (<LoadingSpinner />);
+    }
+    else {
+        console.dir(fetchedContent);
+        console.log(fetchedContent.items);
+        if (fetchedContent.items) { content = fetchedContent.items.map(({ fileLink, filingDate, formType, title }) => (<FilingCard formType={formType} title={title} filingDate={filingDate} fileLink={fileLink} />)); }
+        else { content = (<h4 style={{ margin: "1rem auto", padding: "0.75rem" }}>Could not fetch SEC Filings</h4>); }
     }
 
     return (
         <Card className="m-2">
             <CardHeader>Recent SEC Filings</CardHeader>
             <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
-                <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+                <Row style={{ overflowX: "scroll" }} className="flex-row m-2 d-flex flex-nowrap flex-grow-1">
                     {content}
                 </Row>
             </CardBody>

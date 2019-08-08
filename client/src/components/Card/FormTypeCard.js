@@ -7,19 +7,26 @@ import GlobalContext from '../../context/global-context';
 const FormTypeCard = ({ FormType, BadgeColor }) => {
     const [saved, changeSaved] = useState(false);
     const [addToListOpen, changeAddToListOpen] = useState(false);
-    const value = useContext(GlobalContext);
+    // const value = useContext(GlobalContext);
+    const [formTypeLists, updateFormTypeLists] = useState([]);
+
+    async function fetchData() {
+        var config = {
+            params: { "x-auth-token": getJwt() }
+        };
+        if (!saved) {
+            await axios.get(`/api/users/verifySavedFormType/?FormType=${FormType}`, config).then(res => {
+                changeSaved(res.data.savedFormType);
+            });
+        }
+        if (!formTypeLists.length) {
+            await axios.get(`/api/lists/getFormTypeLists/?FormType=${FormType}`, config).then(res => {
+                updateFormTypeLists(res.data);
+            });
+        }
+    }
 
     useEffect(() => {
-        async function fetchData() {
-            var config = {
-                params: { "x-auth-token": getJwt() }
-            };
-            if (!saved) {
-                await axios.get(`/api/users/verifySavedFormType/?FormType=${FormType}`, config).then(res => {
-                    changeSaved(res.data.savedFormType);
-                });
-            }
-        }
         fetchData();
     }, []);
 
@@ -61,14 +68,20 @@ const FormTypeCard = ({ FormType, BadgeColor }) => {
             ListName: listname
         };
         await axios.post(`/api/lists/addFormTypeToList`, params).then(res => {
-            if (res.status === 200) {
-                changeSaved(false);
-            }
+            var index = formTypeLists.filter((formTypeName, i) => { if (formTypeName === FormType) { return i; } });
+            var tempList = formTypeLists;
+            tempList = [...tempList.splice(0, index), ...formTypeLists.splice(index + 1)];
+            updateFormTypeLists(tempList);
+            console.log(tempList);
         });
     }
 
+    // {value.lists.lists.map((listname, index) => {
+    //     return (<DropdownItem key={index} onClick={() => addToList(FormType, listname)}>{listname}</DropdownItem>);
+    // })}
+
     return (
-        <Card className="m-2 flex-row" style={{ minWidth: "150px", height: "fit-content", width: "fit-content" }}>
+        <Card className="m-2 flex-row" style={{ minWidth: "max-content", height: "fit-content", width: "fit-content" }}>
             <CardBody className="p-2" style={{ margin: "auto 5px" }}><div><Badge className="mr-1" color={BadgeColor}>{FormType}</Badge></div></CardBody>
             <div style={{ margin: "auto 0" }}>
                 <div style={{ width: "min-content", textAlign: "center" }}>
@@ -76,9 +89,9 @@ const FormTypeCard = ({ FormType, BadgeColor }) => {
                     <Dropdown className="p-2" isOpen={addToListOpen} toggle={toggleAddToList}>
                         <DropdownToggle outline className="w-120" style={{ boxShadow: "none" }} caret>Add To List</DropdownToggle>
                         <DropdownMenu>
-                            {value.lists.lists.map((listname, index) => {
+                            {formTypeLists.length ? formTypeLists.map((listname, index) => {
                                 return (<DropdownItem key={index} onClick={() => addToList(FormType, listname)}>{listname}</DropdownItem>);
-                            })}
+                            }) : ''}
                         </DropdownMenu>
                     </Dropdown>
                 </div>

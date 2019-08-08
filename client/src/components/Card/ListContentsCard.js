@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
-import FormTypeCard from './FormTypeCard';
-import CompanyCard from './CompanyCard';
+import FormTypeInListCard from './FormTypeInListCard';
+import CompanyInListCard from './CompanyInListCard';
 import FilingCard from './FilingCard';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
 
-const ListContentsCard = ({ listName, ...props }) => {
+const ListContentsCard = ({ listName }) => {
     const [fetchedContent, updateContent] = useState([]);
     const [isLoading, changeLoading] = useState(false);
 
     const fetchListContents = async () => {
+        changeLoading(true);
         // Fetch filings array from database
         var config = {
             params: { "x-auth-token": getJwt(), "listName": listName }
         };
         await axios.get('/api/lists/getListContents', config).then(res => {
-            updateContent(res.data);
+            if (res.data) {
+                updateContent(res.data);
+            }
             changeLoading(false);
         }).catch(err => {
             changeLoading(false);
@@ -26,22 +29,21 @@ const ListContentsCard = ({ listName, ...props }) => {
     };
 
     useEffect(() => {
-        changeLoading(true);
         fetchListContents();
     }, []);
 
-    let FormTypesContent;
-    let CompaniesContent;
-    let SingleFilingsContent;
-    let LoadingSpinner;
-    let NoContent;
-    if (fetchedContent.length) {
+    let FormTypesContent = '';
+    let CompaniesContent = '';
+    let SingleFilingsContent = '';
+    let LoadingSpinner = '';
+    let NoContent = '';
+    if (fetchedContent && fetchedContent.length) {
         FormTypesContent = (
             <Card className="col-lg m-2 p-0">
                 <CardHeader>FormTypes</CardHeader>
                 <Row style={{ overflowX: "scroll" }} className="flex-row m-2 d-flex flex-nowrap flex-grow-1">
-                    {fetchedContent[0].map(({ FormType, BadgeColor }, index) => <FormTypeCard key={FormType} BadgeColor={BadgeColor} FormType={FormType} />)}
-                    {!fetchedContent[0].length ? (<h4 style={{ padding: "0.75rem" }}>No FormTypes in {listName} list. Search for FormTypes: <NavLink to="/formtypesearch" className="btn m-2 btn-outline-secondary">Search Form Types</NavLink></h4>) : ''}
+                    {fetchedContent[0].map(({ FormType, BadgeColor }, index) => <FormTypeInListCard key={FormType + index} listName={listName} updateContent={fetchListContents} BadgeColor={BadgeColor} FormType={FormType} />)}
+                    {!fetchedContent[0].length ? (<h4 style={{ padding: "0.75rem" }}>No Form Types in {listName} list. <NavLink to="/formtypesearch" className="btn m-2 btn-outline-secondary">Search For Form Types</NavLink></h4>) : ''}
                 </Row>
             </Card>
         );
@@ -49,8 +51,8 @@ const ListContentsCard = ({ listName, ...props }) => {
             <Card className="col-lg m-2 p-0">
                 <CardHeader>Companies</CardHeader>
                 <Row style={{ overflowX: "scroll" }} className="flex-row m-2 d-flex flex-nowrap flex-grow-1">
-                    {fetchedContent[1].map((company, index) => <CompanyCard key={index} company={company} />)}
-                    {!fetchedContent[1].length ? (<h4 style={{ padding: "0.75rem" }}>No Companies in {listName} list. Search for Companies: <NavLink to="/companysearch" className="btn m-2 btn-outline-secondary">Search Companies</NavLink></h4>) : ''}
+                    {fetchedContent[1].map((company, index) => <CompanyInListCard key={index} listName={listName} updateContent={fetchListContents} company={company} />)}
+                    {!fetchedContent[1].length ? (<h4 style={{ padding: "0.75rem" }}>No Companies in {listName} list. <NavLink to="/companysearch" className="btn m-2 btn-outline-secondary">Search For Companies</NavLink></h4>) : ''}
                 </Row>
             </Card>
         );
@@ -60,7 +62,7 @@ const ListContentsCard = ({ listName, ...props }) => {
                 <Row style={{ overflowX: "scroll" }} className="flex-row m-2 d-flex flex-nowrap flex-grow-1">
                     {fetchedContent[2].map(({ badgeColor, fileLink, formType, title, filingDate }, index) => <FilingCard badgeColor={badgeColor} fileLink={fileLink} formType={formType} title={title} filingDate={filingDate} />)}
                     {!fetchedContent[2].length ? (
-                        <h4 style={{ padding: "0.75rem" }}>No individual filings in {listName} list. Search for individual filings: <NavLink to="/search" className="btn m-2 btn-outline-secondary">Search Filings</NavLink></h4>
+                        <h4 style={{ padding: "0.75rem" }}>No individual filings in {listName} list. <NavLink to="/search" className="btn m-2 btn-outline-secondary">Search For Filings</NavLink></h4>
                     ) : ''}
                 </Row>
             </Card>
@@ -103,7 +105,7 @@ const ListContentsCard = ({ listName, ...props }) => {
     }
     return (
         <Card className="m-2">
-            <CardHeader>List Contents</CardHeader>
+            <CardHeader>Edit List Contents</CardHeader>
             <CardBody style={{ margin: "0.5rem", padding: "0px" }}>
                 {FormTypesContent}
                 {CompaniesContent}

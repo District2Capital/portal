@@ -44,6 +44,33 @@ router.get('/getListContents', async (req, res) => {
     }
 });
 
+router.get('/getFormTypeLists', async (req, res) => {
+    try {
+        const token = req.query["x-auth-token"];
+        const FormType = req.query["FormType"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        var listsWithoutFormType = [];
+        (_.keys(userLists.myLists)).forEach((list, index) => {
+            if (userLists.myLists[list].FormTypes) {
+                var inList = false;
+                (_.values(userLists.myLists[list].FormTypes)).forEach((formTypeItem, index) => {
+                    if (formTypeItem.FormType === FormType) {
+                        inList = true;
+                    }
+                });
+                if (!inList) {
+                    listsWithoutFormType.push(_.keys(userLists.myLists)[index]);
+                }
+            }
+        });
+        winston.info("Successfully queried", req.url);
+        res.send(listsWithoutFormType);
+    } catch (err) {
+        winston.error(`Error with ${req.url} route.`);
+    }
+});
+
 router.post('/createNewList', async (req, res) => {
     try {
         const token = req.body["x-auth-token"];
@@ -96,6 +123,35 @@ router.post('/addFormTypeToList', async (req, res) => {
     }
 });
 
+router.post('/removeFormTypeFromList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const ListName = req.body["ListName"];
+        const FormType = req.body["FormType"];
+        const BadgeColor = req.body["BadgeColor"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        if (userLists.myLists[ListName]['FormTypes'].filter((formtype) => formtype.FormType === FormType)) {
+            const formtypeIndex = userLists.myLists[ListName]['FormTypes'].filter((formtype, index) => { if (formtype.FormType === FormType) { return index; } });
+            const myArray = `myLists.${ListName}.FormTypes`;
+            const pullObject = {
+                [myArray]: {
+                    'FormType': FormType,
+                    'BadgeColor': BadgeColor
+                }
+            };
+            await User.updateOne({ "_id": decoded._id }, {
+                $pull: pullObject
+            });
+        }
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
 router.post('/addCompanyToList', async (req, res) => {
     try {
         const token = req.body["x-auth-token"];
@@ -110,6 +166,31 @@ router.post('/addCompanyToList', async (req, res) => {
             };
             await User.updateOne({ "_id": decoded._id }, {
                 $push: pushObject
+            });
+        }
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
+router.post('/removeCompanyFromList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const ListName = req.body["ListName"];
+        const Company = req.body["Company"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        if (userLists.myLists[ListName]['Companies'].filter((company) => company.cik === Company.cik)) {
+            const companyIndex = userLists.myLists[ListName]['Companies'].filter((company, index) => { if (company.cik === Company.cik) { return index; } });
+            const myArray = `myLists.${ListName}.Companies`;
+            const pullObject = {
+                [myArray]: Company
+            };
+            await User.updateOne({ "_id": decoded._id }, {
+                $pull: pullObject
             });
         }
         winston.info("Successfully queried", req.url);
