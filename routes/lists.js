@@ -122,6 +122,26 @@ router.post('/createNewList', async (req, res) => {
     }
 });
 
+router.post('/deleteList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const listName = req.body["listName"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        const deleteList = `myLists.${listName}`;
+        var _unset = {};
+        _unset[deleteList] = '';
+        await User.update({ "_id": decoded._id }, {
+            $unset: _unset
+        });
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
 router.post('/addFormTypeToList', async (req, res) => {
     try {
         const token = req.body["x-auth-token"];

@@ -19,7 +19,7 @@ import SECFeedPage from 'pages/SECFeedPage';
 
 // * Lists
 import ListPage from 'pages/ListPage';
-import CreateNewListPage from 'pages/CreateNewListPage';
+import CreateDeletePage from 'pages/CreateDeletePage';
 
 // * Search
 import FilingSearchPage from 'pages/FilingSearchPage';
@@ -154,9 +154,9 @@ const App = () => {
         }) : ('')}
         <LayoutRoute
           exact
-          path='/createnewList'
+          path='/createDeleteList'
           layout={MainLayout}
-          component={CreateNewListPage}
+          component={CreateDeletePage}
         />
         <LayoutRoute
           exact
