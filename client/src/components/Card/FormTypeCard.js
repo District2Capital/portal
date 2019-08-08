@@ -2,12 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Card, CardBody, Button, Badge, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import GlobalContext from '../../context/global-context';
 
 const FormTypeCard = ({ FormType, BadgeColor }) => {
     const [saved, changeSaved] = useState(false);
     const [addToListOpen, changeAddToListOpen] = useState(false);
-    // const value = useContext(GlobalContext);
     const [formTypeLists, updateFormTypeLists] = useState([]);
 
     async function fetchData() {
@@ -68,7 +66,7 @@ const FormTypeCard = ({ FormType, BadgeColor }) => {
             ListName: listname
         };
         await axios.post(`/api/lists/addFormTypeToList`, params).then(res => {
-            var index = formTypeLists.filter((formTypeName, i) => { if (formTypeName === FormType) { return i; } });
+            var index = formTypeLists.filter((formTypeName, i) => { if (formTypeName === listname) { return i; } });
             var tempList = formTypeLists;
             tempList = [...tempList.splice(0, index), ...formTypeLists.splice(index + 1)];
             updateFormTypeLists(tempList);
