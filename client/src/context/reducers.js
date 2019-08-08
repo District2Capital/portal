@@ -16,7 +16,8 @@ const createList = (listName, state) => {
 const deleteList = (listName, state) => {
     // Post request to delete list
     // return all lists
-    state.lists.push(listName);
+    var index = state.lists.indexOf(listName);
+    state.lists.splice(index, 1);
     return { ...state };
 };
 

@@ -22,7 +22,7 @@ const DeleteListCard = () => {
                 await axios.post('api/lists/deleteList', params).then(res => {
                     if (res.status === 200) {
                         toast.warn(`List "${inputState}" Deleted!`, { autoClose: 3000 });
-                        value.createNewList(inputState);
+                        value.deleteList(inputState);
                     }
                 });
             }
@@ -38,21 +38,22 @@ const DeleteListCard = () => {
 
     return (
         <Card className="m-2">
-            <CardHeader>Delete List (case sensitive)</CardHeader>
+            <CardHeader style={{ color: "red" }}>Delete List (case sensitive)</CardHeader>
             <CardBody style={{ margin: "0.5rem", padding: "0px" }}>
                 <Row>
                     <Col className="my-2" sm={10}>
                         <Input
                             type="list"
                             name="list"
+                            style={{ boxShadow: "0 0 0 #ff0000", borderColor: "rgb(199, 199, 199)" }}
                             placeholder="List Name"
                             onChange={(e) => changeInput(e.target.value)}
                             onKeyPress={(e) => handleEnterClicked(e)}
                         />
                     </Col>
                     <Col className="my-2" sm={2}>
-                        <Button outline className="float-right" onClick={() => handleEnterClicked()}>Delete</Button>
-                        <Modal style={{ width: "fit-content", maxHeight: "140px" }} isOpen={modalToggleState} toggle={() => toggleModal(false)}>
+                        <Button outline color="danger" className="float-right" onClick={() => handleEnterClicked()}>Delete</Button>
+                        <Modal style={{ width: "fit-content", maxHeight: "160px" }} isOpen={modalToggleState} toggle={() => toggleModal(false)}>
                             <ModalHeader toggle={() => toggleModal(false)}>Are You Sure You Want To Delete "{inputState}"?</ModalHeader>
                             <ModalFooter>
                                 <Button style={{ margin: "0 auto" }} outline color="danger" onClick={() => deleteList()}>Delete</Button>
