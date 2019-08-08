@@ -9,12 +9,14 @@ const updateListNames = (newlists) => {
 const createList = (listName, state) => {
     // Post request to create new list
     // return all lists
+    state.lists.push(listName);
     return { ...state };
 };
 
 const deleteList = (listName, state) => {
     // Post request to delete list
     // return all lists
+    state.lists.push(listName);
     return { ...state };
 };
 

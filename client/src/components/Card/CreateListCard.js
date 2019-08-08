@@ -28,6 +28,8 @@ const CreateListCard = () => {
                     await axios.post('api/lists/createNewList', params).then(res => {
                         if (res.status === 200) {
                             toast.success(`List "${inputState}" created!`, { autoClose: 3000 });
+                            console.dir(value);
+                            value.createNewList(inputState);
                         }
                     });
                 }
