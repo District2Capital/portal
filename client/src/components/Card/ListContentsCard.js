@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import FormTypeInListCard from './FormTypeInListCard';
 import CompanyInListCard from './CompanyInListCard';
-import FilingCard from './FilingCard';
+import RemoveFilingCardFromList from './RemoveFilingCardFromList';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
@@ -60,7 +60,7 @@ const ListContentsCard = ({ listName }) => {
             <Card className="col-lg m-2 p-0">
                 <CardHeader>Individual Filings</CardHeader>
                 <Row style={{ overflowX: "scroll" }} className="flex-row m-2 d-flex flex-nowrap flex-grow-1">
-                    {fetchedContent[2].map(({ badgeColor, fileLink, formType, title, filingDate }, index) => <FilingCard badgeColor={badgeColor} fileLink={fileLink} formType={formType} title={title} filingDate={filingDate} />)}
+                    {fetchedContent[2].map((Filing, index) => <RemoveFilingCardFromList key={Filing} Filing={Filing} listName={listName} updateContent={fetchListContents} />)}
                     {!fetchedContent[2].length ? (
                         <h4 style={{ padding: "0.75rem" }}>No individual filings in {listName} list. <NavLink to="/search" className="btn m-2 btn-outline-secondary">Search For Filings</NavLink></h4>
                     ) : ''}

@@ -299,6 +299,30 @@ router.post('/addFilingToList', async (req, res) => {
     }
 });
 
+router.post('/removeFilingFromList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const filingItem = req.body['filingItem'];
+        const ListName = req.body["ListName"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        if (!userLists.myLists[ListName]['IndividualFilings'].includes(filingItem)) {
+            const myArray = `myLists.${ListName}.IndividualFilings`;
+            const pushObject = {
+                [myArray]: filingItem
+            };
+            await User.updateOne({ "_id": decoded._id }, {
+                $pull: pushObject
+            });
+        }
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
 router.get("/getListFilings", async (req, res) => {
     try {
         const token = req.query["x-auth-token"];
