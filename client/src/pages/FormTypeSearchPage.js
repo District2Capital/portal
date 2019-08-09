@@ -37,7 +37,7 @@ class FormTypeSearchPage extends Component {
         var FormTypeArray = [];
         values.map((value, valueindex) => {
             value.filingArray.map((filing, filingindex) => {
-                if (filing.includes(this.state.FormTypeQuery.toUpperCase())) {
+                if (this.state.FormTypeQuery && filing.includes(this.state.FormTypeQuery.toUpperCase())) {
                     FormTypeArray.push({ FormType: filing, BadgeColor: value.color });
                 }
                 return ({});
@@ -88,7 +88,7 @@ class FormTypeSearchPage extends Component {
         if (this.props.location.searchStrings && !this.props.location.searchExecuted) {
             this.props.location.searchExecuted = true;
             let { companySearchString, cikSearchString, formTypeSearchString } = this.props.location.searchStrings;
-            this.searchHandler(companySearchString, formTypeSearchString, cikSearchString);
+            this.searchHandler(formTypeSearchString, formTypeSearchString, cikSearchString);
         }
         return (
             <div className="px-4 h-100 d-flex overflow-hidden flex-column">
