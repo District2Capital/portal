@@ -9,11 +9,13 @@ const ListsFeedPage = () => {
     let content = '';
 
     if (!value.lists.lists.length) {
-        content = (<Card className="m-2">
-            <CardBody className="text-center">
-                <h4>No lists to fetch filings. <NavLink to="/createDeleteList" className="btn m-2 btn-outline-secondary">Create List</NavLink></h4>
-            </CardBody>
-        </Card>);
+        content = (
+            <Card className="m-2">
+                <CardBody className="text-center">
+                    <h4>No lists to fetch filings. <NavLink to="/createDeleteList" className="btn m-2 btn-outline-secondary">Create List</NavLink></h4>
+                </CardBody>
+            </Card>
+        );
     }
     else {
         content = (

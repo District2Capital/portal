@@ -98,6 +98,33 @@ router.get('/getCompanyLists', async (req, res) => {
     }
 });
 
+router.get('/getFilingLists', async (req, res) => {
+    try {
+        const token = req.query["x-auth-token"];
+        const title = req.query["title"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        var listsWithoutFiling = [];
+        (_.keys(userLists.myLists)).forEach((list, index) => {
+            if (userLists.myLists[list].IndividualFilings) {
+                var inList = false;
+                (_.values(userLists.myLists[list].IndividualFilings)).forEach((FilingItem, index) => {
+                    if (FilingItem.title === title) {
+                        inList = true;
+                    }
+                });
+                if (!inList) {
+                    listsWithoutFiling.push(_.keys(userLists.myLists)[index]);
+                }
+            }
+        });
+        winston.info("Successfully queried", req.url);
+        res.send(listsWithoutFiling);
+    } catch (err) {
+        winston.error(`Error with ${req.url} route.`);
+    }
+});
+
 router.post('/createNewList', async (req, res) => {
     try {
         const token = req.body["x-auth-token"];
@@ -238,6 +265,30 @@ router.post('/removeCompanyFromList', async (req, res) => {
             };
             await User.updateOne({ "_id": decoded._id }, {
                 $pull: pullObject
+            });
+        }
+        winston.info("Successfully queried", req.url);
+        res.status(200).send('User saved successfully.');
+    } catch (err) {
+        winston.error('Internal Server Error');
+        res.status(500).send('Internal Server Error. Please contact developer.');
+    }
+});
+
+router.post('/addFilingToList', async (req, res) => {
+    try {
+        const token = req.body["x-auth-token"];
+        const filingItem = req.body['filingItem'];
+        const ListName = req.body["ListName"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let userLists = await User.findById(decoded._id).select("myLists");
+        if (!userLists.myLists[ListName]['IndividualFilings'].includes(filingItem)) {
+            const myArray = `myLists.${ListName}.IndividualFilings`;
+            const pushObject = {
+                [myArray]: filingItem
+            };
+            await User.updateOne({ "_id": decoded._id }, {
+                $push: pushObject
             });
         }
         winston.info("Successfully queried", req.url);
