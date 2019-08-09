@@ -28,7 +28,7 @@ const RemoveFilingCardFromList = ({ Filing, updateContent, listName }) => {
                 <ListGroupItem>Filing Date: {filingDate}</ListGroupItem>
                 <ListGroupItem>
                     <div className="d-flex justify-content-center">
-                        <Button className="m-2" color="danger" outline onClick={() => removeFromList()}>Remove</Button>
+                        <Button className="m-1" color="danger" outline onClick={() => removeFromList()}>Remove</Button>
                         <ViewModalLogic badgeColor={badgeColor} fileLink={fileLink} formType={formType} filingDate={filingDate} title={title} />
                     </div>
                 </ListGroupItem>
