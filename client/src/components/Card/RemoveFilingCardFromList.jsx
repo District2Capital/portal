@@ -18,7 +18,7 @@ const RemoveFilingCardFromList = ({ Filing, updateContent, listName }) => {
     }
 
     return (
-        <Card className="m-2" color='secondary' style={{ minWidth: "250px" }}>
+        <Card className="m-2" color='secondary' style={{ width: "250px" }}>
             <CardBody>
                 <Badge color={badgeColor}>{formType}</Badge>
                 <CardTitle className="text-light">{title}</CardTitle>
