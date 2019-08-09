@@ -56,7 +56,7 @@ const ListFilingsCard = ({ listName, ...props }) => {
     }
     return (
         <Card className="m-2">
-            <CardHeader>List Filings</CardHeader>
+            <CardHeader>{listName} List Filings</CardHeader>
             <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
                 <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
                     {content}
