@@ -36,11 +36,13 @@ class CompanySearchForm extends React.Component {
                 <CardBody>
                     <Form>
                         <Row>
-                            <Col className="my-2" sm={2}>
-                                <Label for="company"><MdAccountBalance /> Company</Label>
+                            <Col className="my-2" md={2}>
+                                <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="company"><MdAccountBalance className="m-auto" /> Company</Label>
                             </Col>
-                            <Col className="my-2" sm={8}>
+                            <Col className="my-2" md={8}>
                                 <Input
+                                    style={{ width: "-webkit-fill-available" }}
+                                    className="mx-4"
                                     type="company"
                                     name="company"
                                     placeholder="Company Name"
@@ -48,7 +50,7 @@ class CompanySearchForm extends React.Component {
                                     onKeyPress={(e) => this.handleEnterClicked(e)}
                                 />
                             </Col>
-                            <Col className="my-2" sm={2}>
+                            <Col className="my-2" md={2}>
                                 <Button outline className="float-right" onClick={() => this.props.searchHandler(this.state.company)}>Search</Button>
                             </Col>
                         </Row>
