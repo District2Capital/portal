@@ -17,7 +17,6 @@ const SECFilingsCard = ({ listName, count, ...args }) => {
         };
         await axios.get('/api/sec/getData', config).then(res => {
             updateContent(res.data);
-            console.log(res.data);
             changeLoading(false);
         }).catch(err => {
             changeLoading(false);
@@ -34,8 +33,6 @@ const SECFilingsCard = ({ listName, count, ...args }) => {
         content = (<LoadingSpinner />);
     }
     else {
-        console.dir(fetchedContent);
-        console.log(fetchedContent.items);
         if (fetchedContent.items) { content = fetchedContent.items.map(({ fileLink, filingDate, formType, title }) => (<FilingCard formType={formType} title={title} filingDate={filingDate} fileLink={fileLink} />)); }
         else { content = (<h4 style={{ margin: "1rem auto", padding: "0.75rem" }}>Could not fetch SEC Filings</h4>); }
     }
