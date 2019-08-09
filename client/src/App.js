@@ -79,16 +79,17 @@ const App = () => {
       </div>);
   }
   const value = useContext(GlobalContext);
+  const fetchData = async () => {
+    // Fetch request to api/users and update Context lists
+    var config = {
+      params: { "x-auth-token": getJwt() }
+    };
+    await axios.get('/api/lists/getListNames', config).then(res => {
+      value['updateListNames'](res.data);
+    });
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      // Fetch request to api/users and update Context lists
-      var config = {
-        params: { "x-auth-token": getJwt() }
-      };
-      await axios.get('/api/lists/getListNames', config).then(res => {
-        value['updateListNames'](res.data);
-      });
-    }
     fetchData();
   }, []);
 

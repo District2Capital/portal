@@ -110,6 +110,11 @@ class FilingSearchPage extends React.Component {
   render() {
     let { recentSearches, companiesBool, data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
     var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
+    if (this.props.location.searchStrings && !this.props.location.searchExecuted) {
+      this.props.location.searchExecuted = true;
+      let { companySearchString, cikSearchString, formTypeSearchString } = this.props.location.searchStrings;
+      this.searchHandler(companySearchString, formTypeSearchString, cikSearchString);
+    }
     return (
       <div className="px-4 h-100 d-flex overflow-hidden flex-column">
         <div className="py-3 d-flex flex-row">
@@ -154,7 +159,7 @@ class FilingSearchPage extends React.Component {
           <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
             <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
               {recentSearches.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }, index) => {
-                return (<SmallRecentSearchCard key={index} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+                return (<SmallRecentSearchCard key={index} linkto="/companysearch" companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
               })}
             </Row>
           </CardBody>

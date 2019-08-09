@@ -25,7 +25,9 @@ const SmallFilingCard = ({ badgeColor, fileLink, formType, title, filingDate }) 
         }
     }
 
-    useEffect(() => fetchData(), []);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const saveFiling = async () => {
         var params = {
