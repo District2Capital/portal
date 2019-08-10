@@ -160,19 +160,16 @@ const App = () => {
           component={CreateDeletePage}
         />
         <LayoutRoute
-          exact
           path="/search"
           layout={MainLayout}
           component={FilingSearchPage}
         />
         <LayoutRoute
-          exact
           path="/companysearch"
           layout={MainLayout}
           component={CompanySearchPage}
         />
         <LayoutRoute
-          exact
           path="/formtypesearch"
           layout={MainLayout}
           component={FormTypeSearchPage}

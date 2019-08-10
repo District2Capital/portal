@@ -23,39 +23,46 @@ const FilingSearchPage = ({ ...props }) => {
   const [companyQuery, updateCompanyQuery] = useState("");
   const [showLoader, updateShowLoader] = useState(false);
   const [companiesBool, updateCompaniesBool] = useState(false);
-  const [searchExecuted, updateSearchExecuted] = useState(false);
+  const [searchRan, updateSearchRan] = useState(false);
   const numberFilter = ["All", 5, 10, 25, 50, 100, 200];
 
   useEffect(() => {
-    if (props.location.searchStrings && !props.location.searchExecuted) {
-      props.location.searchExecuted = true;
-      let companySearchString = props.location.searchStrings.companySearchString ? props.location.searchStrings.companySearchString : "";
-      let cikSearchString = props.location.searchStrings.cikSearchString ? props.location.searchStrings.cikSearchString : "";
-      let formTypeSearchString = props.location.searchStrings.formTypeSearchString ? props.location.searchStrings.formTypeSearchString : "";
+    if ((props.location.searchStrings && Object.keys(props.location.searchStrings).length)) {
+      var companySearchString = props.location.searchStrings.companySearchString ? props.location.searchStrings.companySearchString : "";
+      var cikSearchString = props.location.searchStrings.cikSearchString ? props.location.searchStrings.cikSearchString : "";
+      var formTypeSearchString = props.location.searchStrings.formTypeSearchString ? props.location.searchStrings.formTypeSearchString : "";
       searchHandler(companySearchString, formTypeSearchString, cikSearchString);
     }
-    else if (!props.location.searchExecuted) {
-      getRecentSearchData();
+    if (!props.location.searchExecuted) {
+      props.location.searchExecuted = true;
     }
-  }, [props]);
+  }, [props.location.searchExecuted]);
 
-  const getDataFromDb = async () => {
-    await updateRecentSearches();
-    await getRecentSearchData();
-    await axios.get(`/api/sec/getData/?cik=${cikQuery}&type=${typeQuery}&company=${companyQuery}`).then(res => {
+  const getDataFromDb = async (company, type, cik) => {
+    let queryString = `/api/sec/getData/?cik=${cikQuery ? cikQuery : cik}&type=${typeQuery ? typeQuery : type}&company=${companyQuery ? companyQuery : company}`;
+    if (cik) {
+      queryString = `/api/sec/getData/?cik=${cik}&type=&company=`;
+    }
+    await axios.get(queryString).then(res => {
       if (res.data.companiesBool) {
+        updateCompaniesBool(true);
         updateData(res.data.data);
-        updateCompaniesBool(res.data.companiesBool);
         updateShowLoader(false);
-        updateSearchExecuted(true);
+        updateSearchRan(true);
       }
       else {
-        updateData(res.data);
+        updateCompaniesBool(false);
+        updateData(res.data.items);
         updateAvailableFormTypes([...new Set(res.data.items.map(a => a.formType))]);
         updateFilter([...new Set(res.data.items.map(a => a.formType))]);
         updateShowLoader(false);
-        updateSearchExecuted(true);
+        updateSearchRan(true);
       }
+      updateRecentSearches();
+      updateCompanyQuery('');
+      updateCikQuery('');
+      updateTypeQuery('');
+      getRecentSearchData();
     });
   };
 
@@ -102,13 +109,12 @@ const FilingSearchPage = ({ ...props }) => {
     updateNumberItems(clickedFormType);
   }
 
-  const searchHandler = async (company, type, cik) => {
-    updateCompaniesBool(false);
+  const searchHandler = (company, type, cik) => {
+    getDataFromDb(company, type, cik);
     updateCompanyQuery(company);
     updateCikQuery(cik);
     updateTypeQuery(type);
     updateShowLoader(true);
-    await getDataFromDb();
   }
 
   return (
@@ -155,7 +161,7 @@ const FilingSearchPage = ({ ...props }) => {
         <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
           <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
             {recentSearches.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }, index) => {
-              return (<SmallRecentSearchCard key={index} linkto="/companysearch" companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+              return (<SmallRecentSearchCard key={index} linkto="/search" companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
             })}
           </Row>
         </CardBody>
@@ -164,14 +170,14 @@ const FilingSearchPage = ({ ...props }) => {
         {(companiesBool) ? (data.map((company, index) => {
           if (numberItems === "All" || index < numberItems) {
             return (
-              <Col key={index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
+              <Col key={company + index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
                 <CompanyCard searchHandler={searchHandler} searchCard={true} company={company} />
               </Col>
             );
           }
-          return (<div></div>);
+          return (<div key={company + index}></div>);
         })) : (
-            <Filings showLoader={showLoader} searchExecuted={searchExecuted} data={data.items} filter={filter} number={numberItems} />
+            <Filings showLoader={showLoader} searchExecuted={searchRan} data={data} filter={filter} number={numberItems} />
           )}
       </Row>
     </div>

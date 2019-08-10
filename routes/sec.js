@@ -9,7 +9,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 router.get('/getData', async (req, res) => {
-    try {//https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${company.cik}&type=&dateb=&owner=exclude&count=10&output=xml
+    try {//https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${company.cik}&type=&dateb=&owner=include&count=10&output=xml
         // * First case, only form type is queried
         var queryURL = '';
         var companiesBool = false;
@@ -18,7 +18,7 @@ router.get('/getData', async (req, res) => {
         }
         else if (req.query.company && !req.query.cik) {
             companiesBool = true;
-            await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?company=${req.query.company}&owner=exclude&action=getcompany`).then(async secresults => {
+            await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?company=${req.query.company}&owner=include&action=getcompany`).then(async secresults => {
                 // * Parse data with cheerio
                 // * SEC has two results - list of companies or it spits back filings
                 const $ = cheerio.load(secresults.data);
@@ -75,7 +75,7 @@ router.get('/getData', async (req, res) => {
             queryURL = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&output=atom';
         }
         else {
-            queryURL = `https://www.sec.gov/cgi-bin/browse-edgar?CIK=${req.query.cik}&company=${req.query.company}&type=${req.query.type}&owner=exclude&action=getcompany&output=atom`;
+            queryURL = `https://www.sec.gov/cgi-bin/browse-edgar?CIK=${req.query.cik}&company=${req.query.company}&type=${req.query.type}&owner=include&action=getcompany&output=atom`;
         }
         // * BREAKING CHANGE - SEC can display list of companies if company name isn't individual
         if (!companiesBool) {
@@ -136,7 +136,7 @@ router.get('/getCompanies', async (req, res) => {
     try {
         var companyString = req.query.company;
         var arrayCompanies = [];
-        await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?company=${companyString}&owner=exclude&action=getcompany`).then(async secresults => {
+        await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?company=${companyString}&owner=include&action=getcompany`).then(async secresults => {
             // * Parse data with cheerio
             // * SEC has two results - list of companies or it spits back filings
             const $ = cheerio.load(secresults.data);
