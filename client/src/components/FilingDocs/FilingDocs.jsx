@@ -1,5 +1,5 @@
 import React from 'react';
-import { filings } from '../config';
+import { filings } from '../../config';
 import FilingDocSection from './FilingDocSection';
 
 const FilingDocs = () => {

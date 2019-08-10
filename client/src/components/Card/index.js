@@ -18,6 +18,7 @@ export { default as FilingViewModalBody } from './FilingCards/FilingViewModalBod
 export { default as FollowedFilingCard } from './FilingCards/FollowedFilingCard';
 export { default as SECFilingsCard } from './FilingCards/SECFilingsCard';
 export { default as SmallFilingCard } from './FilingCards/SmallFilingCard';
+export { default as ViewModalLogic } from './FilingCards/ViewModalLogic';
 
 // * FormTypeCards Section
 export { default as FollowedFormTypeFilings } from './FormTypeCards/FollowedFormTypeFilings';
@@ -40,7 +41,7 @@ export { default as UserCard } from './UserCards/UserCard';
 export { default as UserProfileFieldsCard } from './UserCards/UserProfileFieldsCard';
 
 // * Others
-export { default as SmallRecentSearchCard } from './SmallRecentSearchCard';
+export { default as SmallRecentSearchCard } from '../Search/SmallRecentSearchCard';
 
 
 

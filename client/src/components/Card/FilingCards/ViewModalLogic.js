@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import FilingViewModalBody from './Card/FilingCards/FilingViewModalBody';
+import { FilingViewModalBody } from 'components/Card';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import {

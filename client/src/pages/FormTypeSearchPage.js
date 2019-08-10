@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { Card, CardHeader, CardBody, Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import FormTypeSearchForm from 'components/FormTypeSearchForm';
-import { FormTypeCard } from 'components/Card';
+import { FormTypeSearchForm } from 'components/Search';
+import { FormTypeCard, SmallRecentSearchCard } from 'components/Card';
 import { filings } from '../config';
-import { SmallRecentSearchCard } from 'components/Card';
 
 class FormTypeSearchPage extends Component {
 

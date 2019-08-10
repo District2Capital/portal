@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, Col, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { filings } from '../config';
-import SearchForm from 'components/SearchForm';
+import { SearchForm } from 'components/Search';
 import { CompanyCard, SmallRecentSearchCard, Filings } from 'components/Card';
 import { getJwt } from 'services/auth';
 

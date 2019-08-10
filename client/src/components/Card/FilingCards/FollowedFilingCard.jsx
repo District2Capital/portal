@@ -14,7 +14,7 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import ViewModalLogic from '../../ViewModalLogic';
+import { ViewModalLogic } from 'components/Card';
 
 const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate, companyName }) => {
     const [saved, changeSaved] = useState(false);

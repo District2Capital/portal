@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Badge, Card, Button, CardBody, CardTitle, ListGroup, ListGroupItem, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import ViewModalLogic from '../../ViewModalLogic';
+import { ViewModalLogic } from 'components/Card';
 
 const FilingCard = ({ badgeColor, fileLink, formType, title, filingDate }) => {
     const [saved, changeSaved] = useState(false);

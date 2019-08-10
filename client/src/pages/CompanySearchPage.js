@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Card, CardHeader, CardBody, Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import CompanySearchForm from 'components/CompanySearchForm';
-import { CompanyCard } from 'components/Card';
-import { SmallRecentSearchCard } from 'components/Card';
+import { CompanySearchForm } from 'components/Search';
+import { CompanyCard, SmallRecentSearchCard } from 'components/Card';
+
 class CompanySearchPage extends Component {
 
     state = {
