@@ -88,7 +88,7 @@ router.get('/followedCompanyFilings', async (req, res) => {
         var companyindex = 0;
         for (companyindex = 0; companyindex < userSavedCompanies.savedCompanies.length; companyindex++) {
             company = userSavedCompanies.savedCompanies[companyindex];
-            await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${company.cik}&type=&dateb=&owner=exclude&count=10&output=xml`).then(async secresults => {
+            await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${company.cik}&type=&dateb=&owner=include&count=10&output=xml`).then(async secresults => {
                 // * Parse data with cheerio
                 const $ = cheerio.load(secresults.data);
                 $('results filing').each(function (i, row) {
@@ -285,13 +285,6 @@ router.post("/updateViewedFilings", async (req, res) => {
     try {
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         var user = await User.findById(decoded._id).select("-password");
-        /*new Fawn.Task()
-            .update(
-                "users",
-                { "_id": decoded._id },
-                { $addToSet: { "recents": req.body.htmlLink } }
-            )
-            .run();*/
         var results = await User.updateOne({ "_id": decoded._id }, {
             $push: {
                 "recentFilings": {

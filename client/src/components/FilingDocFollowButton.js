@@ -50,9 +50,9 @@ class FilingDocFollowButton extends Component {
     render() {
         const { saved } = this.state;
         if (saved) {
-            return (<Button className="m-2 p-1" outline onClick={() => this.unsaveFormType()}>UnFollow</Button>);
+            return (<Button style={{ height: "min-content" }} className="m-2 p-1" outline onClick={() => this.unsaveFormType()}>UnFollow</Button>);
         }
-        return (<Button className="m-2 p-1" outline onClick={() => this.saveFormType()}>Follow</Button>);
+        return (<Button style={{ height: "min-content" }} className="m-2 p-1" outline onClick={() => this.saveFormType()}>Follow</Button>);
     }
 }
 

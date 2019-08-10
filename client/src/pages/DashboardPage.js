@@ -4,7 +4,7 @@ import { Row } from 'reactstrap';
 import FilingFrequencyCard from 'components/Card/FilingFrequencyCard';
 import MarketOverviewCard from 'components/Card/MarketOverviewCard';
 import RecentViewedFilingsCard from 'components/Card/RecentViewedFilingsCard';
-import RecentSearchesCard from 'components/Card/RecentSearchesCard';
+import RecentFilingSearchesCard from 'components/Card/RecentFilingSearchesCard';
 import RecentSavedFilingsCard from 'components/Card/RecentSavedFilingsCard';
 import FollowedCompanyFilings from 'components/Card/FollowedCompanyFilings';
 import FollowedFormTypeFilings from 'components/Card/FollowedFormTypeFilings';
@@ -26,7 +26,7 @@ class DashboardPage extends React.Component {
         </Row>
         <Row>
           <RecentViewedFilingsCard />
-          <RecentSearchesCard />
+          <RecentFilingSearchesCard />
           <RecentSavedFilingsCard />
         </Row>
         <Row>

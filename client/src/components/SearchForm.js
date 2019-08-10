@@ -47,9 +47,11 @@ class SearchForm extends React.Component {
                 <CardBody>
                     <Form>
                         <FormGroup row>
-                            <Label for="company" sm={3}><MdAccountBalance /> Company</Label>
+                            <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="company" sm={3}><MdAccountBalance style={{ margin: "auto 0", minWidth: "16px" }} /> Company</Label>
                             <Col sm={9}>
                                 <Input
+                                    style={{ width: "-webkit-fill-available" }}
+                                    className="mx-4"
                                     type="company"
                                     name="company"
                                     placeholder="Company Name"
@@ -59,9 +61,11 @@ class SearchForm extends React.Component {
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="cik" sm={3}><MdFingerprint /> CIK</Label>
+                            <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="cik" sm={3}><MdFingerprint style={{ margin: "auto 0", minWidth: "16px" }} /> CIK</Label>
                             <Col sm={9}>
                                 <Input
+                                    style={{ width: "-webkit-fill-available" }}
+                                    className="mx-4"
                                     type="cik"
                                     name="cik"
                                     placeholder="Company CIK"
@@ -71,9 +75,11 @@ class SearchForm extends React.Component {
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="type" sm={3}><MdLabelOutline /> Form Type</Label>
+                            <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="type" sm={3}><MdLabelOutline style={{ margin: "auto 0", minWidth: "16px" }} /> FormType</Label>
                             <Col sm={9}>
                                 <Input
+                                    style={{ width: "-webkit-fill-available" }}
+                                    className="mx-4"
                                     type="type"
                                     name="type"
                                     placeholder="Form Type"

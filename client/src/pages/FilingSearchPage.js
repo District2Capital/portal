@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, Col, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { Filings } from '../components/Card';
@@ -7,55 +7,66 @@ import SearchForm from '../components/SearchForm';
 import CompanyCard from 'components/Card/CompanyCard';
 import { getJwt } from 'services/auth';
 import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
-class FilingSearchPage extends React.Component {
 
-  state = {
-    time: Date.now(),
-    recentSearches: [],
-    data: [],
-    filter: [],
-    numberItems: "All",
-    availableFormTypes: [],
-    formdropdownOpen: false,
-    numberdropdownOpen: false,
-    cikQuery: "",
-    typeQuery: "",
-    companyQuery: "",
-    showLoader: false,
-    companiesBool: false,
-    searchExecuted: false
-  }
+const FilingSearchPage = ({ ...props }) => {
 
-  componentDidMount = async () => {
-    await this.getRecentSearchData();
-  }
+  const [time, updateTime] = useState(Date.now());
+  const [recentSearches, updateRecentSearch] = useState([]);
+  const [data, updateData] = useState([]);
+  const [filter, updateFilter] = useState([]);
+  const [numberItems, updateNumberItems] = useState("All");
+  const [availableFormTypes, updateAvailableFormTypes] = useState([]);
+  const [formdropdownOpen, updateFormDropDownOpen] = useState(false);
+  const [numberdropdownOpen, updateNumberDropDownOpen] = useState(false);
+  const [cikQuery, updateCikQuery] = useState("");
+  const [typeQuery, updateTypeQuery] = useState("");
+  const [companyQuery, updateCompanyQuery] = useState("");
+  const [showLoader, updateShowLoader] = useState(false);
+  const [companiesBool, updateCompaniesBool] = useState(false);
+  const [searchRan, updateSearchRan] = useState(false);
+  const numberFilter = ["All", 5, 10, 25, 50, 100, 200];
 
-  getDataFromDb = async () => {
-    await this.updateRecentSearches();
-    await this.getRecentSearchData();
-    await axios.get(`/api/sec/getData/?cik=${this.state.cikQuery}&type=${this.state.typeQuery}&company=${this.state.companyQuery}`).then(res => {
-      console.log(res);
+  useEffect(() => {
+    if ((props.location.searchStrings && Object.keys(props.location.searchStrings).length)) {
+      var companySearchString = props.location.searchStrings.companySearchString ? props.location.searchStrings.companySearchString : "";
+      var cikSearchString = props.location.searchStrings.cikSearchString ? props.location.searchStrings.cikSearchString : "";
+      var formTypeSearchString = props.location.searchStrings.formTypeSearchString ? props.location.searchStrings.formTypeSearchString : "";
+      searchHandler(companySearchString, formTypeSearchString, cikSearchString);
+    }
+    if (!props.location.searchExecuted) {
+      props.location.searchExecuted = true;
+    }
+  }, [props.location.searchExecuted]);
+
+  const getDataFromDb = async (company, type, cik) => {
+    let queryString = `/api/sec/getData/?cik=${cikQuery ? cikQuery : cik}&type=${typeQuery ? typeQuery : type}&company=${companyQuery ? companyQuery : company}`;
+    if (cik) {
+      queryString = `/api/sec/getData/?cik=${cik}&type=&company=`;
+    }
+    await axios.get(queryString).then(res => {
       if (res.data.companiesBool) {
-        this.setState({
-          data: res.data.data,
-          companiesBool: res.data.companiesBool,
-          showLoader: false,
-          searchExecuted: true
-        });
+        updateCompaniesBool(true);
+        updateData(res.data.data);
+        updateShowLoader(false);
+        updateSearchRan(true);
       }
       else {
-        this.setState({
-          data: res.data,
-          availableFormTypes: [...new Set(res.data.items.map(a => a.formType))],
-          filter: [...new Set(res.data.items.map(a => a.formType))],
-          showLoader: false,
-          searchExecuted: true
-        });
+        updateCompaniesBool(false);
+        updateData(res.data.items);
+        updateAvailableFormTypes([...new Set(res.data.items.map(a => a.formType))]);
+        updateFilter([...new Set(res.data.items.map(a => a.formType))]);
+        updateShowLoader(false);
+        updateSearchRan(true);
       }
+      updateRecentSearches();
+      updateCompanyQuery('');
+      updateCikQuery('');
+      updateTypeQuery('');
+      getRecentSearchData();
     });
   };
 
-  getRecentSearchData = async () => {
+  const getRecentSearchData = async () => {
     var config = {
       params: { "x-auth-token": getJwt() }
     };
@@ -63,7 +74,7 @@ class FilingSearchPage extends React.Component {
       let searches = res.data;
       if (searches && searches.data.length) {
         // Sort data by company
-        this.setState({ recentSearches: searches.data });
+        updateRecentSearch(searches.data);
       }
     })
       .catch(error => {
@@ -71,111 +82,106 @@ class FilingSearchPage extends React.Component {
       });
   }
 
-  updateRecentSearches = async () => {
+  const updateRecentSearches = async () => {
     // Save queried filing as a recent search
     var params = {
       "x-auth-token": getJwt(),
-      companySearchString: this.state.companyQuery,
-      cikSearchString: this.state.cikQuery,
-      formTypeSearchString: this.state.typeQuery
+      companySearchString: companyQuery,
+      cikSearchString: cikQuery,
+      formTypeSearchString: typeQuery
     };
     await axios.post(`api/users/updateRecentSearches`, params);
   }
 
-  toggleFormType = () => {
-    this.setState({
-      formdropdownOpen: !this.state.formdropdownOpen
-    });
+  const toggleFormType = () => {
+    updateFormDropDownOpen(!formdropdownOpen);
   }
 
-  toggleNumber = () => {
-    this.setState({
-      numberdropdownOpen: !this.state.numberdropdownOpen
-    });
+  const toggleNumber = () => {
+    updateNumberDropDownOpen(!numberdropdownOpen);
   }
 
-  handleFilterClick(clickedFormType) {
-    this.setState({ filter: clickedFormType });
+  const handleFilterClick = (clickedFormType) => {
+    updateFilter(clickedFormType);
   }
 
-  handleNumberFilterClick(clickedFormType) {
-    this.setState({ numberItems: clickedFormType });
+  const handleNumberFilterClick = (clickedFormType) => {
+    updateNumberItems(clickedFormType);
   }
 
-  searchHandler = async (company, type, cik) => {
-    await this.setState({ companiesBool: false, companyQuery: company, typeQuery: type, cikQuery: cik, showLoader: true });
-    await this.getDataFromDb();
+  const searchHandler = (company, type, cik) => {
+    getDataFromDb(company, type, cik);
+    updateCompanyQuery(company);
+    updateCikQuery(cik);
+    updateTypeQuery(type);
+    updateShowLoader(true);
   }
 
-  render() {
-    let { recentSearches, companiesBool, data, filter, availableFormTypes, numberItems, showLoader, searchExecuted } = this.state;
-    var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
-    return (
-      <div className="px-4 h-100 d-flex overflow-hidden flex-column">
-        <div className="py-3 d-flex flex-row">
-          <h1 className="mr-auto">Filing Search</h1>
-          <div className="d-flex flex-wrap justify-content-end">
-            <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.numberdropdownOpen} toggle={this.toggleNumber}>
-              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
-              <DropdownMenu>
-                {numberFilter.map((number, index) => {
-                  if (!index) {
-                    return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{number}</DropdownItem>);
-                  }
-                  return (<DropdownItem key={index} onClick={() => this.handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
-                })}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown className="p-2" style={{ width: "120px" }} isOpen={this.state.formdropdownOpen} toggle={this.toggleFormType}>
-              <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem onClick={() => this.handleFilterClick(availableFormTypes)}>All</DropdownItem>
-                {availableFormTypes.map(formType => {
-                  var badgeColor = "primary";
-                  var values = Object.values(filings);
-                  for (var key = 0; key < values.length; key++) {
-                    for (var filing = 0; filing < values[key].filingArray.length; filing++) {
-                      if (formType === values[key].filingArray[filing]) {
-                        badgeColor = values[key].color;
-                      }
+  return (
+    <div className="px-4 h-100 d-flex overflow-hidden flex-column">
+      <div className="py-3 d-flex flex-row">
+        <h1 className="mr-auto">Filing Search</h1>
+        <div className="d-flex flex-wrap justify-content-end">
+          <Dropdown className="p-2" style={{ width: "120px" }} isOpen={numberdropdownOpen} toggle={toggleNumber}>
+            <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
+            <DropdownMenu>
+              {numberFilter.map((number, index) => {
+                if (!index) {
+                  return (<DropdownItem key={index} onClick={() => handleNumberFilterClick(number)}>{number}</DropdownItem>);
+                }
+                return (<DropdownItem key={index} onClick={() => handleNumberFilterClick(number)}>{"<"} {number}</DropdownItem>);
+              })}
+            </DropdownMenu>
+          </Dropdown>
+          <Dropdown className="p-2" style={{ width: "120px" }} isOpen={formdropdownOpen} toggle={toggleFormType}>
+            <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Type</DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={() => handleFilterClick(availableFormTypes)}>All</DropdownItem>
+              {availableFormTypes.map(formType => {
+                var badgeColor = "primary";
+                var values = Object.values(filings);
+                for (var key = 0; key < values.length; key++) {
+                  for (var filing = 0; filing < values[key].filingArray.length; filing++) {
+                    if (formType === values[key].filingArray[filing]) {
+                      badgeColor = values[key].color;
                     }
                   }
-                  return (<DropdownItem key={formType} onClick={() => this.handleFilterClick([formType])}>
-                    {formType} <Badge color={badgeColor}>{formType}</Badge>
-                  </DropdownItem>);
-                })}
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        </div>
-        <SearchForm searchHandler={(company, type, cik) => this.searchHandler(company, type, cik)} />
-        {(recentSearches.length) ? (<Card className="mt-2">
-          <CardHeader>Recent Searches</CardHeader>
-          <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
-            <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
-              {recentSearches.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }, index) => {
-                return (<SmallRecentSearchCard key={index} companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+                }
+                return (<DropdownItem key={formType} onClick={() => handleFilterClick([formType])}>
+                  {formType} <Badge color={badgeColor}>{formType}</Badge>
+                </DropdownItem>);
               })}
-            </Row>
-          </CardBody>
-        </Card>) : ("")}
-        <Row className="d-flex justify-content-center flex-grow-1">
-          {(companiesBool) ? (data.map((company, index) => {
-            if (numberItems === "All" || index < numberItems) {
-              return (
-                <Col key={index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
-                  <CompanyCard searchHandler={this.searchHandler} searchCard={true} company={company} />
-                </Col>
-              );
-            }
-            return (<div></div>);
-          })) : (
-              <Filings showLoader={showLoader} searchExecuted={searchExecuted} data={data.items} filter={filter} number={numberItems} />
-            )}
-        </Row>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
       </div>
-    );
-  }
+      <SearchForm searchHandler={(company, type, cik) => searchHandler(company, type, cik)} />
+      {(recentSearches.length) ? (<Card className="mt-2">
+        <CardHeader>Recent Searches</CardHeader>
+        <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
+          <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
+            {recentSearches.map(({ companySearchString, cikSearchString, formTypeSearchString, dateSearched }, index) => {
+              return (<SmallRecentSearchCard key={index} linkto="/search" companySearchString={companySearchString} cikSearchString={cikSearchString} formTypeSearchString={formTypeSearchString} dateSearched={dateSearched} />);
+            })}
+          </Row>
+        </CardBody>
+      </Card>) : ("")}
+      <Row className="d-flex justify-content-center flex-grow-1">
+        {(companiesBool) ? (data.map((company, index) => {
+          if (numberItems === "All" || index < numberItems) {
+            return (
+              <Col key={company + index} xl={3} lg={4} md={6} sm={8} xs={12} className="mb-3">
+                <CompanyCard searchHandler={searchHandler} searchCard={true} company={company} />
+              </Col>
+            );
+          }
+          return (<div key={company + index}></div>);
+        })) : (
+            <Filings showLoader={showLoader} searchExecuted={searchRan} data={data} filter={filter} number={numberItems} />
+          )}
+      </Row>
+    </div>
+  );
 };
 
 export default FilingSearchPage;

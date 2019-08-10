@@ -37,7 +37,7 @@ class FormTypeSearchPage extends Component {
         var FormTypeArray = [];
         values.map((value, valueindex) => {
             value.filingArray.map((filing, filingindex) => {
-                if (filing.includes(this.state.FormTypeQuery.toUpperCase())) {
+                if (this.state.FormTypeQuery && filing.includes(this.state.FormTypeQuery.toUpperCase())) {
                     FormTypeArray.push({ FormType: filing, BadgeColor: value.color });
                 }
                 return ({});
@@ -85,6 +85,11 @@ class FormTypeSearchPage extends Component {
     render() {
         let { recentSearches, data, numberItems, showLoader, searchExecuted } = this.state;
         var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
+        if (this.props.location.searchStrings && !this.props.location.searchExecuted) {
+            this.props.location.searchExecuted = true;
+            let { companySearchString, cikSearchString, formTypeSearchString } = this.props.location.searchStrings;
+            this.searchHandler(formTypeSearchString, formTypeSearchString, cikSearchString);
+        }
         return (
             <div className="px-4 h-100 d-flex overflow-hidden flex-column">
                 <div className="py-3 d-flex flex-row">
@@ -109,7 +114,7 @@ class FormTypeSearchPage extends Component {
                     <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
                         <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
                             {recentSearches.map(({ FormTypeSearchString, dateSearched }, index) => {
-                                return (<SmallRecentSearchCard key={index} formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
+                                return (<SmallRecentSearchCard key={index} linkto="/companysearch" formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
                             })}
                         </Row>
                     </CardBody>
