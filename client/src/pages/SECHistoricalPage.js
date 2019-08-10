@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { Filings } from 'components/Card';
-import { filings } from '../config';
+import { filings } from 'config';
 
 class SECHistoricalPage extends React.Component {
   constructor(props) {

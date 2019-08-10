@@ -4,7 +4,7 @@ import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { FormTypeSearchForm } from 'components/Search';
 import { FormTypeCard, SmallRecentSearchCard } from 'components/Card';
-import { filings } from '../config';
+import { filings } from 'config';
 
 class FormTypeSearchPage extends Component {
 
