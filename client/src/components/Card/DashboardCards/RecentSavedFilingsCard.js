@@ -3,7 +3,7 @@ import { getJwt } from 'services/auth';
 import axios from 'axios';
 import { Card, CardHeader, Col } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import SmallFilingCard from './SmallFilingCard';
+import { SmallFilingCard } from 'components/Card';
 
 class RecentSavedFilingsCard extends Component {
     state = {

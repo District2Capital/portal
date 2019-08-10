@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardHeader, Col } from 'reactstrap';
 import axios from 'axios';
-import SmallFilingCard from './SmallFilingCard';
+import { SmallFilingCard } from 'components/Card';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
 class RecentViewedFilingsCard extends Component {

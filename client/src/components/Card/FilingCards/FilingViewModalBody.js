@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import FilingDropdownModalBody from './FilingDropdownModalBody';
+import { FilingDropdownModalBody } from 'components/Card';
 
 class FilingViewModalBody extends Component {
     state = {}

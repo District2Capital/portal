@@ -3,7 +3,7 @@ import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import LoadingSpinner from '../../LoadingSpinner';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import FilingCard from './FilingCard';
+import { FilingCard } from 'components/Card';
 
 const SECFilingsCard = ({ listName, count, ...args }) => {
     let content;

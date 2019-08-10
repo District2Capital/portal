@@ -1,6 +1,6 @@
 import React from 'react';
-import FollowedFormTypeFilings from 'components/Card/FollowedFormTypeFilings';
-import FollowedCompanyFilings from 'components/Card/FollowedCompanyFilings';
+import { FollowedFormTypeFilings } from 'components/Card';
+import { FollowedCompanyFilings } from 'components/Card';
 
 class MainFeedPage extends React.Component {
     state = {}

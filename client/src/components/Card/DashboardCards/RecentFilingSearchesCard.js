@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardHeader, Col } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
+import { SmallRecentSearchCard } from 'components/Card';
 import { NavLink } from 'react-router-dom';
 
 class RecentFilingSearchesCard extends Component {

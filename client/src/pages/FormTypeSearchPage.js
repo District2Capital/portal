@@ -3,9 +3,9 @@ import { Card, CardHeader, CardBody, Row, Dropdown, Col, DropdownToggle, Dropdow
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import FormTypeSearchForm from 'components/FormTypeSearchForm';
-import FormTypeCard from 'components/Card/FormTypeCard';
+import { FormTypeCard } from 'components/Card';
 import { filings } from '../config';
-import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
+import { SmallRecentSearchCard } from 'components/Card';
 
 class FormTypeSearchPage extends Component {
 

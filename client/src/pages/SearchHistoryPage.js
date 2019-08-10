@@ -3,7 +3,7 @@ import { Row, Col, Dropdown, Button, DropdownToggle, DropdownMenu, DropdownItem 
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
-import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
+import { SmallRecentSearchCard } from 'components/Card';
 
 class SearchHistoryPage extends Component {
     constructor(props) {

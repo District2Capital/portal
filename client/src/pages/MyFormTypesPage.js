@@ -3,7 +3,7 @@ import { Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from '
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
-import FormTypeCard from 'components/Card/FormTypeCard';
+import { FormTypeCard } from 'components/Card';
 
 class MyFormTypesPage extends Component {
     constructor(props) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import FollowedFilingCard from 'components/Card/FollowedFilingCard';
+import { FollowedFilingCard } from 'components/Card';
 
 class FollowedFormTypeFilings extends Component {
 

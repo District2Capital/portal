@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import ListFilingsCard from '../components/Card/ListFilingsCard';
-import ListContentsCard from '../components/Card/ListContentsCard';
+import { ListFilingsCard } from 'components/Card';
+import { ListContentsCard } from 'components/Card';
 import GlobalContext from '../context/global-context';
-import SECFilingsCard from '../components/Card/SECFilingsCard';
+import { SECFilingsCard } from 'components/Card';
 
 const ListPage = ({ listName, ...props }) => {
     // List Filings Card

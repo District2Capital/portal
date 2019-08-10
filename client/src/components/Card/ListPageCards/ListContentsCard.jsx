@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
-import FormTypeInListCard from './FormTypeInListCard';
-import CompanyInListCard from './CompanyInListCard';
-import RemoveFilingCardFromList from './RemoveFilingCardFromList';
+import { FormTypeInListCard, CompanyInListCard, RemoveFilingCardFromList } from 'components/Card';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';

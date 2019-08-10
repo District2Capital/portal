@@ -3,7 +3,7 @@ import { Row, Dropdown, Col, DropdownToggle, DropdownMenu, DropdownItem } from '
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';
-import CompanyCard from 'components/Card/CompanyCard';
+import { CompanyCard } from 'components/Card';
 
 class MyCompaniesPage extends Component {
     constructor(props) {

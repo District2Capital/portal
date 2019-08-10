@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
-import { Filings } from '../components/Card';
+import { Filings } from 'components/Card';
 import { filings } from '../config';
 
 class XBRLHistoricalPage extends React.Component {

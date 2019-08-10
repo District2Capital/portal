@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Card, CardBody, CardHeader } from 'reactstrap';
 import GlobalContext from '../context/global-context';
-import ListFilingsCard from 'components/Card/ListFilingsCard';
+import { ListFilingsCard } from 'components/Card';
 import { NavLink } from 'react-router-dom';
 
 const ListsFeedPage = () => {

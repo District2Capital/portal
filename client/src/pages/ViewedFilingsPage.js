@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Badge, Col, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
-import { Filings } from '../components/Card';
+import { Filings } from 'components/Card';
 import { filings } from '../config';
 import { getJwt } from 'services/auth';
 import { NavLink } from 'react-router-dom';

@@ -3,10 +3,10 @@ import { Card, CardHeader, Col, CardBody, Badge, Row, Dropdown, DropdownToggle, 
 import axios from 'axios';
 import { Filings } from '../components/Card';
 import { filings } from '../config';
-import SearchForm from '../components/SearchForm';
-import CompanyCard from 'components/Card/CompanyCard';
+import SearchForm from 'components/SearchForm';
+import { CompanyCard } from 'components/Card';
 import { getJwt } from 'services/auth';
-import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
+import { SmallRecentSearchCard } from 'components/Card';
 
 const FilingSearchPage = ({ ...props }) => {
 

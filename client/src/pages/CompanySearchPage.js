@@ -3,8 +3,8 @@ import { Card, CardHeader, CardBody, Row, Dropdown, Col, DropdownToggle, Dropdow
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import CompanySearchForm from 'components/CompanySearchForm';
-import CompanyCard from 'components/Card/CompanyCard';
-import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
+import { CompanyCard } from 'components/Card';
+import { SmallRecentSearchCard } from 'components/Card';
 class CompanySearchPage extends Component {
 
     state = {

@@ -4,7 +4,7 @@ import Avatar from '../../Avatar';
 import defaultUser from 'assets/defaultUser.png';
 import { useUserData } from 'components/hooks/useUserData';
 import Files from 'react-files';
-import UserProfileFieldsCard from './UserProfileFieldsCard';
+import { UserProfileFieldsCard } from 'components/Card';
 
 const BasicProfileCard = (props) => {
 

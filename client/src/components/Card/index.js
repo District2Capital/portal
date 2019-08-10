@@ -1,6 +1,6 @@
 // * CompanyCards Section
 export { default as CompanyCard } from './CompanyCards/CompanyCard';
-export { default as FollowedCompanyFilings } from './Card/CompanyCards/FollowedCompanyFilings';
+export { default as FollowedCompanyFilings } from './CompanyCards/FollowedCompanyFilings';
 
 // * DashboardCards Section
 export { default as FilingFrequencyCard } from './DashboardCards/FilingFrequencyCard';
@@ -24,7 +24,6 @@ export { default as FollowedFormTypeFilings } from './FormTypeCards/FollowedForm
 export { default as FormTypeCard } from './FormTypeCards/FormTypeCard';
 
 // * ListPageCards Section
-
 export { default as CompanyInListCard } from './ListPageCards/CompanyInListCard';
 export { default as CreateListCard } from './ListPageCards/CreateListCard';
 export { default as DeleteListCard } from './ListPageCards/DeleteListCard';
@@ -34,14 +33,14 @@ export { default as ListFilingsCard } from './ListPageCards/ListFilingsCard';
 export { default as RemoveFilingCardFromList } from './ListPageCards/RemoveFilingCardFromList';
 
 // * UserCards Section
-
 export { default as AnnouncementCard } from './UserCards/AnnouncementCard';
 export { default as AvatarCard } from './UserCards/AvatarCard';
 export { default as BasicProfileCard } from './UserCards/BasicProfileCard';
 export { default as UserCard } from './UserCards/UserCard';
 export { default as UserProfileFieldsCard } from './UserCards/UserProfileFieldsCard';
 
-
+// * Others
+export { default as SmallRecentSearchCard } from './SmallRecentSearchCard';
 
 
 

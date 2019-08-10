@@ -5,7 +5,7 @@ import {
     CardBody,
     CardHeader,
 } from 'reactstrap';
-import StockCard from './StockCard';
+import { StockCard } from 'components/Card';
 
 const usMarkets = [".DJI", ".SPX", "NASDAQ:^RUT", "NASDAQ:^IXIC"];
 

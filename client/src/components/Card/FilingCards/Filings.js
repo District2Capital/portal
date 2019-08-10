@@ -1,7 +1,7 @@
 import React from 'react';
 import { filings } from '../../../config';
 import { Col } from 'reactstrap';
-import FilingCard from './FilingCard';
+import { FilingCard } from 'components/Card';
 
 class Filings extends React.Component {
 
