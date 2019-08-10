@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { ListFilingsCard, SECFilingsCard, ListContentsCard } from 'components/Card';
-import GlobalContext from '../context/global-context';
+import { GlobalContext } from 'context';
 
 const ListPage = ({ listName, ...props }) => {
     const value = useContext(GlobalContext);
