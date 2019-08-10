@@ -19,7 +19,7 @@ import SECFeedPage from 'pages/SECFeedPage';
 
 // * Lists
 import ListPage from 'pages/ListPage';
-import CreateNewListPage from 'pages/CreateNewListPage';
+import CreateDeletePage from 'pages/CreateDeletePage';
 
 // * Search
 import FilingSearchPage from 'pages/FilingSearchPage';
@@ -79,16 +79,17 @@ const App = () => {
       </div>);
   }
   const value = useContext(GlobalContext);
+  const fetchData = async () => {
+    // Fetch request to api/users and update Context lists
+    var config = {
+      params: { "x-auth-token": getJwt() }
+    };
+    await axios.get('/api/lists/getListNames', config).then(res => {
+      value['updateListNames'](res.data);
+    });
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      // Fetch request to api/users and update Context lists
-      var config = {
-        params: { "x-auth-token": getJwt() }
-      };
-      await axios.get('/api/lists/getListNames', config).then(res => {
-        value['updateListNames'](res.data);
-      });
-    }
     fetchData();
   }, []);
 
@@ -154,24 +155,21 @@ const App = () => {
         }) : ('')}
         <LayoutRoute
           exact
-          path='/createnewList'
+          path='/createDeleteList'
           layout={MainLayout}
-          component={CreateNewListPage}
+          component={CreateDeletePage}
         />
         <LayoutRoute
-          exact
           path="/search"
           layout={MainLayout}
           component={FilingSearchPage}
         />
         <LayoutRoute
-          exact
           path="/companysearch"
           layout={MainLayout}
           component={CompanySearchPage}
         />
         <LayoutRoute
-          exact
           path="/formtypesearch"
           layout={MainLayout}
           component={FormTypeSearchPage}

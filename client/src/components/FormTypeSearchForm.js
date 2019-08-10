@@ -6,6 +6,7 @@ import {
     CardHeader,
     Col,
     Form,
+    Container,
     Row, //FormGroup, // FormGroup row
     Input,
     Label
@@ -36,23 +37,27 @@ class FormTypeSearchForm extends Component {
                 <CardHeader>Search Parameters</CardHeader>
                 <CardBody>
                     <Form>
-                        <Row>
-                            <Col className="my-2" sm={2}>
-                                <Label for="FormType"><MdLabelOutline /> FormType</Label>
-                            </Col>
-                            <Col className="my-2" sm={8}>
-                                <Input
-                                    type="FormType"
-                                    name="FormType"
-                                    placeholder="FormType Name"
-                                    onChange={(e) => this.handleFormTypeChange(e)}
-                                    onKeyPress={(e) => this.handleEnterClicked(e)}
-                                />
-                            </Col>
-                            <Col className="my-2" sm={2}>
-                                <Button outline className="float-right" onClick={() => this.props.searchHandler(this.state.FormType)}>Search</Button>
-                            </Col>
-                        </Row>
+                        <Container>
+                            <Row>
+                                <Col className="my-2" md={2}>
+                                    <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="FormType"><MdLabelOutline className="m-auto" /> FormType</Label>
+                                </Col>
+                                <Col className="my-2" md={8}>
+                                    <Input
+                                        style={{ width: "-webkit-fill-available" }}
+                                        className="mx-4"
+                                        type="FormType"
+                                        name="FormType"
+                                        placeholder="FormType Name"
+                                        onChange={(e) => this.handleFormTypeChange(e)}
+                                        onKeyPress={(e) => this.handleEnterClicked(e)}
+                                    />
+                                </Col>
+                                <Col className="my-2" md={2}>
+                                    <Button outline className="float-right" onClick={() => this.props.searchHandler(this.state.FormType)}>Search</Button>
+                                </Col>
+                            </Row>
+                        </Container>
                     </Form>
                 </CardBody>
             </Card>

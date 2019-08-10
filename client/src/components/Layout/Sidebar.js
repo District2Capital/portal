@@ -27,8 +27,6 @@ import {
   NavLink as BSNavLink,
 } from 'reactstrap';
 import bn from 'utils/bemnames';
-import axios from 'axios';
-import { getJwt } from 'services/auth';
 import GlobalContext from '../../context/global-context';
 
 const navItems = [
@@ -153,12 +151,12 @@ const Sidebar = () => {
                 id={`navItem-createnew`}
                 className="text-uppercase"
                 tag={NavLink}
-                to={`createnewList`}
+                to={`createDeleteList`}
                 activeClassName="active"
                 exact={false}
               >
                 <MdList color="yellow" className={bem.e('nav-item-icon')} />
-                <span className="">Create New</span>
+                <span className="">Create/Delete</span>
               </BSNavLink>
             </NavItem>
           </Collapse>

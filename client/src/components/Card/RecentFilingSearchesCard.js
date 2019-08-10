@@ -5,7 +5,7 @@ import { getJwt } from 'services/auth';
 import SmallRecentSearchCard from 'components/Card/SmallRecentSearchCard';
 import { NavLink } from 'react-router-dom';
 
-class RecentSearchesCard extends Component {
+class RecentFilingSearchesCard extends Component {
     state = {
         data: [],
         SearchesCount: 5,
@@ -80,4 +80,4 @@ class RecentSearchesCard extends Component {
     }
 }
 
-export default RecentSearchesCard;
+export default RecentFilingSearchesCard;
