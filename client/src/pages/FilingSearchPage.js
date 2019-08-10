@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, Col, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
-import { Filings } from '../components/Card';
 import { filings } from '../config';
 import SearchForm from 'components/SearchForm';
-import { CompanyCard } from 'components/Card';
+import { CompanyCard, SmallRecentSearchCard, Filings } from 'components/Card';
 import { getJwt } from 'services/auth';
-import { SmallRecentSearchCard } from 'components/Card';
 
 const FilingSearchPage = ({ ...props }) => {
 

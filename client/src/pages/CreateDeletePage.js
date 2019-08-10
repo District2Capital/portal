@@ -1,6 +1,5 @@
 import React from 'react';
-import { CreateListCard } from 'components/Card';
-import { DeleteListCard } from 'components/Card';
+import { CreateListCard, DeleteListCard } from 'components/Card';
 
 const CreateDeletePage = () => {
     return (

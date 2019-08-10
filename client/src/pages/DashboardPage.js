@@ -1,13 +1,7 @@
 import Page from 'components/Page';
 import React from 'react';
 import { Row } from 'reactstrap';
-import { FilingFrequencyCard } from 'components/Card/';
-import { MarketOverviewCard } from 'components/Card/';
-import { RecentViewedFilingsCard } from 'components/Card/';
-import { RecentFilingSearchesCard } from 'components/Card/';
-import { RecentSavedFilingsCard } from 'components/Card/';
-import { FollowedCompanyFilings } from 'components/Card/';
-import { FollowedFormTypeFilings } from 'components/Card/';
+import { FilingFrequencyCard, MarketOverviewCard, RecentViewedFilingsCard, RecentFilingSearchesCard, RecentSavedFilingsCard, FollowedCompanyFilings, FollowedFormTypeFilings } from 'components/Card/';
 
 class DashboardPage extends React.Component {
   componentDidMount() {
