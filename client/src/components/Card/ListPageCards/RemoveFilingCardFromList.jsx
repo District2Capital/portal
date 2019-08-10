@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Badge, Card, Button, CardBody, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import ViewModalLogic from '../ViewModalLogic';
+import ViewModalLogic from '../../ViewModalLogic';
 
 const RemoveFilingCardFromList = ({ Filing, updateContent, listName }) => {
     const { formType, badgeColor, filingDate, title, fileLink } = Filing;

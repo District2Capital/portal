@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ImageUploader from 'react-images-upload';
-import BasicProfileCard from '../components/Card/BasicProfileCard';
+import BasicProfileCard from 'components/Card/SettingsCards/BasicProfileCard';
 
 class SettingsPage extends Component {
     constructor(props) {

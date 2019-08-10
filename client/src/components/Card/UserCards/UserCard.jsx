@@ -1,10 +1,13 @@
-import classNames from 'classnames';
 import React from 'react';
-import { Card, CardBody, CardSubtitle, CardText, CardTitle } from 'reactstrap';
 import PropTypes from 'utils/propTypes';
-import Avatar from '../Avatar';
 
-const AvatarCard = ({
+import classNames from 'classnames';
+
+import { Card, CardTitle, CardSubtitle, CardText, CardBody } from 'reactstrap';
+
+import Avatar from '../../Avatar';
+
+const UserCard = ({
   avatar,
   avatarSize,
   title,
@@ -14,26 +17,24 @@ const AvatarCard = ({
   className,
   ...restProps
 }) => {
-  const classes = classNames('bg-gradient-theme-left', className);
+  const classes = classNames('bg-gradient-theme', className);
 
   return (
     <Card inverse className={classes} {...restProps}>
       <CardBody className="d-flex justify-content-center align-items-center flex-column">
-        <Avatar src={avatar} size={avatarSize} className="mb-3" />
+        <Avatar src={avatar} size={avatarSize} className="mb-2" />
         <CardTitle>{title}</CardTitle>
-        {!!subtitle && <CardSubtitle>{subtitle}</CardSubtitle>}
-        {!!text && (
-          <CardText>
-            <small>{text}</small>
-          </CardText>
-        )}
-        {children}
+        <CardSubtitle>{subtitle}</CardSubtitle>
+        <CardText>
+          <small>{text}</small>
+        </CardText>
       </CardBody>
+      {children}
     </Card>
   );
 };
 
-AvatarCard.propTypes = {
+UserCard.propTypes = {
   avatar: PropTypes.string,
   avatarSize: PropTypes.number,
   title: PropTypes.string,
@@ -42,8 +43,8 @@ AvatarCard.propTypes = {
   className: PropTypes.string,
 };
 
-AvatarCard.defaultProps = {
+UserCard.defaultProps = {
   avatarSize: 80,
 };
 
-export default AvatarCard;
+export default UserCard;

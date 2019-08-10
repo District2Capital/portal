@@ -1,5 +1,5 @@
 import React from 'react';
-import { filings } from '../../config';
+import { filings } from '../../../config';
 import { Col } from 'reactstrap';
 import FilingCard from './FilingCard';
 

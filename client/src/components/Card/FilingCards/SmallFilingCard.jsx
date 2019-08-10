@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Badge,
-    Card,
-    Button,
-    CardBody,
-    CardTitle,
-    ListGroup,
-    ListGroupItem,
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem
-} from 'reactstrap';
+import { Badge, Card, CardText, Col, Row, Button, CardBody, CardTitle, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
-import ViewModalLogic from '../ViewModalLogic';
+import ViewModalLogic from '../../ViewModalLogic';
 
-const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate, companyName }) => {
+const SmallFilingCard = ({ badgeColor, fileLink, formType, title, filingDate }) => {
     const [saved, changeSaved] = useState(false);
     const [addToListOpen, changeAddToListOpen] = useState(false);
     const [filingLists, updateFilingLists] = useState([]);
@@ -27,9 +15,7 @@ const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate,
         };
         if (!saved) {
             await axios.get(`/api/filingdoc/verifyFilingSaved/?link=${fileLink}`, config).then(res => {
-                if (res.status === 200) {
-                    changeSaved(true);
-                }
+                changeSaved(res.data.savedFiling);
             });
         }
         if (!filingLists.length) {
@@ -38,6 +24,7 @@ const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate,
             });
         }
     }
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -52,9 +39,7 @@ const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate,
             filingDate: filingDate
         };
         await axios.post(`api/users/addSavedFiling`, params).then(res => {
-            if (res.status === 200) {
-                changeSaved(true);
-            }
+            if (res.status === 200) changeSaved(true);
         });
     };
 
@@ -68,9 +53,7 @@ const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate,
             filingDate: filingDate
         };
         await axios.post(`api/users/removeSavedFiling`, params).then(res => {
-            if (res.status === 200) {
-                changeSaved(false);
-            }
+            if (res.status === 200) changeSaved(false);
         });
     };
 
@@ -98,21 +81,19 @@ const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate,
         });
     }
 
+    const entityName = title.slice(title.indexOf("-") + 2, title.indexOf("("));
     return (
-        <Card style={{ margin: "5px", minWidth: "250px", minHeight: "300px" }} color='secondary'>
+        <Card className="m-2 flex-row">
             <CardBody>
-                <Badge color={badgeColor}>{formType}</Badge>
-                <CardTitle className="text-light">{title}</CardTitle>
+                <CardTitle><Badge className="mr-1" color={badgeColor}>{formType}</Badge>{entityName}</CardTitle>
+                <CardText>{filingDate}</CardText>
             </CardBody>
-            <ListGroup flush>
-                {(companyName) ? (<ListGroupItem>{companyName}</ListGroupItem>) : ('')}
-                <ListGroupItem>Form Type: {formType}</ListGroupItem>
-                <ListGroupItem>Filing Date: {filingDate}</ListGroupItem>
-                <ListGroupItem>
-                    <div className="d-flex justify-content-center">
-                        {!saved ? (<Button className="m-1" color="success" outline onClick={() => saveFiling()}>Save</Button>) : (<Button className="m-1" outline color="danger" onClick={() => unsaveFiling()}>UnSave</Button>)}
-                        <ViewModalLogic saved={saved} unsaveFiling={unsaveFiling} saveFiling={saveFiling} badgeColor={badgeColor} fileLink={fileLink} formType={formType} filingDate={filingDate} companyName={companyName} title={title} />
-                    </div>
+            <Col>
+                <Row style={{ width: "max-content" }}>
+                    {!saved ? (<Button style={{ height: "fit-content" }} className="m-2" color="success" outline onClick={() => saveFiling()}>Save</Button>) : (<Button style={{ height: "fit-content" }} className="m-2" outline color="danger" onClick={() => unsaveFiling()}>UnSave</Button>)}
+                    <div className="m-1"><ViewModalLogic saved={saved} unsaveFiling={unsaveFiling} saveFiling={saveFiling} badgeColor={badgeColor} fileLink={fileLink} formType={formType} filingDate={filingDate} title={title} /></div>
+                </Row>
+                <div style={{ margin: "auto 0" }}>
                     <Dropdown className="p-2" style={{ width: "fit-content", margin: "0 auto" }} isOpen={addToListOpen} toggle={toggleAddToList}>
                         <DropdownToggle outline className="w-120" style={{ boxShadow: "none" }} caret>Add To List</DropdownToggle>
                         <DropdownMenu>
@@ -121,11 +102,10 @@ const FollowedFilingCard = ({ fileLink, badgeColor, formType, title, filingDate,
                             })}
                         </DropdownMenu>
                     </Dropdown>
-                </ListGroupItem>
-            </ListGroup>
+                </div>
+            </Col>
         </Card>
     );
-
 }
 
-export default FollowedFilingCard;
+export default SmallFilingCard;

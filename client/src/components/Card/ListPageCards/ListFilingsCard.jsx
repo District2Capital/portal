@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 //import GlobalContext from '../../context/global-context';
-import FollowedFilingCard from './FollowedFilingCard';
+import FollowedFilingCard from '../FilingCards/FollowedFilingCard';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';

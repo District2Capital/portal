@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
-import LoadingSpinner from '../LoadingSpinner';
+import LoadingSpinner from '../../LoadingSpinner';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 import FilingCard from './FilingCard';

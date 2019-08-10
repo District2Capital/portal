@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { Card, CardHeader, CardBody, Row, Col, Input, Button, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import GlobalContext from '../../context/global-context';
+import GlobalContext from '../../../context/global-context';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { getJwt } from '../../services/auth';
+import { getJwt } from '../../../services/auth';
 
 const DeleteListCard = () => {
     const [modalToggleState, toggleModal] = useState(false);
