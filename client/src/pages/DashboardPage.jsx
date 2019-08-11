@@ -1,5 +1,5 @@
-import Page, { useEffect } from 'components/Page';
-import React from 'react';
+import React, { useEffect } from 'react';
+import Page from 'components/Page';
 import { Row } from 'reactstrap';
 import { FilingFrequencyCard, MarketOverviewCard, RecentViewedFilingsCard, RecentFilingSearchesCard, RecentSavedFilingsCard, FollowedCompanyFilings, FollowedFormTypeFilings } from 'components/Card/';
 
