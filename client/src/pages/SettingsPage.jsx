@@ -1,26 +1,23 @@
-import React, { useState } from 'react';
-import ImageUploader from 'react-images-upload';
+import React from 'react';
 import { BasicProfileCard } from 'components/Card';
 
 const SettingsPage = () => {
-    const [pictures, changePictures] = useState([]);
-    const [uploading, changeUploading] = useState(false);
+    // const [pictures, changePictures] = useState([]);
 
-    const onChange = e => {
-        e.preventDefault();
-        const files = Array.from(e.target.files)
-        changeUploading(true);
+    // const onChange = e => {
+    //     e.preventDefault();
+    //     const files = Array.from(e.target.files)
 
-        const formData = new FormData();
+    //     const formData = new FormData();
 
-        files.forEach((file, i) => {
-            formData.append(i, file);
-        })
-    }
+    //     files.forEach((file, i) => {
+    //         formData.append(i, file);
+    //     })
+    // }
 
-    const onDrop = (picture) => {
-        changePictures(pictures.concat(picture));
-    }
+    // const onDrop = (picture) => {
+    //     changePictures(pictures.concat(picture));
+    // }
 
     return (<React.Fragment>
         <BasicProfileCard />

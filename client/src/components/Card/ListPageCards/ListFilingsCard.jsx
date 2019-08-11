@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-//import GlobalContext from '../../context/global-context';
 import { FollowedFilingCard } from 'components/Card';
 import { Card, CardHeader, CardBody, Row } from 'reactstrap';
 import axios from 'axios';
 import { getJwt } from 'services/auth';
 
 const ListFilingsCard = ({ listName, ...props }) => {
-
-    //const value = useContext(GlobalContext);
     const [fetchedFilings, updateFilings] = useState([]);
     const [isLoading, changeLoading] = useState(false);
 
@@ -28,7 +25,7 @@ const ListFilingsCard = ({ listName, ...props }) => {
     useEffect(() => {
         changeLoading(true);
         fetchListFilings();
-        const timer = setInterval(() => {
+        setInterval(() => {
             fetchListFilings();
         }, 10000);
     }, []);

@@ -5,7 +5,6 @@ import { Filings } from 'components/Card';
 import { filings } from 'config';
 
 const SECFeedPage = () => {
-  const [time, changeTime] = useState(Date.now());
   const [data, changeData] = useState({});
   const [filter, changeFilter] = useState([]);
   const [numberItems, changeNumberItems] = useState("All");

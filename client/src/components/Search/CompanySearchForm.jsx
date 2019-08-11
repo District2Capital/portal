@@ -21,9 +21,10 @@ const CompanySearchForm = ({ searchHandler }) => {
 
     const handleEnterClicked = async (e) => {
         var code = e.key;
+
         if (code === 'Enter') {
             e.preventDefault();
-            await searchHandler(company);
+            await searchHandler(e.target.value);
         }
     }
 

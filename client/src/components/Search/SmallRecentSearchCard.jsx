@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardBody, Button } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 import { MdAccountBalance, MdFingerprint, MdLabelOutline } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 

@@ -16,6 +16,7 @@ const RecentFilingSearchesCard = () => {
     }, []);
 
     const getRecentSearches = async () => {
+        updateSearchesCount(5);
         var config = {
             params: { "x-auth-token": getJwt() }
         };

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Card, CardBody, CardHeader } from 'reactstrap';
+import { Card, CardBody } from 'reactstrap';
 import { GlobalContext } from 'context';
 import { ListFilingsCard } from 'components/Card';
 import { NavLink } from 'react-router-dom';

@@ -18,7 +18,7 @@ const FormTypeSearchForm = ({ searchHandler }) => {
 
     const handleFormTypeChange = async (e) => {
         changeFormType(e.target.value);
-        await searchHandler(FormType);
+        await searchHandler('', e.target.value, '');
     }
 
     const handleEnterClicked = async (e) => {

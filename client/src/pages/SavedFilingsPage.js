@@ -3,7 +3,7 @@ import { Badge, Col, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem }
 import axios from 'axios';
 import { Filings } from 'components/Card';
 import { NavLink } from 'react-router-dom';
-import { filings } from 'config';
+import { filings } from 'config/index';
 import { getJwt } from 'services/auth';
 
 class SavedFilingsPage extends Component {

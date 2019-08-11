@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, Col, CardBody, Badge, Row, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import axios from 'axios';
-import { filings } from 'config';
+import { filings } from 'config/index';
 import { SearchForm } from 'components/Search';
 import { CompanyCard, SmallRecentSearchCard, Filings } from 'components/Card';
 import { getJwt } from 'services/auth';
 
 const FilingSearchPage = ({ ...props }) => {
-
-  const [time, updateTime] = useState(Date.now());
   const [recentSearches, updateRecentSearch] = useState([]);
   const [data, updateData] = useState([]);
   const [filter, updateFilter] = useState([]);
@@ -34,6 +32,7 @@ const FilingSearchPage = ({ ...props }) => {
     if (!props.location.searchExecuted) {
       props.location.searchExecuted = true;
     }
+    getRecentSearchData();
   }, [props.location.searchExecuted]);
 
   const getDataFromDb = async (company, type, cik) => {
@@ -45,17 +44,15 @@ const FilingSearchPage = ({ ...props }) => {
       if (res.data.companiesBool) {
         updateCompaniesBool(true);
         updateData(res.data.data);
-        updateShowLoader(false);
-        updateSearchRan(true);
       }
       else {
         updateCompaniesBool(false);
         updateData(res.data.items);
         updateAvailableFormTypes([...new Set(res.data.items.map(a => a.formType))]);
         updateFilter([...new Set(res.data.items.map(a => a.formType))]);
-        updateShowLoader(false);
-        updateSearchRan(true);
       }
+      updateSearchRan(true);
+      updateShowLoader(false);
       updateRecentSearches();
       updateCompanyQuery('');
       updateCikQuery('');

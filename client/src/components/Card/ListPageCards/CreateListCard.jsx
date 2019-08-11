@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Card, CardHeader, CardBody, Row, Col, Input, Button, Label } from 'reactstrap';
+import { Card, CardHeader, CardBody, Row, Col, Input, Button } from 'reactstrap';
 import GlobalContext from '../../../context/global-context';
 import { toast } from 'react-toastify';
 import axios from 'axios';

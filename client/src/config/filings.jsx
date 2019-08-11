@@ -1,4 +1,4 @@
-module.exports = {
+export const filings = {
     'Registration Statements': {
         "color": "success",
         "filingArray": [
@@ -705,4 +705,4 @@ module.exports = {
             "Amendment to a previously filed 8-K15D5."
         ]
     }
-}
+};

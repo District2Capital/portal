@@ -4,10 +4,9 @@ import axios from 'axios';
 import { getJwt } from 'services/auth';
 import { FormTypeSearchForm } from 'components/Search';
 import { FormTypeCard, SmallRecentSearchCard } from 'components/Card';
-import { filings } from 'config';
+import { filings } from 'config/index';
 
 const FormTypeSearchPage = ({ ...props }) => {
-    const [time, changeTime] = useState(Date.now());
     const [recentSearches, changeRecentSearches] = useState([]);
     const [data, changeData] = useState([]);
     const [numberItems, changeNumberItems] = useState("All");
@@ -21,8 +20,10 @@ const FormTypeSearchPage = ({ ...props }) => {
         getRecentSearchData();
     }, []);
 
-    const getDataFromDb = async () => {
+    const getDataFromDb = async (FormType) => {
         // * Save FormType Query in recent FormType searches
+        var typeQuery = formTypeQuery ? formTypeQuery : FormType;
+        changeFormTypeQuery(FormType);
         var params = {
             "x-auth-token": getJwt(),
             FormTypeSearchString: formTypeQuery
@@ -30,11 +31,11 @@ const FormTypeSearchPage = ({ ...props }) => {
         await axios.post(`api/users/updateFormTypeSearches`, params);
         await getRecentSearchData();
         // * Compare FormTypes in state data to FormType Search String
-        var values = Object.values(filings);
+        var values = filings ? Object.values(filings) : {};
         var FormTypeArray = [];
         values.map((value, valueindex) => {
             value.filingArray.map((filing, filingindex) => {
-                if (formTypeQuery && filing.includes(formTypeQuery.toUpperCase())) {
+                if (typeQuery && filing.includes(typeQuery.toUpperCase())) {
                     FormTypeArray.push({ FormType: filing, BadgeColor: value.color });
                 }
                 return ({});
@@ -62,38 +63,35 @@ const FormTypeSearchPage = ({ ...props }) => {
             });
     }
 
-    const toggleNumber = () => {
-        changeNumberDropDownOpen(!numberdropdownOpen);
+    const toggleNumber = (number) => {
+        changeNumberItems(number);
+        changeNumberDropDownOpen(false);
     }
 
-    const handleNumberFilterClick = (clickedNumber) => {
-        this.setState({ numberItems: clickedNumber });
-    }
-
-    const searchHandler = (FormType, type, cik) => {
-        changeFormTypeQuery(FormType);
+    const searchHandler = async (company, type, cik) => {
         changeShowLoader(true);
-        getDataFromDb();
+        await getDataFromDb(type);
     }
 
     if (props.location.searchStrings && !props.location.searchExecuted) {
         props.location.searchExecuted = true;
         let { companySearchString, cikSearchString, formTypeSearchString } = props.location.searchStrings;
-        searchHandler(formTypeSearchString, formTypeSearchString, cikSearchString);
+        searchHandler(companySearchString, formTypeSearchString, cikSearchString);
     }
+
     return (
         <div className="px-4 h-100 d-flex overflow-hidden flex-column">
             <div className="py-3 d-flex flex-row">
                 <h1 className="mr-auto">Form Type Search</h1>
                 <div className="d-flex flex-wrap justify-content-end">
-                    <Dropdown className="p-2" style={{ width: "120px" }} isOpen={numberdropdownOpen} toggle={changeNumberDropDownOpen}>
+                    <Dropdown className="p-2" style={{ width: "120px" }} isOpen={numberdropdownOpen} toggle={() => changeNumberDropDownOpen(!numberdropdownOpen)}>
                         <DropdownToggle outline className="w-100" style={{ boxShadow: "none" }} caret>Number</DropdownToggle>
                         <DropdownMenu>
                             {numberFilter.map((number, index) => {
                                 if (!index) {
-                                    return (<DropdownItem key={index} onClick={() => changeNumberItems(number)}>{number}</DropdownItem>);
+                                    return (<DropdownItem key={index} onClick={() => toggleNumber(number)} > {number}</DropdownItem>);
                                 }
-                                return (<DropdownItem key={index} onClick={() => changeNumberItems(number)}>{"<"} {number}</DropdownItem>);
+                                return (<DropdownItem key={index} onClick={() => toggleNumber(number)}>{"<"} {number}</DropdownItem>);
                             })}
                         </DropdownMenu>
                     </Dropdown>
@@ -105,7 +103,7 @@ const FormTypeSearchPage = ({ ...props }) => {
                 <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
                     <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
                         {recentSearches.map(({ FormTypeSearchString, dateSearched }, index) => {
-                            return (<SmallRecentSearchCard key={index} linkto="/companysearch" formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
+                            return (<SmallRecentSearchCard key={index} linkto="/formtypesearch" formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
                         })}
                     </Row>
                 </CardBody>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MdSearch } from 'react-icons/md';
 import { Form, Input, Badge, DropdownToggle, Dropdown, DropdownMenu, DropdownItem } from 'reactstrap';
 import { NavLink, Redirect, withRouter } from 'react-router-dom';
@@ -8,20 +8,22 @@ const SearchInput = (props) => {
   const [inputState, changeInput] = useState('');
   const [redirect, initiateRedirect] = useState(false);
 
-  //useEffect(() => { changeToggle(false) }, );
-
-  const toggleDropDown = () => {
-    if (inputState.length) {
+  const toggleDropDown = (input) => {
+    if (input.length) {
       changeToggle(true);
     }
   }
 
-  const handleKeyChange = (e) => {
+  const handleSubmit = (e) => {
     changeToggle(false);
     e.preventDefault();
+    e.stopPropagation();
+    if (e.target.value) changeInput(e.target.value);
+    var input = inputState === e.target.value ? inputState : e.target.value;
     if ((props && props.location) && props.location.pathname === '/search') {
-      props.location.searchExecuted = false;
-      props.location.searchStrings = { companySearchString: inputState };
+      console.log(props.location.searchExecuted);
+      props.location.searchExecuted = !props.location.searchExecuted;
+      props.location.searchStrings = { companySearchString: input };
       initiateRedirect(true);
     } else {
       initiateRedirect(true);
@@ -31,14 +33,14 @@ const SearchInput = (props) => {
   let content = redirect ? (<Redirect to={{ pathname: '/search', searchExecuted: false, searchStrings: { companySearchString: inputState } }} />) : '';
   return (
     <React.Fragment>
-      <Form inline className="cr-search-form" onSubmit={(e) => handleKeyChange(e)}>
+      <Form inline className="cr-search-form" onSubmit={(e) => handleSubmit(e)}>
         <MdSearch
           size="20"
           className="cr-search-form__icon-search text-secondary"
         />
         <Dropdown style={{ width: "fit-content", margin: "0 auto" }} isOpen={dropdownToggled} toggle={toggleDropDown}>
           <DropdownToggle className="p-0"><Input
-            onChange={(e) => { changeInput(e.target.value); toggleDropDown(); }}
+            onChange={(e) => { changeInput(e.target.value); toggleDropDown(e.target.value); }}
             type="search"
             placeholder="Search..."
           /></DropdownToggle>

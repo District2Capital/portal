@@ -16,6 +16,7 @@ const RecentViewedFilingsCard = () => {
     }, []);
 
     const getRecentlyViewedFilings = async () => {
+        updateFilingCount(5);
         var config = {
             params: { "x-auth-token": getJwt() }
         };

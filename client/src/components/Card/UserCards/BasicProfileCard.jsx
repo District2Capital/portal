@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Card, CardHeader, Row, Col, CardText, CardBody, Button, Form, FormGroup, CustomInput, Label } from 'reactstrap';
+import { Card, CardHeader, Row, Col, CardBody } from 'reactstrap';
 import Avatar from '../../Avatar';
 import defaultUser from 'assets/defaultUser.png';
 import { useUserData } from 'components/hooks/useUserData';
@@ -11,11 +11,6 @@ const BasicProfileCard = (props) => {
     const [defaultData, fetchedData] = useUserData('/api/user/getProfileImage', []);
 
     const inputFile = useRef(null);
-
-    const fileChangedHandler = event => {
-        event.preventDefault();
-        console.log(event.target.files[0]);
-    }
 
     const uploadHandler = () => {
         //console.log(this.state.selectedFile);

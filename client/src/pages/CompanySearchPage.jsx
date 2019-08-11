@@ -7,7 +7,6 @@ import { CompanyCard, SmallRecentSearchCard } from 'components/Card';
 import { withRouter } from 'react-router-dom';
 
 const CompanySearchPage = ({ ...props }) => {
-    const [time, changeTime] = useState(Date.now());
     const [recentSearches, changeRecentSearches] = useState([]);
     const [data, changeData] = useState([]);
     const [numberItems, changeNumberItems] = useState("All");
@@ -21,8 +20,9 @@ const CompanySearchPage = ({ ...props }) => {
         getRecentSearchData();
     }, []);
 
-    const getDataFromDb = async () => {
+    const getDataFromDb = async (company, type, cik) => {
         // * Save company query as recent Company search in DB
+        var companySearch = company ? company : companyQuery;
         var params = {
             "x-auth-token": getJwt(),
             companySearchString: companyQuery
@@ -30,7 +30,7 @@ const CompanySearchPage = ({ ...props }) => {
         await axios.post(`api/users/updateCompanySearches`, params);
         await getRecentSearchData();
         // * Fetch list of companies from DB
-        await axios.get(`/api/sec/getCompanies/?company=${companyQuery}`).then(res => {
+        await axios.get(`/api/sec/getCompanies/?company=${companySearch}`).then(res => {
             changeData(res.data.companies);
             changeShowLoader(false);
             changeSearchExecuted(true);
@@ -63,7 +63,7 @@ const CompanySearchPage = ({ ...props }) => {
     const searchHandler = async (company, type, cik) => {
         changeCompanyQuery(company);
         changeShowLoader(true);
-        getDataFromDb();
+        getDataFromDb(company, type, cik);
     }
 
     if (props.location.searchStrings && !props.location.searchExecuted) {

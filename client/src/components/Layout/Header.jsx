@@ -17,7 +17,6 @@ import {
   NavItem,
   NavLink,
   Modal,
-  ModalBody,
 } from 'reactstrap';
 import bn from 'utils/bemnames';
 

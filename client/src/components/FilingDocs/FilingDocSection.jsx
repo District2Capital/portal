@@ -4,7 +4,6 @@ import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import { FilingDocFollowButton } from 'components/FilingDocs';
 
 const FilingDocSection = ({ keys, value, valueindex }) => {
-    const [saved, changeSaved] = useState(false);
     const [isHidden, changeIsHidden] = useState(false);
 
     const handleSectionSize = () => {

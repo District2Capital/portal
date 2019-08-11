@@ -1,6 +1,6 @@
 {
   "name": "d2c-portal",
-  "version": "1.0.0",
+  "version": "3.0.4",
   "description": "D2C Portal",
   "author": "Andreas Bigger",
   "main": "server.js",

@@ -1,1 +1,1 @@
-export { default as filings } from './filings'; 
+export { filings } from './filings'; 
