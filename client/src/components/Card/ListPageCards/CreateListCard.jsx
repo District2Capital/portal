@@ -14,8 +14,7 @@ const CreateListCard = () => {
         if (code === 'Enter') {
             if (value && value.lists.lists.length) {
                 // * Test if list with same name does not already exist
-                var regex = new RegExp(value.lists.lists.join("|"), "i");
-                if (regex.test(inputState.toLowerCase())) {
+                if (value.lists.lists.includes(inputState)) {
                     toast.error(`List with name "${inputState}" already exists!`, { autoClose: 3000 });
                 }
                 else {
@@ -33,6 +32,21 @@ const CreateListCard = () => {
                         }
                     });
                 }
+            }
+            else {
+                // * Post to /createNewList
+                var params = {
+                    "x-auth-token": getJwt(),
+                    'listName': inputState
+                };
+
+                await axios.post('api/lists/createNewList', params).then(res => {
+                    if (res.status === 200) {
+                        toast.success(`List "${inputState}" created!`, { autoClose: 3000 });
+                        console.dir(value);
+                        value.createNewList(inputState);
+                    }
+                });
             }
         }
     }

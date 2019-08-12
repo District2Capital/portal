@@ -6,6 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
+    "client": "cd client && npm start",
     "dev": "nodemon server.js",
     "start": "node server.js",
     "prod": "npm i && nodemon server.js",
