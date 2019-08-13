@@ -4,7 +4,7 @@ import { FaGoogle } from 'react-icons/fa';
 import { login, loginWithJwt, getCurrentUser } from 'services/auth';
 import { Redirect } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { axios } from 'axios';
+import axios from 'axios';
 
 const SocialAuth = () => {
 
