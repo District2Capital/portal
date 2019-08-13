@@ -34,6 +34,7 @@ const CompanySearchPage = ({ ...props }) => {
             changeData(res.data.companies);
             changeShowLoader(false);
             changeSearchExecuted(true);
+            updateRecentSearches();
         });
     };
 
@@ -50,6 +51,15 @@ const CompanySearchPage = ({ ...props }) => {
             .catch(error => {
                 console.log('ERROR. Could not get recent searches.');
             });
+    }
+
+    const updateRecentSearches = async () => {
+        // Save queried filing as a recent search
+        var params = {
+            "x-auth-token": getJwt(),
+            companySearchString: companyQuery
+        };
+        await axios.post('api/users/updateFormTypeSearches', params);
     }
 
     const toggleNumber = () => {

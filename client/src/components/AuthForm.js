@@ -7,6 +7,7 @@ import Joi from "joi-browser";
 import { Redirect } from "react-router-dom";
 import { toast } from 'react-toastify';
 import * as _ from 'lodash';
+import { SocialAuth } from 'components/Auth';
 
 class AuthForm extends React.Component {
 
@@ -133,22 +134,15 @@ class AuthForm extends React.Component {
             <Input {...confirmPasswordInputProps} />
           </FormGroup>
         )}
-        <FormGroup check>
-          <Label check>
-            <Input type="checkbox" />{' '}
-            {this.isSignup ? 'Agree the terms and policy' : 'Remember me'}
-          </Label>
-        </FormGroup>
         <hr />
         <Button
-          size="lg"
-          className="border-0"
-          style={{ backgroundColor: '$primary' }}
+          size="md"
+          outline
           block
           onClick={this.handleSubmit}>
           Login
         </Button>
-
+        <SocialAuth />
         {children}
       </Form>
     );

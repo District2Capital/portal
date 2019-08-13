@@ -43,6 +43,7 @@ const FormTypeSearchPage = ({ ...props }) => {
             return ({});
         });
         changeData(FormTypeArray);
+        updateRecentSearches();
         changeShowLoader(false);
         changeSearchExecuted(true);
     };
@@ -61,6 +62,15 @@ const FormTypeSearchPage = ({ ...props }) => {
             .catch(error => {
                 console.log('ERROR. Could not get recent searches.');
             });
+    }
+
+    const updateRecentSearches = async () => {
+        // Save queried filing as a recent search
+        var params = {
+            "x-auth-token": getJwt(),
+            formTypeSearchString: formTypeQuery
+        };
+        await axios.post('api/users/updateFormTypeSearches', params);
     }
 
     const toggleNumber = (number) => {

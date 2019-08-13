@@ -58,12 +58,8 @@ router.get('/getRecentSearchData', async (req, res) => {
     try {
         // Get user search queries
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-        var user = await User.findById(decoded._id).select("-password");
-        res.status(200).format({
-            'application/json': function () {
-                res.send({ data: user.recentSearches });
-            }
-        });
+        var user = await User.findById(decoded._id).select("recentSearches");
+        res.status(200).send({ data: user.recentSearches });
     } catch (e) {
         winston.error(`${req.url} Request Failure`);
         res.status(500);
