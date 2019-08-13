@@ -10,6 +10,12 @@ export async function login(email, password) {
     http.setJwt(getJwt());
 }
 
+export async function loginWithSocial(email, name) {
+    const { data: jwt } = await http.post(apiEndpoint, { email, name });
+    localStorage.setItem(tokenKey, jwt);
+    http.setJwt(getJwt());
+}
+
 export function loginWithJwt(jwt) {
     localStorage.setItem(tokenKey, jwt);
     http.setJwt(getJwt());

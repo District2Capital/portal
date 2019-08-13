@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
+const passport = require('passport');
 
 router.post('/', async (req, res) => {
     console.log(req.body);
@@ -27,6 +28,14 @@ router.post('/', async (req, res) => {
     const token = user.generateAuthToken();
     res.send(token);
 });
+
+router.post('/google',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        // Successful authentication, redirect home.
+        winston.debug(req);
+        res.send('Google Auth successful');
+    });
 
 function validate(req) {
     const schema = {
