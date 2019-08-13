@@ -17,7 +17,7 @@ const SocialAuth = () => {
                 mode: 'cors',
                 cache: 'default'
             };
-            await axios.post('/api/auth/google', options).then((res) => {
+            await axios.get('/api/auth/google', options).then((res) => {
                 const token = res.headers.get('x-auth-token');
                 loginWithJwt(token);
                 if (!token) toast.warn('Credentials not found.', { className: 'rounded' });

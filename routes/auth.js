@@ -29,12 +29,13 @@ router.post('/', async (req, res) => {
     res.send(token);
 });
 
-router.post('/google',
+router.get('/google',
     passport.authenticate('google', { failureRedirect: '/login' }),
     (req, res) => {
         // Successful authentication, redirect home.
-        winston.debug(req);
-        res.send('Google Auth successful');
+        res.redirect('/');
+        // winston.debug(req);
+        // res.send('Google Auth successful');
     });
 
 function validate(req) {
