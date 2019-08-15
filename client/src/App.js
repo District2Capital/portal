@@ -44,6 +44,7 @@ import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
 
 // * Settings
 import SettingsPage from 'pages/SettingsPage';
+import ResetPage from 'pages/ResetPage';
 
 // import StockPage from 'pages/StockPage';
 // import FilingReaderPage from 'pages/FilingReaderPage';
@@ -66,7 +67,15 @@ const App = () => {
   const user = auth.getCurrentUser();
   if (!user) {
     return (
-      <div>
+      <Switch>
+        <LayoutRoute
+          exact
+          path="/reset/:token"
+          layout={EmptyLayout}
+          component={props => (
+            <ResetPage {...props} authState={STATE_LOGIN} />
+          )}
+        />
         <LayoutRoute
           exact
           path="/login"
@@ -76,7 +85,7 @@ const App = () => {
           )}
         />
         <Redirect from="/" to="/login" />
-      </div>);
+      </Switch>);
   }
   const value = useContext(GlobalContext);
   const fetchData = async () => {
@@ -95,6 +104,13 @@ const App = () => {
 
   return (
     < Switch >
+      <LayoutRoute
+        path="/reset"
+        layout={EmptyLayout}
+        component={props => (
+          <ResetPage {...props} authState={STATE_LOGIN} />
+        )}
+      />
       <LayoutRoute
         exact
         path="/login"

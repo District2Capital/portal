@@ -28,7 +28,7 @@ const SocialAuth = () => {
 
     return (
         <GoogleLogin
-            className="my-3 w-100 mx-auto justify-content-center"
+            className="m-3 w-100 mx-auto justify-content-center"
             buttonText="Authenticate With Google"
             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
             onSuccess={googleResponse}

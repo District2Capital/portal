@@ -2,10 +2,17 @@ import http from "./httpService";
 import jwtDecode from "jwt-decode";
 
 const apiEndpoint = "/api/auth";
+const apiEndpointSignUp = "/api/users/createNewUser";
 const tokenKey = process.env.REACT_APP_API_LOGIN_TOKEN_NAME;
 
 export async function login(email, password) {
     const { data: jwt } = await http.post(apiEndpoint, { email, password });
+    localStorage.setItem(tokenKey, jwt);
+    http.setJwt(getJwt());
+}
+
+export async function signUp(name, email, password) {
+    const { data: jwt } = await http.post(apiEndpointSignUp, { name, email, password });
     localStorage.setItem(tokenKey, jwt);
     http.setJwt(getJwt());
 }

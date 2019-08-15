@@ -7,6 +7,8 @@ const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const passport = require('passport');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 router.post('/', async (req, res) => {
     console.log(req.body);
@@ -27,6 +29,44 @@ router.post('/', async (req, res) => {
     console.log('Returning jwt authentication token...');
     const token = user.generateAuthToken();
     res.send(token);
+});
+
+router.post('/forgotPassword', async (req, res) => {
+    let user = User.findOne({ email: req.body.email });
+    if (!user) res.status(400).send('email not in db');
+    const token = crypto.randomBytes(20).toString('hex');
+    await user.update({
+        resetPasswordToken: token,
+        resetPasswordExpires: Date.now() + 36000
+    });
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: `${process.env.EMAIL_ADDRESS}`,
+            pass: `${process.env.EMAIL_PASSWORD}`
+        }
+    });
+
+    const mailOptions = {
+        from: `${process.env.EMAIL_ADDRESS}`,
+        to: `${req.body.email}`,
+        subject: 'Link to Reset Password',
+        text:
+            `You are receiving this because you (or somebody else) requested a password reset for your account. \n\n` +
+            `Please click on the following link or paste it into the browser to complete the password reset process (link is only active for one hour): \n\n` +
+            `http://portal.district2capital.com/reset/${token}\n\n` +
+            `If you did not request this, please ignore the email and your password will remain unchanged.`
+    };
+
+    transporter.sendMail(mailOptions, function (err, response) {
+        if (err) {
+            winston.error('Error sending password reset email.');
+        } else {
+            winston.info('Email sent to: ' + response.accepted[0]);
+            res.status(200).send('recovery email sent');
+        }
+    });
 });
 
 router.get('/google',
