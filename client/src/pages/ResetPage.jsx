@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, FormGroup, Input, Label, Button } from 'reactstrap';
+import { Form, FormGroup, Input, Label, Button, Modal, ModalBody } from 'reactstrap';
 import d2clogo from 'assets/logo.png';
 import Joi from "joi-browser";
 import axios from 'axios';
 import * as _ from 'lodash';
 import { Redirect } from "react-router-dom";
 import { toast } from 'react-toastify';
+import LoadingSpinner from 'components/LoadingSpinner';
 
 const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputProps, passwordInputProps, ...props }) => {
     const [password, changePassword] = useState("");
@@ -14,6 +15,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
     const [initialPasswordHover, changeInitialPasswordHover] = useState(false);
     const [initialConfirmPasswordHover, changeInitialConfirmPasswordHover] = useState(false);
     const [passwordChanged, changePasswordChanged] = useState(false);
+    const [loadingModal, changeLoadingModal] = useState(false);
     const [errors, changeErrors] = useState({});
     const schema = {
         password: Joi.string()
@@ -36,19 +38,20 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
             const passwordErrors = _.isEmpty(validateProperty('password', password)) ? {} : Object.assign({}, errors, validateProperty('password', password));
             const confirmPasswordErrors = _.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? {} : Object.assign({}, errors, validateProperty('confirmPassword', confirmPassword));
             changeErrors(Object.assign({}, passwordErrors, confirmPasswordErrors));
-            console.log(passwordErrors);
-            console.log(confirmPasswordErrors);
             if ((_.isEmpty(errors) && _.isEmpty(passwordErrors)) && _.isEmpty(confirmPasswordErrors)) {
-                console.log(props.match.params.token);
+                changeLoadingModal(true);
                 let params = {
                     "resetPasswordToken": props.match.params.token,
                     "password": password
                 };
                 await axios.post('api/auth/changePassword', params).then(res => {
+                    changeLoadingModal(false);
                     if (res.status === 200) {
                         localStorage.setItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME, res.headers['x-auth-token']);
                         changePasswordChanged(true);
                     }
+                    changeInitialPasswordHover(false);
+                    changeInitialConfirmPasswordHover(false);
                     changePassword("");
                     changeConfirmPassword("");
                 });
@@ -89,7 +92,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
             <Form onSubmit={() => submitNewPassword()}>
                 <FormGroup>
                     <Label for={passwordLabel}>Password</Label>
-                    <Input {...passwordInputProps} className={_.isEmpty(validateProperty('password', password)) ? "form-control is-valid" : (initialPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changePassword(e.target.value)} />
+                    <Input value={password} {...passwordInputProps} className={_.isEmpty(validateProperty('password', password)) ? "form-control is-valid" : (initialPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changePassword(e.target.value)} />
                     {_.isEmpty(validateProperty('password', password)) ? (
                         <div class="valid-feedback">Looks good!</div>
                     ) : (
@@ -98,13 +101,19 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
                 </FormGroup>
                 <FormGroup>
                     <Label for={confirmPasswordLabel}>Confirm Password</Label>
-                    <Input {...confirmPasswordInputProps} className={_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? "form-control is-valid" : (initialConfirmPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialConfirmPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changeConfirmPassword(e.target.value)} />
+                    <Input value={confirmPassword} {...confirmPasswordInputProps} className={_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? "form-control is-valid" : (initialConfirmPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialConfirmPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changeConfirmPassword(e.target.value)} />
                     {_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? (
                         <div class="valid-feedback">Looks good!</div>
                     ) : (
                             <div class="invalid-feedback">Please enter the same password as above.</div>
                         )}
                 </FormGroup>
+                <Modal id="userCardModal" style={{ height: "100%", margin: "auto", alignItems: "center", display: "flex" }} isOpen={loadingModal} toggle={changeLoadingModal}>
+                    <ModalBody className="text-center" style={{ height: "fit-content" }}>
+                        <LoadingSpinner style={{ width: "100%" }} />
+                        <h3>Updating Password</h3>
+                    </ModalBody>
+                </Modal>
                 <hr />
                 <Button
                     size="md"
