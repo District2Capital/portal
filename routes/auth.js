@@ -32,41 +32,93 @@ router.post('/', async (req, res) => {
 });
 
 router.post('/forgotPassword', async (req, res) => {
-    let user = User.findOne({ email: req.body.email });
-    if (!user) res.status(400).send('email not in db');
-    const token = crypto.randomBytes(20).toString('hex');
-    await user.update({
-        resetPasswordToken: token,
-        resetPasswordExpires: Date.now() + 36000
-    });
-
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: `${process.env.EMAIL_ADDRESS}`,
-            pass: `${process.env.EMAIL_PASSWORD}`
+    try {
+        let user = await User.findOne({ email: req.body.email });
+        if (!user) res.status(400).send('email not in db');
+        else {
+            let token = crypto.randomBytes(20).toString('hex');
+            let id = new mongoose.Types.ObjectId(user._id);
+            let query = {
+                '_id': id
+            };
+            let updateObject = {
+                $set: {
+                    'resetPasswordToken': token,
+                    'resetPasswordExpires': Date.now() + 360000
+                }
+            };
+            await User.update(query, updateObject);
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: `${process.env.EMAIL_ADDRESS}`,
+                    pass: `${process.env.EMAIL_PASSWORD}`
+                }
+            });
+            const mailOptions = {
+                from: `${process.env.EMAIL_ADDRESS}`,
+                to: `${req.body.email}`,
+                subject: 'Link to Reset Password',
+                text:
+                    `You are receiving this because you (or somebody else) requested a password reset for your account. \n\n` +
+                    `Please click on the following link or paste it into the browser to complete the password reset process (link is only active for one hour): \n\n` +
+                    `http://localhost:3000/reset/${token}\n\n` +
+                    `If you did not request this, please ignore the email and your password will remain unchanged.`
+            };
+            transporter.sendMail(mailOptions, function (err, response) {
+                if (err) {
+                    winston.error('Error sending password reset email.');
+                } else {
+                    winston.info('Email sent to: ' + response.accepted[0]);
+                    res.status(200).send('recovery email sent');
+                }
+            });
         }
-    });
+    } catch (err) {
+        winston.debug(err);
+        res.status(500).send("internal server error");
+    }
+});
 
-    const mailOptions = {
-        from: `${process.env.EMAIL_ADDRESS}`,
-        to: `${req.body.email}`,
-        subject: 'Link to Reset Password',
-        text:
-            `You are receiving this because you (or somebody else) requested a password reset for your account. \n\n` +
-            `Please click on the following link or paste it into the browser to complete the password reset process (link is only active for one hour): \n\n` +
-            `http://portal.district2capital.com/reset/${token}\n\n` +
-            `If you did not request this, please ignore the email and your password will remain unchanged.`
-    };
-
-    transporter.sendMail(mailOptions, function (err, response) {
-        if (err) {
-            winston.error('Error sending password reset email.');
-        } else {
-            winston.info('Email sent to: ' + response.accepted[0]);
-            res.status(200).send('recovery email sent');
+router.post('/changePassword', async (req, res) => {
+    try {
+        winston.debug(req.body.resetPasswordToken);
+        winston.debug(req.body.password);
+        let user = await User.findOne({
+            $and: [{ resetPasswordToken: req.body.resetPasswordToken },
+            {
+                resetPasswordExpires: {
+                    $gt: Date.now()
+                }
+            }]
+        });
+        winston.info('user object: ' + user);
+        //console.dir(user);
+        if (!user) res.status(400).send('failed to update password');
+        else {
+            winston.debug(user._id);
+            let id = new mongoose.Types.ObjectId(user._id);
+            let query = {
+                '_id': id
+            };
+            let salt = await bcrypt.genSalt(10);
+            let password = await bcrypt.hash(req.body.password, salt);
+            let updateObject = {
+                $set: {
+                    'password': password
+                }
+            };
+            await User.update(query, updateObject)
+            const token = user.generateAuthToken();
+            res.status(200)
+                .header("x-auth-token", token)
+                .header("access-control-expose-headers", "x-auth-token")
+                .send(_.pick(user, ["_id", "name", "email"]));
         }
-    });
+    } catch (err) {
+        winston.debug(err);
+        res.status(500).send("internal server error");
+    }
 });
 
 router.get('/google',

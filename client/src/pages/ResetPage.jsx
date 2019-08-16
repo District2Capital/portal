@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { Redirect } from "react-router-dom";
 import { toast } from 'react-toastify';
 
-const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputProps, passwordInputProps }) => {
+const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputProps, passwordInputProps, ...props }) => {
     const [password, changePassword] = useState("");
     const [confirmPassword, changeConfirmPassword] = useState("");
     const [initialPasswordHover, changeInitialPasswordHover] = useState(false);
@@ -21,26 +21,51 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
             .required()
             .min(7)
             .max(16)
-            .label("password"),
+            .label("password")
+            .strict(),
         confirmPassword: Joi.any()
-            .valid(Joi.ref('password'))
+            .valid(Joi.ref("password"))
             .required()
-            .label('confirmPassword')
+            .label("confirmPassword")
+            .strict()
     };
 
-    const submitNewPassword = () => {
-        const passwordErrors = _.isEmpty(validateProperty('password', password)) ? {} : Object.assign({}, errors, validateProperty('password', password));
-        const confirmPasswordErrors = _.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? {} : Object.assign({}, errors, validateProperty('confirmPassword', confirmPassword));
-        changeErrors(Object.assign({}, passwordErrors, confirmPasswordErrors));
-        if (_.isEmpty(errors) && _.isEmpty(passwordErrors) && _.isEmpty(confirmPasswordErrors)) {
-
-        }
-        else {
-            toast.error('Password Errors. Please Try Again.', { className: 'rounded' });
+    const submitNewPassword = async (e) => {
+        let code = e ? e.key : 'Enter';
+        if (code === 'Enter') {
+            const passwordErrors = _.isEmpty(validateProperty('password', password)) ? {} : Object.assign({}, errors, validateProperty('password', password));
+            const confirmPasswordErrors = _.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? {} : Object.assign({}, errors, validateProperty('confirmPassword', confirmPassword));
+            changeErrors(Object.assign({}, passwordErrors, confirmPasswordErrors));
+            console.log(passwordErrors);
+            console.log(confirmPasswordErrors);
+            if ((_.isEmpty(errors) && _.isEmpty(passwordErrors)) && _.isEmpty(confirmPasswordErrors)) {
+                console.log(props.match.params.token);
+                let params = {
+                    "resetPasswordToken": props.match.params.token,
+                    "password": password
+                };
+                await axios.post('api/auth/changePassword', params).then(res => {
+                    if (res.status === 200) {
+                        changePasswordChanged(true);
+                    }
+                    changePassword("");
+                    changeConfirmPassword("");
+                });
+            }
+            else {
+                toast.error('Password Errors. Please Try Again.', { className: 'rounded' });
+            }
         }
     }
 
     const validateProperty = (name, value) => {
+        if (name === 'confirmPassword') {
+            if (_.isEmpty(validateProperty('password', password)) && password === confirmPassword) {
+                return {}
+            } else {
+                return { 'error': 'error validating confirm password' }
+            }
+        }
         const obj = { [name]: value };
         const newschema = { [name]: schema[name] };
         const { error } = Joi.validate(obj, newschema);
@@ -49,7 +74,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
 
     if (passwordChanged) return <Redirect to="/" />;
     return (
-        <div className="text-center" style={{ margin: "20px auto", width: "20rem" }}>
+        <div className="text-center" style={{ margin: "auto", width: "20rem" }}>
             <div className="text-center pb-4">
                 <img
                     className="rounded"
@@ -63,7 +88,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
             <Form onSubmit={() => submitNewPassword()}>
                 <FormGroup>
                     <Label for={passwordLabel}>Password</Label>
-                    <Input {...passwordInputProps} className={_.isEmpty(validateProperty('password', password)) ? "form-control is-valid" : (initialPasswordHover && "form-control is-invalid")} onMouseEnter={() => changeInitialPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changePassword(e.target.value)} />
+                    <Input {...passwordInputProps} className={_.isEmpty(validateProperty('password', password)) ? "form-control is-valid" : (initialPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changePassword(e.target.value)} />
                     {_.isEmpty(validateProperty('password', password)) ? (
                         <div class="valid-feedback">Looks good!</div>
                     ) : (
@@ -72,7 +97,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
                 </FormGroup>
                 <FormGroup>
                     <Label for={confirmPasswordLabel}>Confirm Password</Label>
-                    <Input {...confirmPasswordInputProps} className={_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? "form-control is-valid" : (initialConfirmPasswordHover && "form-control is-invalid")} onMouseEnter={() => changeInitialConfirmPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changeConfirmPassword(e.target.value)} />
+                    <Input {...confirmPasswordInputProps} className={_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? "form-control is-valid" : (initialConfirmPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialConfirmPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changeConfirmPassword(e.target.value)} />
                     {_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? (
                         <div class="valid-feedback">Looks good!</div>
                     ) : (

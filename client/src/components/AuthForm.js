@@ -166,7 +166,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
         <TabPane tabId="1" className="m-3">
           <FormGroup>
             <Label for={usernameLabel}>{usernameLabel}</Label>
-            <Input className={_.isEmpty(validateProperty('username', signInUsername)) ? "form-control is-valid" : (initialSignInUsernameHover && "form-control is-invalid")} onMouseEnter={() => changeInitialSignInUsernameHover(true)} required {...usernameInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInUsername(e.target.value)} />
+            <Input className={_.isEmpty(validateProperty('username', signInUsername)) ? "form-control is-valid" : (initialSignInUsernameHover && "form-control is-invalid")} onFocus={() => changeInitialSignInUsernameHover(true)} required {...usernameInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInUsername(e.target.value)} />
             {_.isEmpty(validateProperty('username', signInUsername)) ? (
               <div class="valid-feedback">Looks good!</div>
             ) : (
@@ -175,7 +175,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
           </FormGroup>
           <FormGroup>
             <Label for={passwordLabel}>{passwordLabel}</Label>
-            <Input className={_.isEmpty(validateProperty('password', signInPassword)) ? "form-control is-valid" : (initialSignInPasswordHover && "form-control is-invalid")} onMouseEnter={() => changeInitialSignInPasswordHover(true)} required {...passwordInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInPassword(e.target.value)} />
+            <Input className={_.isEmpty(validateProperty('password', signInPassword)) ? "form-control is-valid" : (initialSignInPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignInPasswordHover(true)} required {...passwordInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInPassword(e.target.value)} />
             {_.isEmpty(validateProperty('password', signInPassword)) ? (
               <div class="valid-feedback">Looks good!</div>
             ) : (
@@ -183,7 +183,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
               )}
           </FormGroup>
           <div className="my-3">
-            <a style={{ color: "blue" }} onClick={() => passwordReset()}>Forgot Password</a>
+            <a style={{ color: "blue", cursor: "pointer" }} onClick={() => passwordReset()}>Forgot Password</a>
           </div>
           <hr />
           <Button
@@ -197,7 +197,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
         <TabPane tabId="2" className="m-3">
           <FormGroup>
             <Label for={nameLabel}>{nameLabel}</Label>
-            <Input className={_.isEmpty(validateProperty('name', signUpName)) ? "form-control is-valid" : (initialSignUpNameHover && "form-control is-invalid")} onMouseEnter={() => changeInitialSignUpNameHover(true)} id={nameLabel} required {...nameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpName(e.target.value)} />
+            <Input className={_.isEmpty(validateProperty('name', signUpName)) ? "form-control is-valid" : (initialSignUpNameHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpNameHover(true)} id={nameLabel} required {...nameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpName(e.target.value)} />
             {_.isEmpty(validateProperty('name', signUpName)) ? (
               <div class="valid-feedback">Looks good!</div>
             ) : (
@@ -206,7 +206,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
           </FormGroup>
           <FormGroup>
             <Label for={usernameLabel}>{usernameLabel}</Label>
-            <Input className={_.isEmpty(validateProperty('username', signUpUsername)) ? "form-control is-valid" : (initialSignUpUsernameHover && "form-control is-invalid")} onMouseEnter={() => changeInitialSignUpUsernameHover(true)} id={usernameLabel} required {...usernameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpUsername(e.target.value)} />
+            <Input className={_.isEmpty(validateProperty('username', signUpUsername)) ? "form-control is-valid" : (initialSignUpUsernameHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpUsernameHover(true)} id={usernameLabel} required {...usernameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpUsername(e.target.value)} />
             {_.isEmpty(validateProperty('username', signUpUsername)) ? (
               <div class="valid-feedback">Looks good!</div>
             ) : (
@@ -215,7 +215,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
           </FormGroup>
           <FormGroup>
             <Label for={passwordLabel}>{passwordLabel}</Label>
-            <Input className={_.isEmpty(validateProperty('password', signUpPassword)) ? "form-control is-valid" : (initialSignUpPasswordHover && "form-control is-invalid")} onMouseEnter={() => changeInitialSignUpPasswordHover(true)} id={passwordLabel} required {...passwordInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpPassword(e.target.value)} />
+            <Input className={_.isEmpty(validateProperty('password', signUpPassword)) ? "form-control is-valid" : (initialSignUpPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpPasswordHover(true)} id={passwordLabel} required {...passwordInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpPassword(e.target.value)} />
             {_.isEmpty(validateProperty('password', signUpPassword)) ? (
               <div class="valid-feedback">Looks good!</div>
             ) : (
