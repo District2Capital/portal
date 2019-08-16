@@ -46,6 +46,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
                 };
                 await axios.post('api/auth/changePassword', params).then(res => {
                     if (res.status === 200) {
+                        localStorage.setItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME, res.headers['x-auth-token']);
                         changePasswordChanged(true);
                     }
                     changePassword("");
