@@ -15,6 +15,7 @@ const htmlToJson = require('html-to-json');
 const axios = require('axios');
 const filingColors = require('./filings');
 const Fawn = require('fawn');
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY_TEST);
 Fawn.init(mongoose);
 
 router.get("/me", auth, async (req, res) => {
@@ -268,16 +269,35 @@ router.post("/createNewUser", async (req, res) => {
         let user = await User.findOne({ email: req.body.email });
         if (user) return res.status(400).send("User already registered.");
 
-        user = new User(_.pick(req.body, ["name", "email", "password"]));
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-        await user.save();
+        let striplePlan = 'premium_package';
 
-        const token = user.generateAuthToken();
-        res
-            .header("x-auth-token", token)
-            .header("access-control-expose-headers", "x-auth-token")
-            .send(_.pick(user, ["_id", "name", "email"]));
+        // * Stripe Create User Section
+        stripe.customers.create({
+            email: req.body.email,
+            name: req.body.name,
+        }, function (err, customer) {
+            // * Stripe Create Subscription for returned user
+            stripe.subscriptions.create({
+                customer: customer.id,
+                items: [
+                    {
+                        plan: stripePlan,
+                    },
+                ]
+            }, async function (err, subscription) {
+                // * Create new User in D2C Database
+                user = new User(Object.assign({}, _.pick(req.body, ["name", "email", "password"]), { 'stripeID': customer.id, 'stripePlan': stripePlan }));
+                let salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(req.body.password, salt);
+                user.save();
+                let token = user.generateAuthToken();
+                res
+                    .header("x-auth-token", token)
+                    .header("access-control-expose-headers", "x-auth-token")
+                    .send(_.pick(user, ["_id", "name", "email"]));
+            }
+            );
+        });
     } catch (err) {
         res.status(500).send('Internal Server Error.');
         winston.error('Internal Server Error.');

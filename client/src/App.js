@@ -10,6 +10,7 @@ import { STATE_LOGIN, STATE_SIGNUP } from 'components/AuthForm';
 import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
 import './styles/reduction.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-credit-cards/es/styles-compiled.css';
 
 // * Main Pages
 import DashboardPage from 'pages/DashboardPage';

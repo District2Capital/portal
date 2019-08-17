@@ -25,51 +25,73 @@ const userSchema = new mongoose.Schema({
     },
     myLists: {
         type: Object,
-        required: true
+        required: true,
+        default: {}
     },
     recentFilings: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     recentSearches: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     historicalSearches: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     savedFilings: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     historicalSavedFilings: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     savedCompanies: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     historicalSavedCompanies: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     savedFormTypes: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     historicalSavedFormTypes: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     recentCompanySearches: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     },
     recentFormTypeSearches: {
         type: Array,
-        required: true
+        required: true,
+        default: []
+    },
+    stripeID: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    stripePlan: {
+        type: String,
+        required: true,
+        default: 'basic_package'
     },
     profileImage: {
         data: Buffer,
