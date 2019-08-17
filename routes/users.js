@@ -268,8 +268,7 @@ router.post("/createNewUser", async (req, res) => {
 
         let user = await User.findOne({ email: req.body.email });
         if (user) return res.status(400).send("User already registered.");
-
-        let striplePlan = 'premium_package';
+        let stripePlan = req.body.stripePlan ? req.body.stripePlan : 'basic_package';
 
         // * Stripe Create User Section
         stripe.customers.create({
@@ -301,6 +300,20 @@ router.post("/createNewUser", async (req, res) => {
     } catch (err) {
         res.status(500).send('Internal Server Error.');
         winston.error('Internal Server Error.');
+    }
+});
+
+router.get("/plans", async (req, res) => {
+    try {
+        // * Get Stripe plans for D2C Portal (prod_FdQviyaPwpxM6u)
+        stripe.plans.list(
+            function (err, plans) {
+                res.status(200).send(plans);
+            }
+        );
+    } catch (err) {
+        winston.error("Internal Server Error on /plans");
+        res.status(500).send(err);
     }
 });
 

@@ -18,8 +18,8 @@ export async function signUp(name, email, password) {
 }
 
 export async function loginWithSocial(email, name) {
-    const { data: jwt } = await http.post(apiEndpoint, { email, name });
-    localStorage.setItem(tokenKey, jwt);
+    const res = await http.post(apiEndpoint, { email, name });
+    localStorage.setItem(tokenKey, res.headers['x-auth-token']);
     http.setJwt(getJwt());
 }
 

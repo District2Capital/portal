@@ -62,7 +62,7 @@ router.post('/forgotPassword', async (req, res) => {
                 text:
                     `You are receiving this because you (or somebody else) requested a password reset for your account. \n\n` +
                     `Please click on the following link or paste it into the browser to complete the password reset process (link is only active for one hour): \n\n` +
-                    `http://localhost:3000/reset/${token}\n\n` +
+                    `https://portal.district2capital.com/reset/${token}\n\n` +
                     `If you did not request this, please ignore the email and your password will remain unchanged.`
             };
             transporter.sendMail(mailOptions, function (err, response) {
