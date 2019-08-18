@@ -18,8 +18,7 @@ const PaymentCards = ({ ...props }) => {
     const getPlans = async () => {
         await axios.get('/api/users/plans').then(res => {
             if (res.status === 200) {
-                console.log(res.data.data);
-                changePlans(res.data.data);
+                changePlans(res.data);
             }
         });
     }
@@ -34,14 +33,20 @@ const PaymentCards = ({ ...props }) => {
         <React.Fragment>
             <Row className="justify-content-center">
                 {plans.map((plan, index) => {
+                    // console.log(plan);
+                    let shadow = false;
                     return (
-                        <Card className="m-2">
+                        <Card className={shadow ? "shadow m-2 col-sm" : "m-2 col-sm"} onMouseEnter={() => { shadow = true; }} onMouseLeave={() => { shadow = false; }}>
                             <CardHeader>{plan.nickname} Package</CardHeader>
                             <CardBody>
-                                <p>{plan.amount}/{plan.interval}</p>
+                                <p>${plan.amount / 100}/{plan.interval}</p>
                                 <p>Package Includes:</p>
                                 <ul>
-                                    <li>Contents...</li>
+                                    {Object.values(plan.metadata).map(bullet => {
+                                        return (
+                                            <li>{bullet}</li>
+                                        );
+                                    })}
                                 </ul>
                             </CardBody>
                         </Card>

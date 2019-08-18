@@ -308,7 +308,8 @@ router.get("/plans", async (req, res) => {
         // * Get Stripe plans for D2C Portal (prod_FdQviyaPwpxM6u)
         stripe.plans.list(
             function (err, plans) {
-                res.status(200).send(plans);
+                let newPlans = plans.data.reverse();
+                res.status(200).send(newPlans);
             }
         );
     } catch (err) {
