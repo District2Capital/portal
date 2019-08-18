@@ -12,13 +12,14 @@ import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
 import { PaymentCards } from './Card';
 
-const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps, passwordLabel, passwordInputProps, confirmPasswordLabel, confirmPasswordInputProps, children, onLogoClick }) => {
+const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usernameLabel, usernameInputProps, passwordLabel, passwordInputProps, confirmPasswordLabel, confirmPasswordInputProps, children, onLogoClick }) => {
   const [signInUsername, changeSignInUsername] = useState("");
   const [signUpUsername, changeSignUpUsername] = useState("");
   const [signInPassword, changeSignInPassword] = useState("");
   const [signUpPassword, changeSignUpPassword] = useState("");
+  const [selectedPlan, changeSelectedPlan] = useState('basic_package');
   const [createToken, changeCreateToken] = useState(false);
-  const [token, changeToken] = useState(null);
+  const [token, changeToken] = useState({});
   const [initialSignUpNameHover, changeInitialSignUpNameHover] = useState(false);
   const [initialSignUpUsernameHover, changeInitialSignUpUsernameHover] = useState(false);
   const [initialSignUpPasswordHover, changeInitialSignUpPasswordHover] = useState(false);
@@ -27,7 +28,6 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
   const [loadingModal, changeLoadingModal] = useState(false);
   const [signUpName, changeSignUpName] = useState("");
   const [errors, changeErrors] = useState({});
-  const [activeTab, changeActiveTab] = useState('1');
 
   const schema = {
     name: Joi.string()
@@ -85,18 +85,23 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
     const usernameErrors = _.isEmpty(validateProperty('username', signUpUsername)) ? {} : Object.assign({}, errors, validateProperty('username', signUpUsername));
     const passwordErrors = _.isEmpty(validateProperty('password', signUpPassword)) ? {} : Object.assign({}, errors, validateProperty('password', signUpPassword));
     changeErrors(Object.assign({}, nameErrors, usernameErrors, passwordErrors));
-    if (_.isEmpty(errors)) {
+    if (_.isEmpty(errors) && (selectedPlan === 'basic_package' || !(_.isEmpty(token)))) {
+      changeCreateToken(true);
+      // (selectedPlan === 'basic_package' || token !== null)
+      const tokenId = _.isEmpty(token) ? '' : token.id;
       try {
-        await signUp(signUpName, signUpUsername, signUpPassword);
-        if (_.isEmpty(getCurrentUser())) toast.warn('Could Not Create New User.', { className: 'rounded' });
-        else {
-          console.log('Logged in. Redirecting...');
-          window.location = "/";
-          //window.location = this.props.location ? this.props.location.state.from.pathname : "/";
-        }
+        await signUp(signUpName, signUpUsername, signUpPassword, selectedPlan, tokenId).then(res => {
+          console.log(res);
+          if (_.isEmpty(getCurrentUser())) toast.warn('Could Not Create New User.', { className: 'rounded' });
+          else {
+            console.log('Logged in. Redirecting...');
+            window.location = "/";
+            //window.location = this.props.location ? this.props.location.state.from.pathname : "/";
+          }
+        });
       }
       catch (e) {
-        toast.error('Incorrect Email Or Password.', { className: 'rounded' });
+        toast.error('Invalid Information.', { className: 'rounded' });
         console.log('Login Failure:', e);
       }
     }
@@ -175,20 +180,20 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
         <TabPane tabId="1" className="m-3">
           <FormGroup>
             <Label for={usernameLabel}>{usernameLabel}</Label>
-            <Input value={signInUsername} className={_.isEmpty(validateProperty('username', signInUsername)) ? "form-control is-valid" : (initialSignInUsernameHover && "form-control is-invalid")} onFocus={() => changeInitialSignInUsernameHover(true)} required {...usernameInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInUsername(e.target.value)} />
+            <Input style={{ borderRadius: "100px" }} value={signInUsername} className={_.isEmpty(validateProperty('username', signInUsername)) ? "form-control is-valid" : (initialSignInUsernameHover && "form-control is-invalid")} onFocus={() => changeInitialSignInUsernameHover(true)} required {...usernameInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInUsername(e.target.value)} />
             {_.isEmpty(validateProperty('username', signInUsername)) ? (
               <div className="valid-feedback">Looks good!</div>
             ) : (
-                <div className="invalid-feedback">Please provide a valid email.</div>
+                <div className="invalid-feedback">Required.</div>
               )}
           </FormGroup>
           <FormGroup>
             <Label for={passwordLabel}>{passwordLabel}</Label>
-            <Input value={signInPassword} className={_.isEmpty(validateProperty('password', signInPassword)) ? "form-control is-valid" : (initialSignInPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignInPasswordHover(true)} required {...passwordInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInPassword(e.target.value)} />
+            <Input style={{ borderRadius: "100px" }} value={signInPassword} className={_.isEmpty(validateProperty('password', signInPassword)) ? "form-control is-valid" : (initialSignInPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignInPasswordHover(true)} required {...passwordInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInPassword(e.target.value)} />
             {_.isEmpty(validateProperty('password', signInPassword)) ? (
               <div className="valid-feedback">Looks good!</div>
             ) : (
-                <div className="invalid-feedback">Please provide a valid email.</div>
+                <div className="invalid-feedback">Required.</div>
               )}
           </FormGroup>
           <div className="my-3">
@@ -205,6 +210,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
             size="md"
             outline
             block
+            style={{ borderRadius: "100px" }}
             onClick={() => handleSubmitSignIn()}>
             Login
         </Button>
@@ -212,7 +218,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
         <TabPane tabId="2" className="m-3">
           <FormGroup>
             <Label for={nameLabel}>{nameLabel}</Label>
-            <Input value={signUpName} className={_.isEmpty(validateProperty('name', signUpName)) ? "form-control is-valid" : (initialSignUpNameHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpNameHover(true)} id={nameLabel} required {...nameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpName(e.target.value)} />
+            <Input style={{ borderRadius: "100px" }} value={signUpName} className={_.isEmpty(validateProperty('name', signUpName)) ? "form-control is-valid" : (initialSignUpNameHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpNameHover(true)} id={nameLabel} required {...nameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpName(e.target.value)} />
             {_.isEmpty(validateProperty('name', signUpName)) ? (
               <div className="valid-feedback">Looks good!</div>
             ) : (
@@ -221,7 +227,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
           </FormGroup>
           <FormGroup>
             <Label for={usernameLabel}>{usernameLabel}</Label>
-            <Input value={signUpUsername} className={_.isEmpty(validateProperty('username', signUpUsername)) ? "form-control is-valid" : (initialSignUpUsernameHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpUsernameHover(true)} id={usernameLabel} required {...usernameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpUsername(e.target.value)} />
+            <Input style={{ borderRadius: "100px" }} value={signUpUsername} className={_.isEmpty(validateProperty('username', signUpUsername)) ? "form-control is-valid" : (initialSignUpUsernameHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpUsernameHover(true)} id={usernameLabel} required {...usernameInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpUsername(e.target.value)} />
             {_.isEmpty(validateProperty('username', signUpUsername)) ? (
               <div className="valid-feedback">Looks good!</div>
             ) : (
@@ -230,7 +236,7 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
           </FormGroup>
           <FormGroup>
             <Label for={passwordLabel}>{passwordLabel}</Label>
-            <Input value={signUpPassword} className={_.isEmpty(validateProperty('password', signUpPassword)) ? "form-control is-valid" : (initialSignUpPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpPasswordHover(true)} id={passwordLabel} required {...passwordInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpPassword(e.target.value)} />
+            <Input style={{ borderRadius: "100px" }} value={signUpPassword} className={_.isEmpty(validateProperty('password', signUpPassword)) ? "form-control is-valid" : (initialSignUpPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignUpPasswordHover(true)} id={passwordLabel} required {...passwordInputProps} onKeyPress={(e) => handleSignUpEnterClicked(e)} onChange={(e) => changeSignUpPassword(e.target.value)} />
             {_.isEmpty(validateProperty('password', signUpPassword)) ? (
               <div className="valid-feedback">Looks good!</div>
             ) : (
@@ -238,12 +244,13 @@ const AuthForm = ({ nameLabel, nameInputProps, usernameLabel, usernameInputProps
               )}
           </FormGroup>
           <hr />
-          <PaymentCards createToken={createToken} changeToken={(e) => changeToken(e)} />
+          <PaymentCards selectedPlan={selectedPlan} changeSelectedPlan={(plan) => changeSelectedPlan(plan)} createToken={createToken} changeToken={(e) => changeToken(e)} />
           <hr />
           <Button
             size="md"
             outline
             block
+            style={{ borderRadius: "100px" }}
             onClick={() => handleSubmitSignUp()}>
             Sign Up
         </Button>
@@ -274,22 +281,22 @@ AuthForm.defaultProps = {
   nameLabel: 'Name',
   nameInputProps: {
     type: 'text',
-    placeholder: 'Full Name'
+    placeholder: ''
   },
   usernameLabel: 'Email',
   usernameInputProps: {
     type: 'email',
-    placeholder: 'your@email.com',
+    placeholder: '',
   },
   passwordLabel: 'Password',
   passwordInputProps: {
     type: 'password',
-    placeholder: 'your password',
+    placeholder: '',
   },
   confirmPasswordLabel: 'Confirm Password',
   confirmPasswordInputProps: {
     type: 'password',
-    placeholder: 'confirm your password',
+    placeholder: '',
   },
   onLogoClick: () => { },
 };

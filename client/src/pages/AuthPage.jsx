@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AuthForm, { STATE_LOGIN } from 'components/AuthForm';
 import { Card, Col, Row } from 'reactstrap';
 import { withRouter } from 'react-router-dom';
 
 const AuthPage = ({ ...props }) => {
+  const [activeTab, changeActiveTab] = useState('1');
   const handleAuthState = authState => {
     if (authState === STATE_LOGIN) {
       props.history.push('/login');
@@ -23,9 +24,11 @@ const AuthPage = ({ ...props }) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <Col md={6} lg={4}>
-        <Card body>
+      <Col md={8} lg={activeTab === '1' ? 5 : 8}>
+        <Card body className="m-4">
           <AuthForm
+            activeTab={activeTab}
+            changeActiveTab={(tab) => changeActiveTab(tab)}
             authState={props.authState}
             onChangeAuthState={handleAuthState}
             onLogoClick={handleLogoClick}

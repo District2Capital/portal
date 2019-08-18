@@ -11,8 +11,8 @@ export async function login(email, password) {
     http.setJwt(getJwt());
 }
 
-export async function signUp(name, email, password) {
-    const { data: jwt } = await http.post(apiEndpointSignUp, { name, email, password });
+export async function signUp(name, email, password, stripePlan, token) {
+    const { data: jwt } = await http.post(apiEndpointSignUp, { name, email, password, stripePlan, token });
     localStorage.setItem(tokenKey, jwt);
     http.setJwt(getJwt());
 }

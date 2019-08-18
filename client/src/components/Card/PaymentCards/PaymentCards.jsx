@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Elements, StripeProvider } from 'react-stripe-elements';
-import { Row, Card, CardHeader, CardBody } from 'reactstrap';
+import { Row, Card, CardHeader, CardBody, Label } from 'reactstrap';
 import StripeCheckout from './StripeCheckout';
 import axios from 'axios';
 //import Cards from 'react-credit-cards';
 
-const PaymentCards = ({ ...props }) => {
-    const [selectedPlan, changeSelectedPlan] = useState('basic_package');
+const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
     const [plans, changePlans] = useState([]);
     let publicTestKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST;
+    let classes = ['border-info', 'border-secondary', 'border-warning'];
     // ! Get Stripe plans from stripe api 
 
     useEffect(() => {
@@ -23,28 +23,33 @@ const PaymentCards = ({ ...props }) => {
         });
     }
 
-    let stripeProvider = selectedPlan !== 'basic_package' ? (<StripeProvider apiKey={publicTestKey ? publicTestKey : null}>
-        <Elements>
-            <StripeCheckout {...props} />
-        </Elements>
-    </StripeProvider>) : ('');
+    let stripeProvider = selectedPlan !== 'basic_package' ? (
+        <React.Fragment>
+            <hr />
+            <StripeProvider apiKey={publicTestKey ? publicTestKey : null}>
+                <Elements>
+                    <StripeCheckout {...props} />
+                </Elements>
+            </StripeProvider>
+        </React.Fragment>
+    ) : ('');
 
     return (
         <React.Fragment>
+            <Label>Select a plan:</Label>
             <Row className="justify-content-center">
                 {plans.map((plan, index) => {
-                    // console.log(plan);
-                    let shadow = false;
+                    let classNames = plan.id === selectedPlan ? classes[index] : '';
                     return (
-                        <Card className={shadow ? "shadow m-2 col-sm" : "m-2 col-sm"} onMouseEnter={() => { shadow = true; }} onMouseLeave={() => { shadow = false; }}>
+                        <Card id="cardshadow" style={{ minWidth: "280px", maxWidth: "280px" }} key={index} className={`m-2 col-sm ${classNames}`} onMouseEnter={() => { }} onClick={() => changeSelectedPlan(plan.id)}>
                             <CardHeader>{plan.nickname} Package</CardHeader>
                             <CardBody>
                                 <p>${plan.amount / 100}/{plan.interval}</p>
                                 <p>Package Includes:</p>
                                 <ul>
-                                    {Object.values(plan.metadata).map(bullet => {
+                                    {Object.values(plan.metadata).map((bullet, i) => {
                                         return (
-                                            <li>{bullet}</li>
+                                            <li key={i}>{bullet}</li>
                                         );
                                     })}
                                 </ul>
@@ -54,7 +59,7 @@ const PaymentCards = ({ ...props }) => {
                 })}
             </Row>
             {stripeProvider}
-        </React.Fragment>
+        </React.Fragment >
     );
     // return ( 
     //     <Cards

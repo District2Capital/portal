@@ -92,7 +92,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
             <Form onSubmit={() => submitNewPassword()}>
                 <FormGroup>
                     <Label for={passwordLabel}>Password</Label>
-                    <Input value={password} {...passwordInputProps} className={_.isEmpty(validateProperty('password', password)) ? "form-control is-valid" : (initialPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changePassword(e.target.value)} />
+                    <Input style={{ borderRadius: "100px" }} value={password} {...passwordInputProps} className={_.isEmpty(validateProperty('password', password)) ? "form-control is-valid" : (initialPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changePassword(e.target.value)} />
                     {_.isEmpty(validateProperty('password', password)) ? (
                         <div class="valid-feedback">Looks good!</div>
                     ) : (
@@ -101,7 +101,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
                 </FormGroup>
                 <FormGroup>
                     <Label for={confirmPasswordLabel}>Confirm Password</Label>
-                    <Input value={confirmPassword} {...confirmPasswordInputProps} className={_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? "form-control is-valid" : (initialConfirmPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialConfirmPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changeConfirmPassword(e.target.value)} />
+                    <Input style={{ borderRadius: "100px" }} value={confirmPassword} {...confirmPasswordInputProps} className={_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? "form-control is-valid" : (initialConfirmPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialConfirmPasswordHover(true)} required onKeyPress={(e) => submitNewPassword(e)} onChange={(e) => changeConfirmPassword(e.target.value)} />
                     {_.isEmpty(validateProperty('confirmPassword', confirmPassword)) ? (
                         <div class="valid-feedback">Looks good!</div>
                     ) : (
@@ -119,6 +119,7 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
                     size="md"
                     outline
                     block
+                    style={{ borderRadius: "100px" }}
                     onClick={() => submitNewPassword()}>
                     Update Password
         </Button>
@@ -138,12 +139,12 @@ ResetPage.defaultProps = {
     passwordLabel: 'Password',
     passwordInputProps: {
         type: 'password',
-        placeholder: 'new password',
+        placeholder: '',
     },
     confirmPasswordLabel: 'Confirm Password',
     confirmPasswordInputProps: {
         type: 'password',
-        placeholder: 'confirm new password',
+        placeholder: '',
     }
 };
 

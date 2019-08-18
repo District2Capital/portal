@@ -263,18 +263,36 @@ router.get('/verifySavedFormType', async (req, result) => {
 
 router.post("/createNewUser", async (req, res) => {
     try {
-        const { error } = validate(req.body);
+        winston.debug(req.body.name);
+        console.dir(req.body);
+        let userObject = {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password
+        };
+        const { error } = validate(userObject);
         if (error) return res.status(400).send(error.details[0].message);
+
+        winston.debug('no validation error');
 
         let user = await User.findOne({ email: req.body.email });
         if (user) return res.status(400).send("User already registered.");
-        let stripePlan = req.body.stripePlan ? req.body.stripePlan : 'basic_package';
-
+        let stripePlan = req.body.stripePlan;
+        winston.debug('token:' + req.body.token);
+        if (req.body.token.length) {
+            userObject = {
+                email: req.body.email,
+                name: req.body.name,
+                source: req.body.token
+            };
+        } else {
+            userObject = {
+                email: req.body.email,
+                name: req.body.name
+            };
+        }
         // * Stripe Create User Section
-        stripe.customers.create({
-            email: req.body.email,
-            name: req.body.name,
-        }, function (err, customer) {
+        stripe.customers.create(userObject, function (err, customer) {
             // * Stripe Create Subscription for returned user
             stripe.subscriptions.create({
                 customer: customer.id,
@@ -285,6 +303,7 @@ router.post("/createNewUser", async (req, res) => {
                 ]
             }, async function (err, subscription) {
                 // * Create new User in D2C Database
+                winston.debug('creating user...');
                 user = new User(Object.assign({}, _.pick(req.body, ["name", "email", "password"]), { 'stripeID': customer.id, 'stripePlan': stripePlan }));
                 let salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash(req.body.password, salt);
@@ -293,7 +312,7 @@ router.post("/createNewUser", async (req, res) => {
                 res
                     .header("x-auth-token", token)
                     .header("access-control-expose-headers", "x-auth-token")
-                    .send(_.pick(user, ["_id", "name", "email"]));
+                    .send(token);
             }
             );
         });

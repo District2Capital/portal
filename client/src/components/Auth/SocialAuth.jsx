@@ -27,12 +27,14 @@ const SocialAuth = () => {
     };
 
     return (
-        <GoogleLogin
-            className="m-3 w-100 mx-auto justify-content-center"
-            buttonText="Authenticate With Google"
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            onSuccess={googleResponse}
-            onFailure={googleResponse} />
+        <div id="googleLoginButton" className="m-3">
+            <GoogleLogin
+                className="w-100 mx-auto justify-content-center"
+                buttonText="Authenticate With Google"
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                onSuccess={googleResponse}
+                onFailure={googleResponse} />
+        </div>
     );
 }
 
