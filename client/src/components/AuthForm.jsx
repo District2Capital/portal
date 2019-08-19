@@ -17,6 +17,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
   const [signUpUsername, changeSignUpUsername] = useState("");
   const [signInPassword, changeSignInPassword] = useState("");
   const [signUpPassword, changeSignUpPassword] = useState("");
+  const [signUpName, changeSignUpName] = useState("");
   const [selectedPlan, changeSelectedPlan] = useState('basic_package');
   const [createToken, changeCreateToken] = useState(false);
   const [token, changeToken] = useState({});
@@ -26,7 +27,6 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
   const [initialSignInUsernameHover, changeInitialSignInUsernameHover] = useState(false);
   const [initialSignInPasswordHover, changeInitialSignInPasswordHover] = useState(false);
   const [loadingModal, changeLoadingModal] = useState(false);
-  const [signUpName, changeSignUpName] = useState("");
   const [errors, changeErrors] = useState({ defaultError: 'default' });
 
   const schema = {
@@ -257,7 +257,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
               )}
           </FormGroup>
           <hr />
-          <PaymentCards selectedPlan={selectedPlan} changeSelectedPlan={(plan) => changeSelectedPlan(plan)} createToken={createToken} changeToken={(e) => changeToken(e)} />
+          <PaymentCards signUpName={signUpName} selectedPlan={selectedPlan} changeSelectedPlan={(plan) => changeSelectedPlan(plan)} createToken={createToken} changeToken={(e) => changeToken(e)} />
           <hr />
           <Button
             size="md"

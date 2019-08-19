@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { CardElement, injectStripe } from 'react-stripe-elements';
 
 const StripeCheckout = ({ ...props }) => {
-    const { createToken, changeToken } = props;
+    const { createToken, changeToken, signUpName } = props;
     useEffect(() => {
         console.log('user Effect in StripeCheckout called.');
         if (createToken) {
@@ -14,21 +14,10 @@ const StripeCheckout = ({ ...props }) => {
         }
     }, [createToken]);
 
-    // ! create new token when user submits form
     const newToken = async () => {
-        let token = await props.stripe.createToken({ name: "Name" });
+        let token = await props.stripe.createToken({ name: signUpName });
         return token;
     }
-    // const submit = async () => {
-    //     let { token } = await props.stripe.createToken({ name: "Name" });
-    //     let response = await fetch("/charge", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "text/plain" },
-    //         body: token.id
-    //     });
-
-    //     if (response.ok) console.log("Purchase Complete!");
-    // }
 
     return (<div className="checkout">
         <CardElement />
