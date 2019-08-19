@@ -18,9 +18,15 @@ const Fawn = require('fawn');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY_PUB);
 Fawn.init(mongoose);
 
-router.get("/me", auth, async (req, res) => {
-    const user = await User.findById(req.user._id).select("-password");
-    res.send(user);
+router.get("/me", async (req, res) => {
+    try {
+        const token = req.query["x-auth-token"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        const user = await User.findById(decoded._id).select("-password");
+        res.status(200).send(user);
+    } catch (err) {
+        winston.error(err);
+    }
 });
 
 router.get("/savedFilings", async (req, res) => {
@@ -263,8 +269,6 @@ router.get('/verifySavedFormType', async (req, result) => {
 
 router.post("/createNewUser", async (req, res) => {
     try {
-        winston.debug(req.body.name);
-        console.dir(req.body);
         let userObject = {
             name: req.body.name,
             email: req.body.email,
@@ -273,12 +277,10 @@ router.post("/createNewUser", async (req, res) => {
         const { error } = validate(userObject);
         if (error) return res.status(400).send(error.details[0].message);
 
-        winston.debug('no validation error');
-
         let user = await User.findOne({ email: req.body.email });
         if (user) return res.status(400).send("User already registered.");
         let stripePlan = req.body.stripePlan;
-        winston.debug('token:' + req.body.token);
+
         if (req.body.token.length) {
             userObject = {
                 email: req.body.email,
@@ -291,6 +293,7 @@ router.post("/createNewUser", async (req, res) => {
                 name: req.body.name
             };
         }
+
         // * Stripe Create User Section
         stripe.customers.create(userObject, function (err, customer) {
             // * Stripe Create Subscription for returned user
@@ -303,7 +306,7 @@ router.post("/createNewUser", async (req, res) => {
                 ]
             }, async function (err, subscription) {
                 // * Create new User in D2C Database
-                winston.debug('creating user...');
+                winston.debug('Creating new user...');
                 user = new User(Object.assign({}, _.pick(req.body, ["name", "email", "password"]), { 'stripeID': customer.id, 'stripePlan': stripePlan }));
                 let salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash(req.body.password, salt);

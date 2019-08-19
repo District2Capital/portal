@@ -97,6 +97,10 @@ const App = () => {
     await axios.get('/api/lists/getListNames', config).then(res => {
       value['updateListNames'](res.data);
     });
+    await axios.get('/api/users/me', config).then(res => {
+      console.dir(res.data);
+      value['getUserInfo'](res.data);
+    });
   }
 
   useEffect(() => {

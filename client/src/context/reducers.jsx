@@ -1,6 +1,11 @@
 export const CREATE_LIST = 'CREATE_LIST';
 export const DELETE_LIST = 'DELETE_LIST';
 export const UPDATE_LIST_NAMES = 'UPDATE_LIST_NAMES';
+export const USER_INFO = "USER_INFO";
+
+const getUserInfo = (userObject) => {
+    return userObject;
+}
 
 const updateListNames = (newlists) => {
     return { lists: newlists }
@@ -21,8 +26,10 @@ const deleteList = (listName, state) => {
     return { ...state };
 };
 
-export const listReducer = (state, action) => {
+export const reducer = (state, action) => {
     switch (action.type) {
+        case USER_INFO:
+            return getUserInfo(action.userObject);
         case UPDATE_LIST_NAMES:
             return updateListNames(action.newlists);
         case CREATE_LIST:
