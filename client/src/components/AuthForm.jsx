@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Form, FormGroup, Input, Label, Nav, NavItem, NavLink, TabContent, TabPane, Modal, ModalBody } from 'reactstrap';
 import d2clogo from 'assets/logo.png';
@@ -27,7 +27,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
   const [initialSignInPasswordHover, changeInitialSignInPasswordHover] = useState(false);
   const [loadingModal, changeLoadingModal] = useState(false);
   const [signUpName, changeSignUpName] = useState("");
-  const [errors, changeErrors] = useState({});
+  const [errors, changeErrors] = useState({ defaultError: 'default' });
 
   const schema = {
     name: Joi.string()
@@ -80,29 +80,24 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
     }
   };
 
+  useEffect(() => {
+    if (!(_.isEmpty(token))) {
+      signUpMethod(token.token.id);
+    } else if (_.isEmpty(errors)) {
+      toast.error('Please fill out billing information.', { className: 'rounded' });
+      console.log('Billing information incomplete.');
+    }
+  }, [token])
+
   const handleSubmitSignUp = async event => {
     const nameErrors = _.isEmpty(validateProperty('name', signUpName)) ? {} : Object.assign({}, errors, validateProperty('name', signUpName));
     const usernameErrors = _.isEmpty(validateProperty('username', signUpUsername)) ? {} : Object.assign({}, errors, validateProperty('username', signUpUsername));
     const passwordErrors = _.isEmpty(validateProperty('password', signUpPassword)) ? {} : Object.assign({}, errors, validateProperty('password', signUpPassword));
     changeErrors(Object.assign({}, nameErrors, usernameErrors, passwordErrors));
-    if (_.isEmpty(errors) && (selectedPlan === 'basic_package' || !(_.isEmpty(token)))) {
-      changeCreateToken(true);
-      // (selectedPlan === 'basic_package' || token !== null)
-      const tokenId = _.isEmpty(token) ? '' : token.id;
-      try {
-        await signUp(signUpName, signUpUsername, signUpPassword, selectedPlan, tokenId).then(res => {
-          console.log(res);
-          if (_.isEmpty(getCurrentUser())) toast.warn('Could Not Create New User.', { className: 'rounded' });
-          else {
-            console.log('Logged in. Redirecting...');
-            window.location = "/";
-            //window.location = this.props.location ? this.props.location.state.from.pathname : "/";
-          }
-        });
-      }
-      catch (e) {
-        toast.error('Invalid Information.', { className: 'rounded' });
-        console.log('Login Failure:', e);
+    changeCreateToken(true);
+    if (_.isEmpty(errors)) {
+      if (selectedPlan === 'basic_package') {
+        signUpMethod('');
       }
     }
     else {
@@ -110,6 +105,24 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
       console.log('Username or password does not meet requirements.');
     }
   };
+
+  const signUpMethod = async (tokenId) => {
+    try {
+      await signUp(signUpName, signUpUsername, signUpPassword, selectedPlan, tokenId).then(res => {
+        console.log(res);
+        if (_.isEmpty(getCurrentUser())) toast.warn('Could Not Create New User.', { className: 'rounded' });
+        else {
+          console.log('Logged in. Redirecting...');
+          window.location = "/";
+          //window.location = this.props.location ? this.props.location.state.from.pathname : "/";
+        }
+      });
+    }
+    catch (e) {
+      toast.error('Invalid Information.', { className: 'rounded' });
+      console.log('Login Failure:', e);
+    }
+  }
 
   const handleSignInEnterClicked = async (e) => {
     var code = e.key;

@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
     const [plans, changePlans] = useState([]);
-    let publicTestKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST;
+    let publicTestKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY_PUB;
     let classes = ['border-info', 'border-secondary', 'border-warning'];
     // ! Get Stripe plans from stripe api 
 
@@ -36,7 +36,7 @@ const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
 
     return (
         <React.Fragment>
-            <Label>Select a plan:</Label>
+            <Label>Select a plan(cancel anytime):</Label>
             <Row className="justify-content-center">
                 {plans.map((plan, index) => {
                     let classNames = plan.id === selectedPlan ? classes[index] : '';

@@ -15,7 +15,7 @@ const htmlToJson = require('html-to-json');
 const axios = require('axios');
 const filingColors = require('./filings');
 const Fawn = require('fawn');
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY_TEST);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY_PUB);
 Fawn.init(mongoose);
 
 router.get("/me", auth, async (req, res) => {
