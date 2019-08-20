@@ -29,6 +29,38 @@ router.get("/me", async (req, res) => {
     }
 });
 
+router.post('/updateProfile', async (req, res) => {
+    try {
+        let token = req.body["x-auth-token"];
+        let userObject = {};
+        if (req.body.name.length) {
+            userObject.name = req.body.name;
+        }
+        if (req.body.email.length) {
+            userObject.email = req.body.email;
+        }
+        if (req.body.password.length) {
+            let salt = await bcrypt.genSalt(10);
+            let newpassword = await bcrypt.hash(req.body.password, salt);
+            userObject.password = newpassword;
+        }
+        let decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        let query = {
+            '_id': decoded._id
+        };
+        let updateObject = {
+            $set: userObject
+        };
+        await User.update(query, updateObject).then(result => {
+            winston.info('User object updated.');
+            res.status(200).send('User successfully updated.');
+        });
+    } catch (err) {
+        res.status(500).send('Internal Server Error.');
+        winston.error('Internal Server Error.');
+    }
+});
+
 router.get("/savedFilings", async (req, res) => {
     const token = req.query["x-auth-token"];
     var decoded = null;

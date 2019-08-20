@@ -2,6 +2,9 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Input, Label, Form, Button, Col, Row } from 'reactstrap';
 import GlobalContext from 'context/global-context';
 import * as _ from 'lodash';
+import axios from 'axios';
+import { getJwt } from 'services/auth';
+import { toast } from 'react-toastify';
 
 const UserProfileFieldsCard = () => {
     const [name, changeName] = useState("");
@@ -9,6 +12,8 @@ const UserProfileFieldsCard = () => {
     const [email, changeEmail] = useState("");
     const [emailPlaceholder, changeEmailPlaceholder] = useState("");
     const [password, changePassword] = useState("");
+    const [loadingModal, changeLoadingModal] = useState(false);
+
     const { userInfo } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -20,11 +25,27 @@ const UserProfileFieldsCard = () => {
         }
     }, [userInfo]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         let code = e ? e.key : 'Enter';
         if (code === 'Enter') {
             // * post to changeUserProfile
             console.info('updating user info...');
+            console.info('name: ' + name);
+            console.info('email: ' + email);
+            console.info('password: ' + password);
+            let params = {
+                "x-auth-token": getJwt(),
+                name: name,
+                email: email,
+                password: password
+            };
+            await axios.post('/api/users/updateProfile', params).then(res => {
+                if (res.status === 200) {
+                    toast.success('User info updated.', { className: 'rounded' });
+                } else {
+                    toast.error('User info failed to update.', { className: 'rounded' });
+                }
+            });
         }
     }
 
