@@ -98,7 +98,6 @@ const App = () => {
       value['updateListNames'](res.data);
     });
     await axios.get('/api/users/me', config).then(res => {
-      console.dir(res.data);
       value['getUserInfo'](res.data);
     });
   }

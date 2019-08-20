@@ -269,7 +269,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
         </Button>
         </TabPane>
       </TabContent>
-      <SocialAuth />
+      {/* <SocialAuth /> */}
       {children}
     </Form >
   );
