@@ -57,7 +57,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
 
   const handleSubmitSignIn = async event => {
     const usernameErrors = _.isEmpty(validateProperty('username', signInUsername)) ? {} : Object.assign({}, errors, validateProperty('username', signInUsername));
-    const passwordErrors = _.isEmpty(validateProperty('password', signInPassword)) ? {} : Object.assign({}, errors, validateProperty('password', signInPassword));
+    const passwordErrors = {};//_.isEmpty(validateProperty('password', signInPassword)) ? {} : Object.assign({}, errors, validateProperty('password', signInPassword));
     changeErrors(Object.assign({}, usernameErrors, passwordErrors));
     if (_.isEmpty(Object.assign({}, usernameErrors, passwordErrors))) {
       try {
@@ -202,12 +202,13 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
           </FormGroup>
           <FormGroup>
             <Label for={passwordLabel}>{passwordLabel}</Label>
-            <Input style={{ borderRadius: "100px" }} value={signInPassword} className={_.isEmpty(validateProperty('password', signInPassword)) ? "form-control is-valid" : (initialSignInPasswordHover && "form-control is-invalid")} onFocus={() => changeInitialSignInPasswordHover(true)} required {...passwordInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInPassword(e.target.value)} />
-            {_.isEmpty(validateProperty('password', signInPassword)) ? (
+            <Input style={{ borderRadius: "100px" }} value={signInPassword} onFocus={() => changeInitialSignInPasswordHover(true)} required {...passwordInputProps} onKeyPress={(e) => handleSignInEnterClicked(e)} onChange={(e) => changeSignInPassword(e.target.value)} />
+            {/* className={_.isEmpty(validateProperty('password', signInPassword)) ? "form-control is-valid" : (initialSignInPasswordHover && "form-control is-invalid")} */}
+            {/*_.isEmpty(validateProperty('password', signInPassword)) ? (
               <div className="valid-feedback">Looks good!</div>
             ) : (
                 <div className="invalid-feedback">Required.</div>
-              )}
+            )*/}
           </FormGroup>
           <div className="my-3">
             <a style={{ color: "blue", cursor: "pointer" }} onClick={() => passwordReset()}>Forgot Password</a>
