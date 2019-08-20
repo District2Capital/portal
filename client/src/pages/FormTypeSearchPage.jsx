@@ -113,7 +113,9 @@ const FormTypeSearchPage = ({ ...props }) => {
                 <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>
                     <Row style={{ overflowX: "scroll" }} className="flex-row d-flex flex-nowrap flex-grow-1">
                         {recentSearches.map(({ FormTypeSearchString, dateSearched }, index) => {
-                            return (<SmallRecentSearchCard key={index} linkto="/formtypesearch" formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
+                            if (index < 10) {
+                                return (<SmallRecentSearchCard key={index} linkto="/formtypesearch" formTypeSearchString={FormTypeSearchString} dateSearched={dateSearched} />);
+                            }
                         })}
                     </Row>
                 </CardBody>

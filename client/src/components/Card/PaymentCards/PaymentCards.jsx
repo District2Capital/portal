@@ -8,8 +8,7 @@ import axios from 'axios';
 const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
     const [plans, changePlans] = useState([]);
     let publicTestKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY_PUB;
-    let classes = ['border-info', 'border-secondary', 'border-warning'];
-    // ! Get Stripe plans from stripe api 
+    let classes = ['border-info thickBorder', 'border-secondary thickBorder', 'border-warning thickBorder'];
 
     useEffect(() => {
         getPlans();
@@ -39,7 +38,7 @@ const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
             <Label>Select a plan(cancel anytime):</Label>
             <Row className="justify-content-center">
                 {plans.map((plan, index) => {
-                    let classNames = plan.id === selectedPlan ? classes[index] : '';
+                    let classNames = plan.id === selectedPlan ? classes[index] : 'border';
                     return (
                         <Card id="cardshadow" style={{ minWidth: "280px", maxWidth: "280px" }} key={index} className={`m-2 col-sm ${classNames}`} onMouseEnter={() => { }} onClick={() => changeSelectedPlan(plan.id)}>
                             <CardHeader>{plan.nickname} Package</CardHeader>
