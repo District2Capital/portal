@@ -12,15 +12,14 @@ const Avatar = ({ rounded, circle, src, size, tag: Tag, className, style, ...res
 
   useEffect(() => {
     if (!_.isEmpty(userInfo)) {
-      if (userInfo.stripePlan === 'basic_package') changeBorderColor(' border border-info');
-      else if (userInfo.stripePlan === 'standard_package') changeBorderColor(' border border-secondary');
-      else if (userInfo.stripePlan === 'premium_package') changeBorderColor(' border border-warning');
+      if (userInfo.stripePlan === 'basic_package') changeBorderColor(' thickBorder border border-info');
+      else if (userInfo.stripePlan === 'standard_package') changeBorderColor(' thickBorder border border-secondary');
+      else if (userInfo.stripePlan === 'premium_package') changeBorderColor(' thickBorder border border-warning');
     }
   }, [userInfo]);
 
   return (
     <Tag
-      id="borderThick"
       src={src}
       style={{ width: size, height: size, ...style }}
       className={classes + borderColor}
