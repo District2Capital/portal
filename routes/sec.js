@@ -134,9 +134,16 @@ router.get('/getHistoricalData', async (req, res) => {
 
 router.get('/getCompanies', async (req, res) => {
     try {
-        var companyString = req.query.company;
-        var arrayCompanies = [];
-        await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?company=${companyString}&owner=include&action=getcompany`).then(async secresults => {
+        let queryString = "";
+        let tickerString = req.query.ticker;
+        let companyString = req.query.company;
+        if (req.query.ticker) {
+            queryString = `https://www.sec.gov/cgi-bin/browse-edgar?CIK=${tickerString}&owner=exclude&action=getcompany`
+        } else {
+            queryString = `https://www.sec.gov/cgi-bin/browse-edgar?company=${companyString}&owner=include&action=getcompany`;
+        }
+        let arrayCompanies = [];
+        await axios.get(queryString).then(async secresults => {
             // * Parse data with cheerio
             // * SEC has two results - list of companies or it spits back filings
             const $ = cheerio.load(secresults.data);
@@ -146,8 +153,10 @@ router.get('/getCompanies', async (req, res) => {
                 let companySearchCIK = $('div.companyInfo span.companyName a').text().slice(0, 10);
                 let companySearchLocation = '';
                 $('div.companyInfo p.identInfo a').each(function (i, row) {
-                    if ($(this).attr('href').indexOf('State')) {
-                        companySearchLocation = $(this).attr('href').slice($(this).attr('href').indexOf('State') + 6, $(this).attr('href').indexOf('State') + 8);
+                    let companyLocation = $(this).attr('href');
+                    let locationIndex = companyLocation.indexOf('State');
+                    if (companyLocation.length && locationIndex > 0) {
+                        companySearchLocation = companyLocation.slice(locationIndex + 6, locationIndex + 8);
                     }
                 });
                 arrayCompanies.push({
@@ -180,6 +189,55 @@ router.get('/getCompanies', async (req, res) => {
         res.status(500);
     }
 });
+
+// router.get('/getCompaniesByTicker', async (req, res) => {
+//     try {
+//         let tickerString = req.query.ticker;
+//         let arrayCompanies = [];
+//         await axios.get(`https://www.sec.gov/cgi-bin/browse-edgar?CIK=${tickerString}&owner=exclude&action=getcompany`).then(async secresults => {
+//             // * Parse data with cheerio
+//             // * SEC has two results - list of companies or it spits back filings
+//             const $ = cheerio.load(secresults.data);
+//             if ($('div.companyInfo span.companyName a').text()) {
+//                 let companySearchName = $('div.companyInfo span.companyName').text().split('&amp;').join('&');
+//                 companySearchName = companySearchName.slice(0, companySearchName.indexOf('CIK'));
+//                 let companySearchCIK = $('div.companyInfo span.companyName a').text().slice(0, 10);
+//                 let companySearchLocation = '';
+//                 $('div.companyInfo p.identInfo a').each(function (i, row) {
+//                     if ($(this).attr('href').indexOf('State')) {
+//                         companySearchLocation = $(this).attr('href').slice($(this).attr('href').indexOf('State') + 6, $(this).attr('href').indexOf('State') + 8);
+//                     }
+//                 });
+//                 arrayCompanies.push({
+//                     cik: companySearchCIK,
+//                     companyName: companySearchName,
+//                     location: companySearchLocation
+//                 });
+//             }
+//             else {
+//                 $('table.tableFile2 tbody tr').each(function (i, row) {
+//                     if (i > 0) {
+//                         arrayCompanies.push({
+//                             cik: $(this).find('td:nth-child(1) a').text(),
+//                             companyName: $(this).find('td:nth-child(2)').html().split("<br>")[0].split('&amp;').join('&'),//.text(),
+//                             location: $(this).find('td:nth-child(3) a').text()
+//                         });
+//                     }
+//                 });
+//             }
+//         }).catch(error => {
+//             winston.error(`Fetching data FAILED`);
+//         });
+//         res.format({
+//             'application/json': function () {
+//                 res.send({ companies: arrayCompanies });
+//             }
+//         });
+//     } catch (e) {
+//         winston.error(`${req.url} Request Failure`);
+//         res.status(500);
+//     }
+// });
 
 router.get('/', (req, res) => {
     winston.info(`${req.url} Request Successful`);

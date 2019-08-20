@@ -47,7 +47,7 @@ const SearchForm = ({ searchHandler }) => {
                         <Col sm={9}>
                             <Input
                                 style={{ width: "-webkit-fill-available" }}
-                                className="mx-4"
+                                className="ml-4"
                                 type="company"
                                 name="company"
                                 placeholder="Company Name"
@@ -57,14 +57,14 @@ const SearchForm = ({ searchHandler }) => {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="cik" sm={3}><MdFingerprint style={{ margin: "auto 0", minWidth: "16px" }} /> CIK</Label>
+                        <Label style={{ verticalAlign: "-webkit-baseline-middle" }} className="m-auto d-inline-flex" for="cik" sm={3}><MdFingerprint style={{ margin: "auto 0", minWidth: "16px" }} /> Ticker</Label>
                         <Col sm={9}>
                             <Input
                                 style={{ width: "-webkit-fill-available" }}
-                                className="mx-4"
+                                className="ml-4"
                                 type="cik"
                                 name="cik"
-                                placeholder="Company CIK"
+                                placeholder="Company Ticker"
                                 onChange={(e) => handleCIKChange(e)}
                                 onKeyPress={(e) => handleEnterClicked(e)}
                             />
@@ -75,7 +75,7 @@ const SearchForm = ({ searchHandler }) => {
                         <Col sm={9}>
                             <Input
                                 style={{ width: "-webkit-fill-available" }}
-                                className="mx-4"
+                                className="ml-4"
                                 type="type"
                                 name="type"
                                 placeholder="Form Type"

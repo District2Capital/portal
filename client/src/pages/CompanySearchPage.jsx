@@ -12,6 +12,7 @@ const CompanySearchPage = ({ ...props }) => {
     const [numberItems, changeNumberItems] = useState("All");
     const [numberdropdownOpen, changeNumberDropDownOpen] = useState(false);
     const [companyQuery, changeCompanyQuery] = useState("");
+    const [cikQuery, changeCikQuery] = useState("");
     const [showLoader, changeShowLoader] = useState(false);
     const [searchExecuted, changeSearchExecuted] = useState(false);
     var numberFilter = ["All", 5, 10, 25, 50, 100, 200];
@@ -20,22 +21,33 @@ const CompanySearchPage = ({ ...props }) => {
         getRecentSearchData();
     }, []);
 
-    const getDataFromDb = async (company, type, cik) => {
+    const getDataFromDb = async (company, cik) => {
         // * Save company query as recent Company search in DB
-        var companySearch = company ? company : companyQuery;
-        var params = {
-            "x-auth-token": getJwt(),
-            companySearchString: companyQuery
-        };
-        await axios.post(`api/users/updateCompanySearches`, params);
+        await updateRecentSearches(company, cik);
         await getRecentSearchData();
         // * Fetch list of companies from DB
-        await axios.get(`/api/sec/getCompanies/?company=${companySearch}`).then(res => {
+        await axios.get(`/api/sec/getCompanies/?company=${company}&ticker=${cik}`).then(res => {
             changeData(res.data.companies);
             changeShowLoader(false);
             changeSearchExecuted(true);
             updateRecentSearches();
         });
+        // if (cik.length) {
+        //     // * search by cik
+        //     await axios.get(`/api/sec/getCompaniesByTicker/?ticker=${cik}`).then(res => {
+        //         changeData(res.data.companies);
+        //         changeShowLoader(false);
+        //         changeSearchExecuted(true);
+        //         updateRecentSearches();
+        //     });
+        // } else {
+        //     await axios.get(`/api/sec/getCompanies/?company=${company}`).then(res => {
+        //         changeData(res.data.companies);
+        //         changeShowLoader(false);
+        //         changeSearchExecuted(true);
+        //         updateRecentSearches();
+        //     });
+        // }
     };
 
     const getRecentSearchData = async () => {
@@ -53,13 +65,16 @@ const CompanySearchPage = ({ ...props }) => {
             });
     }
 
-    const updateRecentSearches = async () => {
+    const updateRecentSearches = async (company, cik) => {
         // Save queried filing as a recent search
-        var params = {
+        let companySearch = company ? company : companyQuery;
+        let cikSearch = cik ? cik : cikQuery;
+        let params = {
             "x-auth-token": getJwt(),
-            companySearchString: companyQuery
+            companySearchString: companySearch,
+            cikSearchString: cikSearch
         };
-        await axios.post('api/users/updateFormTypeSearches', params);
+        await axios.post('api/users/updateCompanySearches', params);
     }
 
     const toggleNumber = () => {
@@ -70,16 +85,17 @@ const CompanySearchPage = ({ ...props }) => {
         changeNumberItems(clickedNumber);
     }
 
-    const searchHandler = async (company, type, cik) => {
+    const searchHandler = async (company, cik) => {
         changeCompanyQuery(company);
+        changeCikQuery(cik);
         changeShowLoader(true);
-        getDataFromDb(company, type, cik);
+        getDataFromDb(company, cik);
     }
 
     if (props.location.searchStrings && !props.location.searchExecuted) {
         props.location.searchExecuted = true;
         let { companySearchString, cikSearchString, formTypeSearchString } = props.location.searchStrings;
-        searchHandler(companySearchString, formTypeSearchString, cikSearchString);
+        searchHandler(companySearchString, cikSearchString);
     }
     return (
         <div className="px-4 h-100 d-flex overflow-hidden flex-column">
@@ -99,7 +115,7 @@ const CompanySearchPage = ({ ...props }) => {
                     </Dropdown>
                 </div>
             </div>
-            <CompanySearchForm props={props} searchHandler={(company) => searchHandler(company)} />
+            <CompanySearchForm props={props} searchHandler={searchHandler} />
             {(recentSearches.length) ? (<Card className="my-2">
                 <CardHeader>Recent Searches</CardHeader>
                 <CardBody style={{ margin: "10px", paddingTop: "0px", paddingBottom: "0px" }}>

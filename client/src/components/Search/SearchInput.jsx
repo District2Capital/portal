@@ -12,6 +12,9 @@ const SearchInput = (props) => {
     if (input.length) {
       changeToggle(true);
     }
+    else {
+      changeToggle(false);
+    }
   }
 
   const handleSubmit = (e) => {
@@ -28,6 +31,7 @@ const SearchInput = (props) => {
     } else {
       initiateRedirect(true);
     }
+    changeInput('');
   }
 
   let content = redirect ? (<Redirect to={{ pathname: '/search', searchExecuted: false, searchStrings: { companySearchString: inputState } }} />) : '';
@@ -40,15 +44,20 @@ const SearchInput = (props) => {
         />
         <Dropdown style={{ width: "fit-content", margin: "0 auto" }} isOpen={dropdownToggled} toggle={toggleDropDown}>
           <DropdownToggle className="p-0"><Input
+            onEmptied={() => changeInput('')}
+            className="clearable"
+            value={inputState}
             onChange={(e) => { changeInput(e.target.value); toggleDropDown(e.target.value); }}
             type="search"
             placeholder="Search..."
           /></DropdownToggle>
           <DropdownMenu>
-            <DropdownItem><NavLink onClick={(e) => { e.stopPropagation(); changeToggle(false); }} to={{ pathname: "/search", searchExecuted: false, searchStrings: { companySearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Company Filings</Badge></div></NavLink></DropdownItem>
-            <DropdownItem><NavLink onClick={(e) => { e.stopPropagation(); changeToggle(false); }} to={{ pathname: "/search", searchExecuted: false, searchStrings: { formTypeSearchString: inputState } }}><div>{inputState} <Badge color="dark">Search FormType Filings</Badge></div></NavLink></DropdownItem>
-            <DropdownItem><NavLink onClick={(e) => { e.stopPropagation(); changeToggle(false); }} to={{ pathname: "/companysearch", searchExecuted: false, searchStrings: { companySearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Companies</Badge></div></NavLink></DropdownItem>
-            <DropdownItem><NavLink onClick={(e) => { e.stopPropagation(); changeToggle(false); }} to={{ pathname: "/formtypesearch", searchExecuted: false, searchStrings: { formTypeSearchString: inputState } }}><div>{inputState} <Badge color="dark">Search FormTypes</Badge></div></NavLink></DropdownItem>
+            <DropdownItem><NavLink className="text-decoration-none" onClick={(e) => { e.stopPropagation(); changeInput(''); changeToggle(false); }} to={{ pathname: "/search", searchExecuted: false, searchStrings: { companySearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Filings by Company</Badge></div></NavLink></DropdownItem>
+            <DropdownItem><NavLink className="text-decoration-none" onClick={(e) => { e.stopPropagation(); changeInput(''); changeToggle(false); }} to={{ pathname: "/search", searchExecuted: false, searchStrings: { cikSearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Filings by Ticker</Badge></div></NavLink></DropdownItem>
+            <DropdownItem><NavLink className="text-decoration-none" onClick={(e) => { e.stopPropagation(); changeInput(''); changeToggle(false); }} to={{ pathname: "/search", searchExecuted: false, searchStrings: { formTypeSearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Filings by Form Type</Badge></div></NavLink></DropdownItem>
+            <DropdownItem><NavLink className="text-decoration-none" onClick={(e) => { e.stopPropagation(); changeInput(''); changeToggle(false); }} to={{ pathname: "/companysearch", searchExecuted: false, searchStrings: { companySearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Companies by Name</Badge></div></NavLink></DropdownItem>
+            <DropdownItem><NavLink className="text-decoration-none" onClick={(e) => { e.stopPropagation(); changeInput(''); changeToggle(false); }} to={{ pathname: "/companysearch", searchExecuted: false, searchStrings: { cikSearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Companies by Ticker</Badge></div></NavLink></DropdownItem>
+            <DropdownItem><NavLink className="text-decoration-none" onClick={(e) => { e.stopPropagation(); changeInput(''); changeToggle(false); }} to={{ pathname: "/formtypesearch", searchExecuted: false, searchStrings: { formTypeSearchString: inputState } }}><div>{inputState} <Badge color="dark">Search Form Types</Badge></div></NavLink></DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </Form>
