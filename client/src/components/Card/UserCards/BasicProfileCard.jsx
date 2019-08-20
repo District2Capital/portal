@@ -22,7 +22,7 @@ const BasicProfileCard = (props) => {
             <CardHeader>Profile</CardHeader>
             <CardBody className="m-auto">
                 <Row>
-                    <Col className="text-center m-auto">
+                    <Col className="text-center m-auto" md={5}>
                         <div className="m-auto d-block text-center">
                             {defaultData ? (<Avatar src={defaultUser} className="m-2" />) : (<Avatar src={fetchedData.profileImage} className="m-2" />)}
                         </div>
