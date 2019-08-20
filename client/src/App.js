@@ -10,6 +10,7 @@ import { STATE_LOGIN, STATE_SIGNUP } from 'components/AuthForm';
 import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
 import './styles/reduction.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-credit-cards/es/styles-compiled.css';
 
 // * Main Pages
 import DashboardPage from 'pages/DashboardPage';
@@ -44,6 +45,7 @@ import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
 
 // * Settings
 import SettingsPage from 'pages/SettingsPage';
+import ResetPage from 'pages/ResetPage';
 
 // import StockPage from 'pages/StockPage';
 // import FilingReaderPage from 'pages/FilingReaderPage';
@@ -66,7 +68,15 @@ const App = () => {
   const user = auth.getCurrentUser();
   if (!user) {
     return (
-      <div>
+      <Switch>
+        <LayoutRoute
+          exact
+          path="/reset/:token"
+          layout={EmptyLayout}
+          component={props => (
+            <ResetPage {...props} authState={STATE_LOGIN} />
+          )}
+        />
         <LayoutRoute
           exact
           path="/login"
@@ -76,7 +86,7 @@ const App = () => {
           )}
         />
         <Redirect from="/" to="/login" />
-      </div>);
+      </Switch>);
   }
   const value = useContext(GlobalContext);
   const fetchData = async () => {
@@ -87,6 +97,9 @@ const App = () => {
     await axios.get('/api/lists/getListNames', config).then(res => {
       value['updateListNames'](res.data);
     });
+    await axios.get('/api/users/me', config).then(res => {
+      value['getUserInfo'](res.data);
+    });
   }
 
   useEffect(() => {
@@ -95,6 +108,13 @@ const App = () => {
 
   return (
     < Switch >
+      <LayoutRoute
+        path="/reset"
+        layout={EmptyLayout}
+        component={props => (
+          <ResetPage {...props} authState={STATE_LOGIN} />
+        )}
+      />
       <LayoutRoute
         exact
         path="/login"

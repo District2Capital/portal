@@ -15,11 +15,18 @@ const htmlToJson = require('html-to-json');
 const axios = require('axios');
 const filingColors = require('./filings');
 const Fawn = require('fawn');
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY_PUB);
 Fawn.init(mongoose);
 
-router.get("/me", auth, async (req, res) => {
-    const user = await User.findById(req.user._id).select("-password");
-    res.send(user);
+router.get("/me", async (req, res) => {
+    try {
+        const token = req.query["x-auth-token"];
+        decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        const user = await User.findById(decoded._id).select("-password");
+        res.status(200).send(user);
+    } catch (err) {
+        winston.error(err);
+    }
 });
 
 router.get("/savedFilings", async (req, res) => {
@@ -260,23 +267,77 @@ router.get('/verifySavedFormType', async (req, result) => {
     }
 });
 
-router.post("/", async (req, res) => {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+router.post("/createNewUser", async (req, res) => {
+    try {
+        let userObject = {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password
+        };
+        const { error } = validate(userObject);
+        if (error) return res.status(400).send(error.details[0].message);
 
-    let user = await User.findOne({ email: req.body.email });
-    if (user) return res.status(400).send("User already registered.");
+        let user = await User.findOne({ email: req.body.email });
+        if (user) return res.status(400).send("User already registered.");
+        let stripePlan = req.body.stripePlan;
 
-    user = new User(_.pick(req.body, ["name", "email", "password"]));
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    await user.save();
+        if (req.body.token.length) {
+            userObject = {
+                email: req.body.email,
+                name: req.body.name,
+                source: req.body.token
+            };
+        } else {
+            userObject = {
+                email: req.body.email,
+                name: req.body.name
+            };
+        }
 
-    const token = user.generateAuthToken();
-    res
-        .header("x-auth-token", token)
-        .header("access-control-expose-headers", "x-auth-token")
-        .send(_.pick(user, ["_id", "name", "email"]));
+        // * Stripe Create User Section
+        stripe.customers.create(userObject, function (err, customer) {
+            // * Stripe Create Subscription for returned user
+            stripe.subscriptions.create({
+                customer: customer.id,
+                items: [
+                    {
+                        plan: stripePlan,
+                    },
+                ]
+            }, async function (err, subscription) {
+                // * Create new User in D2C Database
+                winston.debug('Creating new user...');
+                user = new User(Object.assign({}, _.pick(req.body, ["name", "email", "password"]), { 'stripeID': customer.id, 'stripePlan': stripePlan }));
+                let salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(req.body.password, salt);
+                user.save();
+                let token = user.generateAuthToken();
+                res
+                    .header("x-auth-token", token)
+                    .header("access-control-expose-headers", "x-auth-token")
+                    .send(token);
+            }
+            );
+        });
+    } catch (err) {
+        res.status(500).send('Internal Server Error.');
+        winston.error('Internal Server Error.');
+    }
+});
+
+router.get("/plans", async (req, res) => {
+    try {
+        // * Get Stripe plans for D2C Portal (prod_FdQviyaPwpxM6u)
+        stripe.plans.list(
+            function (err, plans) {
+                let newPlans = plans.data.reverse();
+                res.status(200).send(newPlans);
+            }
+        );
+    } catch (err) {
+        winston.error("Internal Server Error on /plans");
+        res.status(500).send(err);
+    }
 });
 
 router.post("/updateViewedFilings", async (req, res) => {
