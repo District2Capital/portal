@@ -25,6 +25,7 @@ if (process.env.NODE_ENV === "production") {
 require('./startup/logging')(app);
 require('dotenv').config();
 require('./startup/db')();
+require('./startup/passport')();
 require('./startup/config')(app);
 require('./startup/routes')(app);
 

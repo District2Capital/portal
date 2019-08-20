@@ -5,3 +5,11 @@
 
 *.log
 *.psd
+<<<<<<< HEAD
+=======
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+>>>>>>> develop

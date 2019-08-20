@@ -127,20 +127,35 @@ router.get('/getFilingLists', async (req, res) => {
 
 router.post('/createNewList', async (req, res) => {
     try {
+        console.log('test');
         const token = req.body["x-auth-token"];
         const listName = req.body["listName"];
         decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         let userLists = await User.findById(decoded._id).select("myLists");
-        userLists.myLists[listName] = {
-            'FormTypes': [],
-            'Companies': [],
-            'IndividualFilings': []
-        };
-        await User.update({ "_id": decoded._id }, {
-            $set: {
-                'myLists': userLists.myLists
-            }
-        });
+        if (userLists.myLists) {
+            userLists.myLists[listName] = {
+                'FormTypes': [],
+                'Companies': [],
+                'IndividualFilings': []
+            };
+            await User.update({ "_id": decoded._id }, {
+                $set: {
+                    'myLists': userLists.myLists
+                }
+            });
+        } else {
+            myLists = {};
+            myLists[listName] = {
+                'FormTypes': [],
+                'Companies': [],
+                'IndividualFilings': []
+            };
+            await User.update({ "_id": decoded._id }, {
+                $set: {
+                    'myLists': userLists.myLists
+                }
+            });
+        }
         winston.info("Successfully queried", req.url);
         res.status(200).send('User saved successfully.');
     } catch (err) {
