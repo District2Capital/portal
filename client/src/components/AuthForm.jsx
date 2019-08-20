@@ -59,7 +59,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
     const usernameErrors = _.isEmpty(validateProperty('username', signInUsername)) ? {} : Object.assign({}, errors, validateProperty('username', signInUsername));
     const passwordErrors = _.isEmpty(validateProperty('password', signInPassword)) ? {} : Object.assign({}, errors, validateProperty('password', signInPassword));
     changeErrors(Object.assign({}, usernameErrors, passwordErrors));
-    if (_.isEmpty(errors)) {
+    if (_.isEmpty(Object.assign({}, usernameErrors, passwordErrors))) {
       try {
         await login(signInUsername, signInPassword);
         if (_.isEmpty(getCurrentUser())) toast.warn('Credentials not found.', { className: 'rounded' });
@@ -95,7 +95,7 @@ const AuthForm = ({ activeTab, changeActiveTab, nameLabel, nameInputProps, usern
     const passwordErrors = _.isEmpty(validateProperty('password', signUpPassword)) ? {} : Object.assign({}, errors, validateProperty('password', signUpPassword));
     changeErrors(Object.assign({}, nameErrors, usernameErrors, passwordErrors));
     changeCreateToken(true);
-    if (_.isEmpty(errors)) {
+    if (_.isEmpty(Object.assign({}, nameErrors, usernameErrors, passwordErrors))) {
       if (selectedPlan === 'basic_package') {
         signUpMethod('');
       }
