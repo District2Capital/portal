@@ -16,6 +16,8 @@ const axios = require('axios');
 const filingColors = require('./filings');
 const Fawn = require('fawn');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY_PUB);
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 Fawn.init(mongoose);
 
 router.get("/me", async (req, res) => {
@@ -33,18 +35,47 @@ router.post('/updateProfile', async (req, res) => {
     try {
         let token = req.body["x-auth-token"];
         let userObject = {};
+        let decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+        console.dir(decoded);
         if (req.body.name.length) {
             userObject.name = req.body.name;
         }
         if (req.body.email.length) {
-            userObject.email = req.body.email;
+            let token = crypto.randomBytes(20).toString('hex');
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: `${process.env.EMAIL_ADDRESS}`,
+                    pass: `${process.env.EMAIL_PASSWORD}`
+                }
+            });
+            const mailOptions = {
+                from: `${process.env.EMAIL_ADDRESS}`,
+                to: `${decoded.email}`,
+                subject: 'Link to Change Email',
+                text:
+                    `You are receiving this because you (or somebody else) requested an email change for your account. \n\n` +
+                    `Please click on the following link or paste it into the browser to complete the email change process (link is only active for one hour): \n\n` +
+                    `https://portal.district2capital.com/resetEmail/${token}\n\n` +
+                    `If you did not request this, please ignore the email and this email will remain linked to your D2C Portal account.`
+            };
+            transporter.sendMail(mailOptions, function (err, response) {
+                if (err) {
+                    winston.error('Error sending email reset email.');
+                } else {
+                    winston.info('Email sent to: ' + response.accepted[0]);
+                    res.status(200).send('recovery email sent');
+                }
+            });
+            userObject['resetEmailToken'] = token;
+            userObject['resetEmailExpires'] = Date.now() + 360000;
+            // userObject.email = req.body.email;
         }
         if (req.body.password.length) {
             let salt = await bcrypt.genSalt(10);
             let newpassword = await bcrypt.hash(req.body.password, salt);
             userObject.password = newpassword;
         }
-        let decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         let query = {
             '_id': decoded._id
         };

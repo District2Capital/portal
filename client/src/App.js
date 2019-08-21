@@ -45,7 +45,8 @@ import XBRLHistoricalPage from 'pages/XBRLHistoricalPage';
 
 // * Settings
 import SettingsPage from 'pages/SettingsPage';
-import ResetPage from 'pages/ResetPage';
+import ResetPasswordPage from 'pages/ResetPasswordPage';
+import ResetEmailPage from 'pages/ResetEmailPage';
 
 // import StockPage from 'pages/StockPage';
 // import FilingReaderPage from 'pages/FilingReaderPage';
@@ -71,10 +72,18 @@ const App = () => {
       <Switch>
         <LayoutRoute
           exact
-          path="/reset/:token"
+          path="/resetPassword/:token"
           layout={EmptyLayout}
           component={props => (
-            <ResetPage {...props} authState={STATE_LOGIN} />
+            <ResetPasswordPage {...props} authState={STATE_LOGIN} />
+          )}
+        />
+        <LayoutRoute
+          exact
+          path="/resetEmail/:token"
+          layout={EmptyLayout}
+          component={props => (
+            <ResetEmailPage {...props} authState={STATE_LOGIN} />
           )}
         />
         <LayoutRoute
@@ -109,10 +118,18 @@ const App = () => {
   return (
     < Switch >
       <LayoutRoute
-        path="/reset"
+        path="/resetPassword/:token"
         layout={EmptyLayout}
         component={props => (
-          <ResetPage {...props} authState={STATE_LOGIN} />
+          <ResetPasswordPage {...props} authState={STATE_LOGIN} />
+        )}
+      />
+      <LayoutRoute
+        exact
+        path="/resetEmail/:token"
+        layout={EmptyLayout}
+        component={props => (
+          <ResetEmailPage {...props} authState={STATE_LOGIN} />
         )}
       />
       <LayoutRoute

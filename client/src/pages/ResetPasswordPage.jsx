@@ -9,7 +9,7 @@ import { Redirect } from "react-router-dom";
 import { toast } from 'react-toastify';
 import LoadingSpinner from 'components/LoadingSpinner';
 
-const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputProps, passwordInputProps, ...props }) => {
+const ResetPasswordPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputProps, passwordInputProps, ...props }) => {
     const [password, changePassword] = useState("");
     const [confirmPassword, changeConfirmPassword] = useState("");
     const [initialPasswordHover, changeInitialPasswordHover] = useState(false);
@@ -128,14 +128,14 @@ const ResetPage = ({ passwordLabel, confirmPasswordLabel, confirmPasswordInputPr
     );
 }
 
-ResetPage.propTypes = {
+ResetPasswordPage.propTypes = {
     passwordLabel: PropTypes.string,
     passwordInputProps: PropTypes.object,
     confirmPasswordLabel: PropTypes.string,
     confirmPasswordInputProps: PropTypes.object
 };
 
-ResetPage.defaultProps = {
+ResetPasswordPage.defaultProps = {
     passwordLabel: 'Password',
     passwordInputProps: {
         type: 'password',
@@ -148,4 +148,4 @@ ResetPage.defaultProps = {
     }
 };
 
-export default ResetPage;
+export default ResetPasswordPage;

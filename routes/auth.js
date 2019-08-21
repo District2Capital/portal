@@ -62,7 +62,7 @@ router.post('/forgotPassword', async (req, res) => {
                 text:
                     `You are receiving this because you (or somebody else) requested a password reset for your account. \n\n` +
                     `Please click on the following link or paste it into the browser to complete the password reset process (link is only active for one hour): \n\n` +
-                    `https://portal.district2capital.com/reset/${token}\n\n` +
+                    `https://portal.district2capital.com/resetPassword/${token}\n\n` +
                     `If you did not request this, please ignore the email and your password will remain unchanged.`
             };
             transporter.sendMail(mailOptions, function (err, response) {
@@ -105,10 +105,12 @@ router.post('/changePassword', async (req, res) => {
             let password = await bcrypt.hash(req.body.password, salt);
             let updateObject = {
                 $set: {
-                    'password': password
+                    'password': password,
+                    'resetPasswordToken': '',
+                    'resetPasswordExpires': ''
                 }
             };
-            await User.update(query, updateObject)
+            await User.update(query, updateObject);
             const token = user.generateAuthToken();
             res.status(200)
                 .header("x-auth-token", token)
