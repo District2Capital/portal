@@ -20,7 +20,7 @@ const BasicProfileCard = (props) => {
     let content = (
         <Card className="m-3">
             <CardHeader>Profile</CardHeader>
-            <CardBody className="m-auto">
+            <CardBody>
                 <Row>
                     <Col className="text-center m-auto" md={5}>
                         <div className="m-auto d-block text-center">

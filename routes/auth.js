@@ -82,8 +82,6 @@ router.post('/forgotPassword', async (req, res) => {
 
 router.post('/changePassword', async (req, res) => {
     try {
-        winston.debug(req.body.resetPasswordToken);
-        winston.debug(req.body.password);
         let user = await User.findOne({
             $and: [{ resetPasswordToken: req.body.resetPasswordToken },
             {
@@ -92,11 +90,8 @@ router.post('/changePassword', async (req, res) => {
                 }
             }]
         });
-        winston.info('user object: ' + user);
-        //console.dir(user);
         if (!user) res.status(400).send('failed to update password');
         else {
-            winston.debug(user._id);
             let id = new mongoose.Types.ObjectId(user._id);
             let query = {
                 '_id': id

@@ -36,12 +36,12 @@ router.post('/updateProfile', async (req, res) => {
         let token = req.body["x-auth-token"];
         let userObject = {};
         let decoded = jwt.verify(token, config.get("jwtPrivateKey"));
-        console.dir(decoded);
+        let user = await User.findById({ _id: decoded._id });
         if (req.body.name.length) {
             userObject.name = req.body.name;
-        }
+        };
         if (req.body.email.length) {
-            let token = crypto.randomBytes(20).toString('hex');
+            let cryptotoken = crypto.randomBytes(20).toString('hex');
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -51,25 +51,24 @@ router.post('/updateProfile', async (req, res) => {
             });
             const mailOptions = {
                 from: `${process.env.EMAIL_ADDRESS}`,
-                to: `${decoded.email}`,
+                to: `${user.email}`,
                 subject: 'Link to Change Email',
-                text:
-                    `You are receiving this because you (or somebody else) requested an email change for your account. \n\n` +
-                    `Please click on the following link or paste it into the browser to complete the email change process (link is only active for one hour): \n\n` +
-                    `https://portal.district2capital.com/resetEmail/${token}\n\n` +
+                text: `You are receiving this because you (or somebody else) requested an email change for your account. \n` +
+                    `Please click on the following link or paste it into the browser to complete the email change process (link is only active for one hour). \n\n` +
+                    `Click below to change email from ${user.email} to ${req.body.email}\n` +
+                    `https://portal.district2capital.com/resetEmail/${cryptotoken}\n\n` +
                     `If you did not request this, please ignore the email and this email will remain linked to your D2C Portal account.`
             };
-            transporter.sendMail(mailOptions, function (err, response) {
+            await transporter.sendMail(mailOptions, function (err, response) {
                 if (err) {
                     winston.error('Error sending email reset email.');
                 } else {
                     winston.info('Email sent to: ' + response.accepted[0]);
-                    res.status(200).send('recovery email sent');
                 }
             });
-            userObject['resetEmailToken'] = token;
-            userObject['resetEmailExpires'] = Date.now() + 360000;
-            // userObject.email = req.body.email;
+            userObject.resetEmailToken = cryptotoken;
+            userObject.resetEmailExpires = Date.now() + 360000;
+            userObject.updatedEmail = req.body.email;
         }
         if (req.body.password.length) {
             let salt = await bcrypt.genSalt(10);
@@ -89,6 +88,46 @@ router.post('/updateProfile', async (req, res) => {
     } catch (err) {
         res.status(500).send('Internal Server Error.');
         winston.error('Internal Server Error.');
+    }
+});
+
+router.post('/updateEmail', async (req, res) => {
+    try {
+        let user = await User.findOne({
+            $and: [{ resetEmailToken: req.body.resetEmailToken },
+            {
+                resetEmailExpires: {
+                    $gt: Date.now()
+                }
+            }]
+        });
+        if (!user) res.status(400).send('User not found.');
+        else {
+            let id = new mongoose.Types.ObjectId(user._id);
+            let query = {
+                '_id': id
+            };
+            const updatedEmail = user.updatedEmail;
+            let updateObject = {
+                $set: {
+                    'email': updatedEmail,
+                    'updatedEmail': '',
+                    'resetEmailToken': '',
+                    'resetEmailExpires': ''
+                }
+            };
+            await User.update(query, updateObject).then(result => {
+                winston.info('User email successfully updated!');
+                let token = user.generateAuthToken();
+                res.status(200)
+                    .header("x-auth-token", token)
+                    .header("access-control-expose-headers", "x-auth-token")
+                    .send(_.pick(user, ["_id", "name", "email"]));
+            });
+        }
+    } catch (err) {
+        winston.debug(err);
+        res.status(500).send("internal server error");
     }
 });
 

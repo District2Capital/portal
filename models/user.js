@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        minlength: 5,
         maxlength: 255,
         unique: true
     },
@@ -99,6 +98,9 @@ const userSchema = new mongoose.Schema({
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    resetEmailToken: String,
+    resetEmailExpires: Date,
+    updatedEmail: String,
     isAdmin: Boolean
 });
 
