@@ -91,6 +91,19 @@ router.post('/updateProfile', async (req, res) => {
     }
 });
 
+router.get('/updateEmailToken', async (req, res) => {
+    let user = await User.findOne({
+        $and: [{ resetEmailToken: req.query.resetEmailToken },
+        {
+            resetEmailExpires: {
+                $gt: Date.now()
+            }
+        }]
+    });
+    if (!user) res.status(400).send('User not found.');
+    else res.status(200).send('email reset link valid.');
+});
+
 router.post('/updateEmail', async (req, res) => {
     try {
         let user = await User.findOne({
@@ -111,9 +124,8 @@ router.post('/updateEmail', async (req, res) => {
             let updateObject = {
                 $set: {
                     'email': updatedEmail,
-                    'updatedEmail': '',
-                    'resetEmailToken': '',
-                    'resetEmailExpires': ''
+                    // 'updatedEmail': '',
+                    // 'resetEmailToken': ''
                 }
             };
             await User.update(query, updateObject).then(result => {

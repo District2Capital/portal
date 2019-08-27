@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import LoadingSpinner from 'components/LoadingSpinner';
 import { Row, Col, Card, Button } from 'reactstrap';
 import d2clogo from 'assets/logo.png';
 import axios from 'axios';
+import { getCurrentUser, logout, getJwt } from 'services/auth';
 
 const ResetEmailPage = ({ ...props }) => {
-    const [emailConfirm, updateEmailConfirm] = useState(true);
-    let centerContent = emailConfirm ? (<div className="m-auto text-center"><LoadingSpinner /><h4>Updating Email...</h4></div>) : (<div className="m-auto"><h4>Email Confirmed!</h4><div className="m-auto" style={{ width: "fit-content" }}><Button secondary outline onClick={() => handleLogoClick()}>Go to portal</Button></div></div>);
+    const resetEmailToken = props.match.params.token;
+    const emailLoading = (<div className="m-auto text-center"><LoadingSpinner /><h4>Updating Email...</h4></div>);
+    const emailConfirmed = (<div className="m-auto"><h4>Email Confirmed!</h4><div className="m-auto" style={{ width: "fit-content" }}><Button secondary outline onClick={() => handleLogoClick()}>Go to portal</Button></div></div>);
+    const emailFailed = (<div className="m-auto text-center"><h4>Email reset link expired.</h4><h4> Please try again.</h4></div>);
+    const [centerContent, updateCenterContent] = useState(emailLoading);
 
     const handleLogoClick = () => {
         props.history.push('/');
@@ -18,16 +22,28 @@ const ResetEmailPage = ({ ...props }) => {
 
     const confirmEmail = async () => {
         let params = {
-            "resetEmailToken": props.match.params.token
+            "resetEmailToken": resetEmailToken
         };
         await axios.post('/api/users/updateEmail', params).then(res => {
             if (res.status === 200) {
-                updateEmailConfirm(false);
+                logout();
+                updateCenterContent(emailConfirmed);
                 localStorage.setItem(process.env.REACT_APP_API_LOGIN_TOKEN_NAME, res.headers['x-auth-token']);
+            } else {
+                updateCenterContent(emailFailed);
             }
-            else if (res.status === 400) {
-                centerContent = (<div className="m-auto text-center"><h4>Email reset link expired. Please try again.</h4></div>);
-            }
+        }).catch(async err => {
+            // * verify token with axios get request
+            let user = getCurrentUser();
+            await axios.get('/api/users/updateEmailToken', params).then(res => {
+                if (user && res.status === 200) {
+                    updateCenterContent(emailConfirmed);
+                } else {
+                    updateCenterContent(emailFailed);
+                }
+            }).catch(err => {
+                updateCenterContent(emailFailed);
+            });
         });
     };
 
