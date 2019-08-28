@@ -43,6 +43,8 @@ export { default as AvatarCard } from './UserCards/AvatarCard';
 export { default as BasicProfileCard } from './UserCards/BasicProfileCard';
 export { default as UserCard } from './UserCards/UserCard';
 export { default as UserProfileFieldsCard } from './UserCards/UserProfileFieldsCard';
+export { default as MajorChangesCard } from './UserCards/MajorChangesCard';
+export { default as EditListsCard } from './UserCards/EditListsCard';
 
 // * Others
 export { default as SmallRecentSearchCard } from '../Search/SmallRecentSearchCard';
