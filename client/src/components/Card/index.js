@@ -45,6 +45,7 @@ export { default as UserCard } from './UserCards/UserCard';
 export { default as UserProfileFieldsCard } from './UserCards/UserProfileFieldsCard';
 export { default as MajorChangesCard } from './UserCards/MajorChangesCard';
 export { default as EditListsCard } from './UserCards/EditListsCard';
+export { default as AccountPlanCard } from './UserCards/AccountPlanCard';
 
 // * Others
 export { default as SmallRecentSearchCard } from '../Search/SmallRecentSearchCard';

@@ -1,6 +1,6 @@
 import React from 'react';
-import { BasicProfileCard, MajorChangesCard, EditListsCard } from 'components/Card';
-import { Row } from 'reactstrap';
+import { BasicProfileCard, AccountPlanCard, MajorChangesCard, EditListsCard } from 'components/Card';
+import { Row, Col } from 'reactstrap';
 
 const SettingsPage = () => {
     // const [pictures, changePictures] = useState([]);
@@ -22,10 +22,15 @@ const SettingsPage = () => {
 
     return (<React.Fragment>
         <BasicProfileCard />
-        <div className="d-flex">
-            <MajorChangesCard />
-            <EditListsCard />
-        </div>
+        <AccountPlanCard />
+        <Row>
+            <Col md={6}>
+                <MajorChangesCard />
+            </Col>
+            <Col md={6}>
+                <EditListsCard />
+            </Col>
+        </Row>
     </React.Fragment>);
 }
 

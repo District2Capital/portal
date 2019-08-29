@@ -5,7 +5,7 @@ import StripeCheckout from './StripeCheckout';
 import axios from 'axios';
 //import Cards from 'react-credit-cards';
 
-const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
+const PaymentCards = ({ noIntoText, selectedPlan, changeSelectedPlan, ...props }) => {
     const [plans, changePlans] = useState([]);
     let publicTestKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY_PUB;
     let classes = ['border-info thickBorder', 'border-secondary thickBorder', 'border-warning thickBorder'];
@@ -35,7 +35,7 @@ const PaymentCards = ({ selectedPlan, changeSelectedPlan, ...props }) => {
 
     return (
         <React.Fragment>
-            <Label>Select a plan(cancel anytime):</Label>
+            {noIntoText ? '' : <Label>Select a plan(cancel anytime):</Label>}
             <Row className="justify-content-center">
                 {plans.map((plan, index) => {
                     let classNames = plan.id === selectedPlan ? classes[index] : 'border';
