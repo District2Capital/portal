@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import GlobalContext from 'context/global-context';
 import { Card, CardHeader, Button, Row, Col, CardBody } from 'reactstrap';
+import { getJwt, logout } from 'services/auth';
+import axios from 'axios';
 
 const MajorChangesCard = () => {
 
-    const deleteAccount = () => {
-        console.log('delete account called.');
+    const deleteAccount = async () => {
+        let params = {
+            "x-auth-token": getJwt()
+        };
+        await axios.post('/api/users/deleteUser', params).then(res => {
+            if (res.status === 200) {
+                logout();
+            }
+        });
     }
 
     return (
